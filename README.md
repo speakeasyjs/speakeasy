@@ -162,6 +162,12 @@ speakeasy.generate_key({length: 20, google_auth_qr: true});
 //      google_auth_qr: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/SecretKey%3Fsecret=KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK' }
 ```
 
+## Running the tests
+
+You'll need to have `vows` installed. If you don't have vows, `npm install -g vows`
+
+To run the tests, run this in the module root directory: `vows --spec test/*`
+
 ## Issues and patches
 
 If you're having an issue, I'm quite sorry that you came across it. Please submit issues to the [GitHub Issues page](https://github.com/markbao/speakeasy/issues).
