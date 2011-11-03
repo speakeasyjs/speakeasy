@@ -1,10 +1,12 @@
 # speakeasy
 
-HMAC One-Time Password module for Node.js, supporting counter-based and time-based moving factors (HOTP and TOTP)
+Easy two-factor authentication for node.js. Calculate time-based or counter-based one-time passwords. Fully supports the Google Authenticator mobile app.
+
+Uses the HMAC One-Time Password algorithms, supporting counter-based and time-based moving factors (HOTP and TOTP).
 
 ## An Introduction
 
-speakeasy makes it easy to implement HMAC one-time passwords, supporting both counter-based (HOTP) and time-based moving factors (TOTP). It's useful for implementing two-factor authentication. Google and Amazon use TOTP to generate codes for use with multi-factor authentication.
+speakeasy makes it easy to implement HMAC one-time passwords (for example, for use in two-factor authentication), supporting both counter-based (HOTP) and time-based moving factors (TOTP). It's useful for implementing two-factor authentication. Google and Amazon use TOTP to generate codes for use with multi-factor authentication.
 
 It supports the counter-based and time-based algorithms, as well as keys encoded in ASCII, hexadecimal, and base32. It also has a random key generator which can also generate QR code links.
 
