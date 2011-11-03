@@ -67,4 +67,14 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
       assert.equal(topic, '360094');
     }
   },
+
+  'Test initial time with key = \'12345678901234567890\' at time = 1111111109 and initial time = 1111111100': {
+    topic: function() {
+      return speakeasy.totp({key: '12345678901234567890', time: 1111111109, initial_time: 1111111100});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '755224');
+    }
+  },
 }).exportTo(module);
