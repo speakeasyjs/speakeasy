@@ -1,6 +1,6 @@
 # speakeasy
 
-Easy two-factor authentication for node.js. Calculate time-based or counter-based one-time passwords. Fully supports the Google Authenticator mobile app.
+Easy two-factor authentication for node.js. Calculate time-based or counter-based one-time passwords. Supports the Google Authenticator mobile app.
 
 Uses the HMAC One-Time Password algorithms, supporting counter-based and time-based moving factors (HOTP and TOTP).
 
