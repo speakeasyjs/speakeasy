@@ -71,7 +71,7 @@ speakeasy.generate_key({length: 20, google_auth_qr: true});
 
 ### speakeasy.hotp(options) | speakeasy.counter(options)
 
-Calculate the one-time password using the counter-based algorithm, HOTP. Specify the key and counter, and receive the one-time password for that counter position. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password.
+Calculate the one-time password using the counter-based algorithm, HOTP. Specify the key and counter, and receive the one-time password for that counter position. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password as a string.
 
 Written to follow [RFC 4226](http://tools.ietf.org/html/rfc4226). Calculated with: `HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))`
 
@@ -100,7 +100,7 @@ speakeasy.hotp({key: 'AJFIEJGEHIFIU7148SF', counter: 147, encoding: 'base32'});
 
 ### speakeasy.totp(options) | speakeasy.time(options)
 
-Calculate the one-time password using the time-based algorithm, TOTP. Specify the key, and receive the one-time password for that time. By default, the time step is 30 seconds, so there is a new password every 30 seconds. However, you may override the time step. You may also override the time you want to calculate the time from. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password.
+Calculate the one-time password using the time-based algorithm, TOTP. Specify the key, and receive the one-time password for that time. By default, the time step is 30 seconds, so there is a new password every 30 seconds. However, you may override the time step. You may also override the time you want to calculate the time from. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password as a string.
 
 Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated with: `C = ((T) / X); HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))`
 
@@ -109,6 +109,7 @@ Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated wit
 * `key`: the secret key in ASCII, hexadecimal, or base32 format. `K` in the algorithm.
 * `step` (default `30`): the time step, in seconds, between new passwords (moving factor). `X` in the algorithm.
 * `time` (default current time): the time to calculate the TOTP from, by default the current time. If you're doing something clever with TOTP, you may override this (see *Techniques & Patterns below*). `T` in the algorithm.
+* `initial_time` (default `0`): the starting time where we calculate the TOTP from. Usually, this is set to the UNIX epoch at 0.
 * `length` (default `6`): the length of the resulting one-time password.
 * `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
 
@@ -124,6 +125,10 @@ speakeasy.totp({key: 'secret', step: 60});
 // use a custom time.
 speakeasy.totp({key: 'secret', time: 159183717});
 // => 558014
+
+// use a initial time.
+speakeasy.totp({key: 'secret', initial_time: 4182881485});
+// => 670417
 ```
 
 #### Techniques & Patterns
