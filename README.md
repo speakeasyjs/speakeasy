@@ -47,26 +47,6 @@ speakeasy.time({key: 'KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK', encoding: 'base32'}); /
 // => try this in your REPL and it should match the number on your phone
 ```
 
-### Key generation
-
-```javascript
-// generate a key
-speakeasy.generate_key({length: 20, symbols: true});
-// => { ascii: 'km^A?n&sOPJW.iCKPHKU', hex: '6b6d5e413f6e26734f504a572e69434b50484b55', base32: 'NNWV4QJ7NYTHGT2QJJLS42KDJNIEQS2V' }
-
-// generate a key and request QR code links
-speakeasy.generate_key({length: 20, qr_codes: true});
-// => { ascii: 'eV:JQ1NedJkKn&]6^i>s', ... (truncated)
-//      qr_code_ascii: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=eV%3AJQ1NedJkKn%26%5D6%5Ei%3Es',
-//      qr_code_hex: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=65563a4a51314e65644a6b4b6e265d365e693e73',
-//      qr_code_base32: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=MVLDUSSRGFHGKZCKNNFW4JS5GZPGSPTT' }
-
-// generate a key and get a QR code you can scan with the Google Authenticator app
-speakeasy.generate_key({length: 20, google_auth_qr: true});
-// => { ascii: 'V?9f6.Cq1&<H?<nxe.XJ', ... (truncated)
-//      google_auth_qr: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/SecretKey%3Fsecret=KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK' }
-```
-
 ## Manual
 
 ### speakeasy.hotp(options) | speakeasy.counter(options)
