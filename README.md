@@ -39,7 +39,7 @@ speakeasy.generate_key({length: 20, google_auth_qr: true});
 
 You'll get this QR code. If you don't already have it, get [Google Authenticator](http://www.google.com/support/accounts/bin/answer.py?answer=1066447).
 
-![](https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/SecretKey%3Fsecret=KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK)
+![](http://i.imgur.com/INZnk.png)
 
 ```
 // specify a length and encoding (ascii, hex, or base32).
