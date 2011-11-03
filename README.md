@@ -27,24 +27,24 @@ An overarching goal of this module, other than to make it very easy to implement
 npm install speakeasy
 ```
 
-## Examples
-
-### Calculating one-time passwords with time-based or counter-based algorithm
+## Example (with Google Authenticator)
 
 ```javascript
-var speakeasy = require('speakeasy');
+// generate a key and get a QR code you can scan with the Google Authenticator app
+speakeasy.generate_key({length: 20, google_auth_qr: true});
+// => { ascii: 'V?9f6.Cq1&<H?<nxe.XJ',
+//      base32: 'KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK', ... (truncated) 
+//      google_auth_qr: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/SecretKey%3Fsecret=KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK' }
+```
 
-// use the time-based algorithm, TOTP.
-speakeasy.time({key: 'secret'});
-// => 149238
+You'll get this QR code. If you don't already have it, get [Google Authenticator](http://www.google.com/support/accounts/bin/answer.py?answer=1066447).
 
+![](https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/SecretKey%3Fsecret=KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK)
+
+```
 // specify a length and encoding (ascii, hex, or base32).
-speakeasy.time({key: 'OBQXG43XN5ZGI', encoding: 'base32', length: 8});
-// => 33318854
-
-// use the counter-based algorithm, HOTP.
-speakeasy.counter({key: 'secret', counter: 582});
-// => 246642
+speakeasy.time({key: 'KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK', encoding: 'base32'}); // see the base32 result above
+// => try this in your REPL and it should match the number on your phone
 ```
 
 ### Key generation
@@ -102,14 +102,14 @@ speakeasy.hotp({key: 'AJFIEJGEHIFIU7148SF', counter: 147, encoding: 'base32'});
 
 Calculate the one-time password using the time-based algorithm, TOTP. Specify the key, and receive the one-time password for that time. By default, the time step is 30 seconds, so there is a new password every 30 seconds. However, you may override the time step. You may also override the time you want to calculate the time from. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password as a string.
 
-Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated with: `C = ((T) / X); HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))`
+Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated with: `C = ((T - T0) / X); HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))`
 
 #### Options
 
 * `key`: the secret key in ASCII, hexadecimal, or base32 format. `K` in the algorithm.
 * `step` (default `30`): the time step, in seconds, between new passwords (moving factor). `X` in the algorithm.
 * `time` (default current time): the time to calculate the TOTP from, by default the current time. If you're doing something clever with TOTP, you may override this (see *Techniques & Patterns below*). `T` in the algorithm.
-* `initial_time` (default `0`): the starting time where we calculate the TOTP from. Usually, this is set to the UNIX epoch at 0.
+* `initial_time` (default `0`): the starting time where we calculate the TOTP from. Usually, this is set to the UNIX epoch at 0. `T0` in the algorithm.
 * `length` (default `6`): the length of the resulting one-time password.
 * `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
 
