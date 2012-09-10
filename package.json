@@ -2,7 +2,7 @@
   "author": "Mark Bao <mark@markbao.com> (http://markbao.com/)",
   "name": "speakeasy",
   "description": "Easy two-factor authentication with node.js. Time-based or counter-based (HOTP/TOTP), and supports the Google Authenticator mobile app. Also includes a key generator. Uses the HMAC One-Time Password algorithms.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "homepage": "http://github.com/markbao/speakeasy",
   "repository": {
     "type": "git",
