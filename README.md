@@ -88,7 +88,7 @@ Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated wit
 
 * `key`: the secret key in ASCII, hexadecimal, or base32 format. `K` in the algorithm.
 * `step` (default `30`): the time step, in seconds, between new passwords (moving factor). `X` in the algorithm.
-* `time` (default current time): the time to calculate the TOTP from, by default the current time. If you're doing something clever with TOTP, you may override this (see *Techniques & Patterns below*). `T` in the algorithm.
+* `time` (default current time): the time to calculate the TOTP from, by default the current time. If you're doing something clever with TOTP, you may override this (see *Techniques* below). `T` in the algorithm.
 * `initial_time` (default `0`): the starting time where we calculate the TOTP from. Usually, this is set to the UNIX epoch at 0. `T0` in the algorithm.
 * `length` (default `6`): the length of the resulting one-time password.
 * `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
@@ -111,7 +111,7 @@ speakeasy.totp({key: 'secret', initial_time: 4182881485});
 // => 670417
 ```
 
-#### Techniques & Patterns
+#### Techniques
 
 You can implement a double-authentication scheme, where you ask the user to input the one-time password once, wait until the next 30-second refresh, and then input the one-time password again. In this case, you can calculate the second (later) input by calculating TOTP as usual, then also verify the first (earlier) input by taking the current epoch time in seconds and subtracting 30 seconds to get to the previous step (for example: `time1 = (parseInt(new Date()/1000) - 30)`)
 
@@ -123,8 +123,8 @@ Generate a random secret key. It will return the key in ASCII, hexadecimal, and 
 
 * `length` (default `32`): the length of the generated secret key.
 * `symbols` (default `true`): include symbols in the key? if not, the key will be alphanumeric, {A-Z, a-z, 0-9}
-* `qr_codes` (default `false`): generate links to QR codes for each encoding (ASCII, hexadecimal, and base32). It uses the Google Charts API and they are served over HTTPS. A future version might allow for QR code generation client-side for security. **This is `false` by default, by design. Google uses it for their two-step setup. Do not use if you don't feel comfortable with it.**
-* `google_auth_qr` (default `false`): generate a link to a QR code that you can scan using the Google Authenticator app. The contents of the QR code are in this format: `otpauth://totp/[KEY NAME]?secret=[KEY SECRET, BASE 32]`. **This is `false` by default, by design. Google uses it for their two-step setup. Do not use if you don't feel comfortable with it.** 
+* `qr_codes` (default `false`): generate links to QR codes for each encoding (ASCII, hexadecimal, and base32). It uses the Google Charts API and they are served over HTTPS. A future version might allow for QR code generation client-side for security.
+* `google_auth_qr` (default `false`): generate a link to a QR code that you can scan using the Google Authenticator app. The contents of the QR code are in this format: `otpauth://totp/[KEY NAME]?secret=[KEY SECRET, BASE 32]`.
 * `name` (optional): specify a name when you are using `google_auth_qr`, which will show up as the label after scanning. `[KEY NAME]` in the previous line.
 
 #### Examples
