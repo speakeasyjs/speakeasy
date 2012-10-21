@@ -2,6 +2,13 @@ Speakeasy
 
 Version History
 
+1.0.2
+=====
+
+Bugfix release.
+
+- Remove global leaks. Thanks for the fix, mashihua.
+
 1.0.1
 =====
 
