@@ -17,5 +17,10 @@
     "thirty-two": "0.0.1"
   },
   "keywords": ["two-factor", "authentication", "hotp", "totp", "multi-factor", "hmac", "one-time password", "passwords"],
-  "devDependencies": {}
+  "devDependencies": {
+    "vows": "*"
+  },
+  "scripts": {
+    "test": "vows --spec test/*"
+  }
 }
