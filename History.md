@@ -2,6 +2,13 @@ Speakeasy
 
 Version History
 
+1.0.3
+=====
+
+Convenience release. Sabaidee from Luang Prabang, Laos.
+
+- Add vows to devDependencies and support `npm test` in package.json. Thanks, freewill!
+
 1.0.2
 =====
 
