@@ -1,5 +1,9 @@
- {
-  "author": "Mark Bao <mark@markbao.com> (http://markbao.com/)",
+{
+  "author": {
+    "name": "Mark Bao",
+    "email": "mark@markbao.com",
+    "url": "http://markbao.com/"
+  },
   "name": "speakeasy",
   "description": "Easy two-factor authentication with node.js. Time-based or counter-based (HOTP/TOTP), and supports the Google Authenticator mobile app. Also includes a key generator. Uses the HMAC One-Time Password algorithms.",
   "version": "1.0.3",
@@ -16,11 +20,30 @@
     "ezcrypto": "0.0.3",
     "thirty-two": "0.0.1"
   },
-  "keywords": ["two-factor", "authentication", "hotp", "totp", "multi-factor", "hmac", "one-time password", "passwords"],
+  "keywords": [
+    "two-factor",
+    "authentication",
+    "hotp",
+    "totp",
+    "multi-factor",
+    "hmac",
+    "one-time password",
+    "passwords"
+  ],
   "devDependencies": {
     "vows": "*"
   },
   "scripts": {
     "test": "vows --spec test/*"
-  }
+  },
+  "readmeFilename": "README.md",
+  "bugs": {
+    "url": "https://github.com/markbao/speakeasy/issues"
+  },
+  "_id": "speakeasy@1.0.3",
+  "dist": {
+    "shasum": "885d7d78e7c0197211400db49dfe1ab398dc54bd"
+  },
+  "_resolved": "git://github.com/mrose17/speakeasy.git#4c12a36fb74351e61143183a012e7665f9d0eec8",
+  "_from": "speakeasy@git://github.com/mrose17/speakeasy.git"
 }
