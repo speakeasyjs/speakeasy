@@ -13,7 +13,6 @@
     "node": ">= 0.3.0"
   },
   "dependencies": {
-    "ezcrypto": "0.0.3",
     "thirty-two": "0.0.2"
   },
   "keywords": [
