@@ -61,6 +61,7 @@ Written to follow [RFC 4226](http://tools.ietf.org/html/rfc4226). Calculated wit
 * `counter`: the counter position (moving factor). `C` in the algorithm.
 * `length` (default `6`): the length of the resulting one-time password.
 * `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
+* `algorithm` (default `sha1`): the hash algorithm to use. Can be `'sha1'`, `'sha256'`, or `'sha512'`
 
 #### Example
 
@@ -92,6 +93,7 @@ Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated wit
 * `initial_time` (default `0`): the starting time where we calculate the TOTP from. Usually, this is set to the UNIX epoch at 0. `T0` in the algorithm.
 * `length` (default `6`): the length of the resulting one-time password.
 * `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
+* `algorithm` (default `sha1`): the hash algorithm to use. Can be `'sha1'`, `'sha256'`, or `'sha512'`
 
 #### Example
 
