@@ -56,4 +56,35 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
       assert.equal(topic, '338314');
     }
   },
+
+  'Test base32 encoding with key = \'1234567890\' at counter 3': {
+    topic: function() {
+      return speakeasy.hotp({key: '1234567890', counter: 3});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '969429');
+    }
+  },
+
+  'Test base32 encoding with key = \'GEZDGNBVGY3TQOJQ\' as base32 at counter 1, length = 8 and algorithm as \'sha256\'': {
+    topic: function() {
+      return speakeasy.hotp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 1, length: 8, algorithm: 'sha256'});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '46119246');
+    }
+  },
+
+  'Test base32 encoding with key = \'GEZDGNBVGY3TQOJQ\' as base32 at counter 1, length = 8 and algorithm as \'sha512\'': {
+    topic: function() {
+      return speakeasy.hotp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 1, length: 8, algorithm: 'sha512'});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '90693936');
+    }
+  },
+
 }).exportTo(module);
