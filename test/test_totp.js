@@ -77,4 +77,34 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
       assert.equal(topic, '755224');
     }
   },
+
+  'Test base32 encoding with key = \'1234567890\' at time = 1111111109': {
+    topic: function() {
+      return speakeasy.totp({key: '1234567890', time: 1111111109});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '081804');
+    }
+  },
+
+  'Test base32 encoding with key = \'GEZDGNBVGY3TQOJQ\' as base32 at time = 1111111109, length = 8 and algorithm as \'sha256\'': {
+    topic: function() {
+      return speakeasy.totp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109, length: 8, algorithm: 'sha256'});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '68084774');
+    }
+  },
+
+  'Test base32 encoding with key = \'GEZDGNBVGY3TQOJQ\' as base32 at time = 1111111109, length = 8 and algorithm as \'sha512\'': {
+    topic: function() {
+      return speakeasy.totp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109, length: 8, algorithm: 'sha512'});
+    },
+    
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '25091201');
+    }
+  },
 }).exportTo(module);
