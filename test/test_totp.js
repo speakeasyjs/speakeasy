@@ -1,7 +1,7 @@
 var vows = require('vows'),
     assert = require('assert');
 
-var speakeasy = require('../lib/speakeasy');
+var speakeasy = require('..');
 
 // These tests use the test vectors from RFC 6238's Appendix B: Test Vectors
 // http://tools.ietf.org/html/rfc6238#appendix-B
@@ -12,7 +12,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '12345678901234567890', time: 59});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '287082');
     }
@@ -22,7 +22,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '12345678901234567890', time: 1111111109});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '081804');
     }
@@ -32,7 +32,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '12345678901234567890', time: 1111111109, length: 8});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '07081804');
     }
@@ -42,7 +42,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '3132333435363738393031323334353637383930', encoding: 'hex', time: 1111111109});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '081804');
     }
@@ -52,7 +52,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '081804');
     }
@@ -62,7 +62,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '12345678901234567890', time: 1111111109, step: 60});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '360094');
     }
@@ -72,7 +72,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '12345678901234567890', time: 1111111109, initial_time: 1111111100});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '755224');
     }
@@ -82,7 +82,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: '1234567890', time: 1111111109});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '081804');
     }
@@ -92,7 +92,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109, length: 8, algorithm: 'sha256'});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '68084774');
     }
@@ -102,7 +102,7 @@ vows.describe('TOTP Time-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.totp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109, length: 8, algorithm: 'sha512'});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '25091201');
     }

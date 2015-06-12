@@ -1,7 +1,7 @@
 var vows = require('vows'),
     assert = require('assert');
 
-var speakeasy = require('../lib/speakeasy');
+var speakeasy = require('..');
 
 // These tests use the information from RFC 4226's Appendix D: Test Values.
 // http://tools.ietf.org/html/rfc4226#appendix-D
@@ -11,7 +11,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: '12345678901234567890', counter: 3});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '969429');
     }
@@ -21,7 +21,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: '12345678901234567890', counter: 7});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '162583');
     }
@@ -31,7 +31,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: '12345678901234567890', counter: 4, length: 8});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '40338314');
     }
@@ -41,7 +41,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: '3132333435363738393031323334353637383930', encoding: 'hex', counter: 4});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '338314');
     }
@@ -51,7 +51,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 4});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '338314');
     }
@@ -61,7 +61,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: '1234567890', counter: 3});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '969429');
     }
@@ -71,7 +71,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 1, length: 8, algorithm: 'sha256'});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '46119246');
     }
@@ -81,7 +81,7 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
     topic: function() {
       return speakeasy.hotp({key: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 1, length: 8, algorithm: 'sha512'});
     },
-    
+
     'correct one-time password returned': function(topic) {
       assert.equal(topic, '90693936');
     }
