@@ -14,7 +14,7 @@
     "node": ">= 0.3.0"
   },
   "dependencies": {
-    "thirty-two": "0.0.2"
+    "base32.js": "0.0.1"
   },
   "keywords": [
     "two-factor",
