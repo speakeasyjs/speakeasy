@@ -115,6 +115,55 @@ speakeasy.hotp = function(options) {
   return(code);
 };
 
+/**
+ * Check a One Time Password based on a counter.
+ *
+ * @return {Object} null if failure, { delta: # } on success
+ * delta is the time step difference between the client and the server
+ *
+ * Arguments:
+ *
+ *  options
+ *     key - Key for the one time password.  This should be unique and secret for
+ *         every user as it is the seed used to calculate the HMAC
+ *
+ *     token - Passcode to validate.
+ *
+ *     window - The allowable margin for the counter.  The function will check
+ *         'W' codes in the future against the provided passcode.  Note,
+ *         it is the calling applications responsibility to keep track of
+ *         'W' and increment it for each password check, and also to adjust
+ *         it accordingly in the case where the client and server become
+ *         out of sync (second argument returns non zero).
+ *         E.g. if W = 100, and C = 5, this function will check the passcode
+ *         against all One Time Passcodes between 5 and 105.
+ *
+ *         Default - 50
+ *
+ *     counter - Counter value.  This should be stored by the application, must
+ *         be user specific, and be incremented for each request.
+ *
+ */
+speakeasy.hotp.verify = function(options) {
+
+  var token = options.token;
+  var window = options.window || 50;
+  var counter = options.counter || 0;
+
+  // Now loop through from C to C + W to determine if there is
+  // a correct code
+  for (var i = counter; i <= counter + window; ++i) {
+    options.counter = i;
+    if (speakeasy.hotp(options) === token) {
+      // We have found a matching code, trigger callback
+      // and pass offset
+      return {delta: i - counter};
+    }
+  }
+
+  // If we get to here then no codes have matched.
+};
+
 // speakeasy.totp(options)
 //
 // Calculates the one-time password given the key, based on the current time
@@ -138,13 +187,7 @@ speakeasy.totp = function(options) {
   var algorithm = options.algorithm || 'sha1';
 
   // get current time in seconds since unix epoch
-  var time = parseInt(Date.now()/1000);
-
-  // are we forcing a specific time?
-  if (options.time) {
-    // override the time
-    time = options.time;
-  }
+  var time = options.time || parseInt(Date.now()/1000);
 
   // calculate counter value
   var counter = Math.floor((time - initial_time)/ step);
@@ -154,6 +197,45 @@ speakeasy.totp = function(options) {
 
   // return the code
   return(code);
+};
+
+/**
+ * Check a One Time Password based on a timer.
+ *
+ * @return {Object} null if failure, { delta: # } on success
+ * delta is the time step difference between the client and the server
+ *
+ * Arguments:
+ *
+ *  options
+ *     key - Key for the one time password.  This should be unique and secret for
+ *         every user as it is the seed used to calculate the HMAC
+ *
+ *     token - Passcode to validate.
+ *
+ *     window - The allowable margin for the counter.  The function will check
+ *         'W' codes either side of the provided counter.  Note,
+ *         it is the calling applications responsibility to keep track of
+ *         'W' and increment it for each password check, and also to adjust
+ *         it accordingly in the case where the client and server become
+ *         out of sync (second argument returns non zero).
+ *         E.g. if W = 5, and C = 1000, this function will check the passcode
+ *         against all One Time Passcodes between 995 and 1005.
+ *
+ *         Default - 6
+ *
+ *     time - The time step of the counter.  This must be the same for
+ *         every request and is used to calculate C.
+ *
+ *         Default - 30
+ *
+ */
+speakeasy.totp.verify = function(options) {
+  var step = options.step || 30;
+  var time = options.time || parseInt(Date.now()/1000);
+  var initial_time = options.initial_time || 0;
+  options.counter = Math.floor((time - initial_time)/ step);
+  return speakeasy.hotp.verify(options);
 };
 
 // speakeasy.generate_key(options)

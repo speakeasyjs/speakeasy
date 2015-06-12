@@ -27,9 +27,9 @@
     "passwords"
   ],
   "devDependencies": {
-    "vows": "*"
+    "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "vows --spec test/*"
+    "test": "mocha"
   }
 }
