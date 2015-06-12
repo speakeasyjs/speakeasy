@@ -4,6 +4,7 @@
   "description": "Easy two-factor authentication with node.js. Time-based or counter-based (HOTP/TOTP), and supports the Google Authenticator mobile app. Also includes a key generator. Uses the HMAC One-Time Password algorithms.",
   "version": "1.0.3",
   "homepage": "http://github.com/markbao/speakeasy",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git://github.com/markbao/speakeasy.git"
