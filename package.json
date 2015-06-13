@@ -1,17 +1,25 @@
 {
-  "author": "Mark Bao <mark@markbao.com> (http://markbao.com/)",
-  "name": "speakeasy",
-  "description": "Easy two-factor authentication with node.js. Time-based or counter-based (HOTP/TOTP), and supports the Google Authenticator mobile app. Also includes a key generator. Uses the HMAC One-Time Password algorithms.",
-  "version": "1.0.3",
-  "homepage": "http://github.com/markbao/speakeasy",
+  "name": "passcode",
+  "description": "One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
+  "version": "1.0.0",
+  "author": {
+    "name": "Michael Phan-Ba",
+    "email": "michael@mikepb.com"
+  },
+  "contributors": [{
+    "name": "Mark Bao",
+    "email": "mark@markbao.com",
+    "url": "http://markbao.com"
+  }],
+  "homepage": "http://github.com/mikepb/passcode",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/markbao/speakeasy.git"
+    "url": "git://github.com/mikepb/passcode.git"
   },
   "main": "index.js",
   "engines": {
-    "node": ">= 0.3.0"
+    "node": ">= 0.10.0"
   },
   "dependencies": {
     "base32.js": "0.0.1"
@@ -27,9 +35,11 @@
     "passwords"
   ],
   "devDependencies": {
+    "jsdoc": "^3.3.1",
     "mocha": "^2.2.5"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "doc": "jsdoc -c jsdoc.json"
   }
 }

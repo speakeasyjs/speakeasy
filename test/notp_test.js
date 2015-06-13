@@ -48,7 +48,7 @@ var speakeasy = require('..');
 
 it("HOTP", function() {
   var options = {
-    key: '12345678901234567890',
+    secret: '12345678901234567890',
     window: 0
   };
   var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
@@ -81,7 +81,7 @@ it("HOTP", function() {
 
 it("TOTtoken", function() {
   var options = {
-    key: '12345678901234567890',
+    secret: '12345678901234567890',
     window: 0
   };
 
@@ -91,28 +91,28 @@ it("TOTtoken", function() {
   assert.ok(!speakeasy.totp.verify(options), 'Should not pass');
 
   // counterheck for test vector at 59s
-  options.time = 59;
+  options.time = 59000;
   options.token = '287082';
   var res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // counterheck for test vector at 1234567890
-  options.time = 1234567890;
+  options.time = 1234567890000;
   options.token = '005924';
   var res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // counterheck for test vector at 1111111109
-  options.time = 1111111109;
+  options.time = 1111111109000;
   options.token = '081804';
   var res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // counterheck for test vector at 2000000000
-  options.time = 2000000000;
+  options.time = 2000000000000;
   options.token = '279037';
   var res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
@@ -129,7 +129,7 @@ it("TOTtoken", function() {
 it("HOTPOutOfSync", function() {
 
   var options = {
-    key: '12345678901234567890',
+    secret: '12345678901234567890',
     token: '520489',
     counter: 1
   };
@@ -158,9 +158,9 @@ it("HOTPOutOfSync", function() {
 it("TOTPOutOfSync", function() {
 
   var options = {
-    key: '12345678901234567890',
+    secret: '12345678901234567890',
     token: '279037',
-    time: 1999999909
+    time: 1999999909000
   };
 
   // counterheck that the test should fail for window < 2
@@ -175,7 +175,7 @@ it("TOTPOutOfSync", function() {
 
 it("hotp_gen", function() {
   var options = {
-    key: '12345678901234567890',
+    secret: '12345678901234567890',
     window: 0
   };
 
@@ -194,7 +194,7 @@ it("hotp_gen", function() {
 
 it("totp_gen", function() {
   var options = {
-    key: '12345678901234567890',
+    secret: '12345678901234567890',
     window: 0
   };
 
@@ -202,18 +202,18 @@ it("totp_gen", function() {
   speakeasy.totp(options);
 
   // counterheck for test vector at 59s
-  options.time = 59;
+  options.time = 59000;
   assert.equal(speakeasy.totp(options), '287082', 'TOTtoken values should match');
 
   // counterheck for test vector at 1234567890
-  options.time = 1234567890;
+  options.time = 1234567890000;
   assert.equal(speakeasy.totp(options), '005924', 'TOTtoken values should match');
 
   // counterheck for test vector at 1111111109
-  options.time = 1111111109;
+  options.time = 1111111109000;
   assert.equal(speakeasy.totp(options), '081804', 'TOTtoken values should match');
 
   // counterheck for test vector at 2000000000
-  options.time = 2000000000;
+  options.time = 2000000000000;
   assert.equal(speakeasy.totp(options), '279037', 'TOTtoken values should match');
 });
