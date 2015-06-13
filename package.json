@@ -1,7 +1,7 @@
 {
   "name": "passcode",
   "description": "One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": {
     "name": "Michael Phan-Ba",
     "email": "michael@mikepb.com"
@@ -10,6 +10,9 @@
     "name": "Mark Bao",
     "email": "mark@markbao.com",
     "url": "http://markbao.com"
+  }, {
+    "name": "Guy Halford-Thompson",
+    "email": "guy@cach.me"
   }],
   "homepage": "http://github.com/mikepb/passcode",
   "license": "MIT",
