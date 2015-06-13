@@ -14,12 +14,10 @@ var url = require("url");
  * @param {Object} options
  * @param {String} options.secret Shared secret key
  * @param {Integer} options.counter Counter value
- * @param {Integer} [options.digits=6] The number of digits for the one-time
- *   passcode.
  * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
  *   base32, base64).
- * @param {String} [options.algorithm="sha1"] Encytion algorithm (sha1,
- *   sha256, sha512).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
  * @return {Buffer} The one-time passcode as a buffer.
  */
 
@@ -30,7 +28,7 @@ exports.digest = function digest (options) {
   var key = options.secret;
   var counter = options.counter;
   var encoding = options.encoding || "ascii";
-  var algorithm = options.algorithm || "sha1";
+  var algorithm = (options.algorithm || "sha1").toLowerCase();
   var nbytes;
 
   // set hash size based on algorithm
@@ -46,13 +44,13 @@ exports.digest = function digest (options) {
                                : new Buffer(key, encoding);
   }
 
-  // repeat the key to the minumum length
+  // repeat the key to the minimum length
   if (key.length > nbytes) {
     key = key.slice(0, nbytes);
   } else {
-    i = Math.ceil(nbytes / key.length) + 1;
+    i = ~~(nbytes / key.length);
     key = [key];
-    while (--i) key.push(key[0]);
+    while (i--) key.push(key[0]);
     key = Buffer.concat(key).slice(0, nbytes);
   }
 
@@ -89,8 +87,8 @@ exports.digest = function digest (options) {
  *   passcode.
  * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
  *   base32, base64).
- * @param {String} [options.algorithm="sha1"] Encytion algorithm (sha1,
- *   sha256, sha512).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
  * @return {String} The one-time passcode.
  */
 
@@ -134,8 +132,8 @@ exports.hotp = function hotpGenerate (options) {
  *   passcode against all One Time Passcodes between 5 and 15, inclusive.
  * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
  *   base32, base64).
- * @param {String} [options.algorithm="sha1"] Encytion algorithm (sha1,
- *   sha256, sha512).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
  * @return {Object} On success, returns an object with the counter
  *   difference between the client and the server as the `delta` property.
  * @method hotp․verify
@@ -198,8 +196,8 @@ exports._counter = function _counter (options) {
  *   passcode.
  * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
  *   base32, base64).
- * @param {String} [options.algorithm="sha1"] Encytion algorithm (sha1,
- *   sha256, sha512).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
  * @return {String} The one-time passcode.
  */
 
@@ -235,8 +233,8 @@ exports.totp = function totpGenerate (options) {
  *   inclusive.
  * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
  *   base32, base64).
- * @param {String} [options.algorithm="sha1"] Encytion algorithm (sha1,
- *   sha256, sha512).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
  * @return {Object} On success, returns an object with the time step
  *   difference between the client and the server as the `delta` property.
  * @method totp․verify
@@ -282,8 +280,8 @@ exports.totp.verify = function totpVerify (options) {
  *   for HOTP.
  * @param {Integer} [options.issuer] The provider or service with which the
  *   secret key is associated.
- * @param {String} [options.algorithm="sha1"] Encytion algorithm (sha1,
- *   sha256, sha512).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode. Currently ignored by Google Authenticator.
  * @param {Integer} [options.period=30] The length of time for which a TOTP
