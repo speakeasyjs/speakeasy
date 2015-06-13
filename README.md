@@ -40,8 +40,8 @@ Full documentation at http://mikepb.github.io/passcode/
 ## License
 
 This project incorporates code from [speakeasy][] and [notp][], both of which
-are licensed under MIT. Please see the [LICENSE][] file for the full combined
-license.
+are licensed under MIT. Please see the [LICENSE](LICENSE) file for the full
+combined license.
 
 
 [speakeasy]: http://github.com/markbao/speakeasy

@@ -40,6 +40,6 @@
   },
   "scripts": {
     "test": "mocha",
-    "doc": "jsdoc -c jsdoc.json"
+    "doc": "jsdoc -c jsdoc.json && sed -i '' -e 's/․/./g' docs/passcode/*/*.html"
   }
 }

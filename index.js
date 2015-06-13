@@ -138,6 +138,8 @@ exports.hotp = function hotpGenerate (options) {
  *   sha256, sha512).
  * @return {Object} On success, returns an object with the counter
  *   difference between the client and the server as the `delta` property.
+ * @method hotp․verify
+ * @global
  */
 
 exports.hotp.verify = function hotpVerify (options) {
@@ -237,6 +239,8 @@ exports.totp = function totpGenerate (options) {
  *   sha256, sha512).
  * @return {Object} On success, returns an object with the time step
  *   difference between the client and the server as the `delta` property.
+ * @method totp․verify
+ * @global
  */
 
 exports.totp.verify = function totpVerify (options) {
