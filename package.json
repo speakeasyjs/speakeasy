@@ -1,7 +1,7 @@
 {
   "name": "passcode",
   "description": "One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "Michael Phan-Ba",
     "email": "michael@mikepb.com"
@@ -15,6 +15,17 @@
     "email": "guy@cach.me"
   }],
   "homepage": "http://github.com/mikepb/passcode",
+  "keywords": [
+    "authentication",
+    "google authenticator",
+    "hmac",
+    "hotp",
+    "multi-factor",
+    "one-time password",
+    "passwords",
+    "totp",
+    "two-factor"
+  ],
   "license": "MIT",
   "repository": {
     "type": "git",

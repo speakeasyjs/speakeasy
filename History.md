@@ -1,3 +1,9 @@
+1.0.2 / 2015-07-13
+==================
+
+  * [Fixed] Don't repeat the secret key generating the digest.
+
+
 1.0.1 / 2015-07-13
 ==================
 
