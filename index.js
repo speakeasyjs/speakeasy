@@ -29,29 +29,11 @@ exports.digest = function digest (options) {
   var counter = options.counter;
   var encoding = options.encoding || "ascii";
   var algorithm = (options.algorithm || "sha1").toLowerCase();
-  var nbytes;
-
-  // set hash size based on algorithm
-  switch (algorithm) {
-    case "sha256": nbytes = 32; break;
-    case "sha512": nbytes = 64; break;
-    default:       nbytes = 20;
-  }
 
   // convert key to buffer
   if (!Buffer.isBuffer(key)) {
     key = encoding == "base32" ? base32.decode(key)
                                : new Buffer(key, encoding);
-  }
-
-  // repeat the key to the minimum length
-  if (key.length > nbytes) {
-    key = key.slice(0, nbytes);
-  } else {
-    i = ~~(nbytes / key.length);
-    key = [key];
-    while (i--) key.push(key[0]);
-    key = Buffer.concat(key).slice(0, nbytes);
   }
 
   // create an buffer from the counter

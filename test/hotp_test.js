@@ -43,23 +43,23 @@ describe('HOTP Counter-Based Algorithm Test', function () {
     });
   });
 
-  describe('base32 encoding with secret = \'1234567890\' at counter 3', function () {
+  describe('base32 encoding with secret = \'12345678901234567890\' at counter 3', function () {
     it('should return correct one-time password', function() {
-      var topic = speakeasy.hotp({secret: '1234567890', counter: 3});
+      var topic = speakeasy.hotp({secret: '12345678901234567890', counter: 3});
       assert.equal(topic, '969429');
     });
   });
 
-  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQ\' as base32 at counter 1, digits = 8 and algorithm as \'sha256\'', function () {
+  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA\' as base32 at counter 1, digits = 8 and algorithm as \'sha256\'', function () {
     it('should return correct one-time password', function() {
-      var topic = speakeasy.hotp({secret: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 1, digits: 8, algorithm: 'sha256'});
+      var topic = speakeasy.hotp({secret: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA', encoding: 'base32', counter: 1, digits: 8, algorithm: 'sha256'});
       assert.equal(topic, '46119246');
     });
   });
 
-  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQ\' as base32 at counter 1, digits = 8 and algorithm as \'sha512\'', function () {
+  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA\' as base32 at counter 1, digits = 8 and algorithm as \'sha512\'', function () {
     it('should return correct one-time password', function() {
-      var topic = speakeasy.hotp({secret: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', counter: 1, digits: 8, algorithm: 'sha512'});
+      var topic = speakeasy.hotp({secret: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA', encoding: 'base32', counter: 1, digits: 8, algorithm: 'sha512'});
       assert.equal(topic, '90693936');
     });
   });

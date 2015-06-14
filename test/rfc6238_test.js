@@ -169,6 +169,25 @@ describe("RFC 6238 test vector", function () {
     code: "47863826",
     algorithm: "SHA512"
   }].forEach(function (subject) {
+    var key = new Buffer("12345678901234567890");
+    var nbytes, i;
+
+    // set hash size based on algorithm
+    switch (subject.algorithm) {
+      case "SHA256": nbytes = 32; break;
+      case "SHA512": nbytes = 64; break;
+      default:       nbytes = 20;
+    }
+
+    // repeat the key to the minimum length
+    if (key.length > nbytes) {
+      key = key.slice(0, nbytes);
+    } else {
+      i = ~~(nbytes / key.length);
+      key = [key];
+      while (i--) key.push(key[0]);
+      key = Buffer.concat(key).slice(0, nbytes);
+    }
 
     it("should calculate counter value for time " + subject.time, function () {
       var counter = passcode._counter({
@@ -186,7 +205,7 @@ describe("RFC 6238 test vector", function () {
 
     it("should generate TOTP code for time " + subject.time + " and algorithm " + subject.algorithm, function () {
       var counter = passcode.totp({
-        secret: "12345678901234567890",
+        secret: key,
         time: subject.time,
         algorithm: subject.algorithm,
         digits: 8

@@ -60,21 +60,21 @@ describe('TOTP Time-Based Algorithm Test', function () {
 
   describe('base32 encoding with secret = \'1234567890\' at time = 1111111109000', function () {
     it('should return correct one-time password', function () {
-      var topic = speakeasy.totp({secret: '1234567890', time: 1111111109000});
+      var topic = speakeasy.totp({secret: '12345678901234567890', time: 1111111109000});
       assert.equal(topic, '081804');
     });
   });
 
-  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQ\' as base32 at time = 1111111109000, digits = 8 and algorithm as \'sha256\'', function () {
+  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA\' as base32 at time = 1111111109000, digits = 8 and algorithm as \'sha256\'', function () {
     it('should return correct one-time password', function () {
-      var topic = speakeasy.totp({secret: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109000, digits: 8, algorithm: 'sha256'});
+      var topic = speakeasy.totp({secret: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZA', encoding: 'base32', time: 1111111109000, digits: 8, algorithm: 'sha256'});
       assert.equal(topic, '68084774');
     });
   });
 
-  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQ\' as base32 at time = 1111111109000, digits = 8 and algorithm as \'sha512\'', function () {
+  describe('base32 encoding with secret = \'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA\' as base32 at time = 1111111109000, digits = 8 and algorithm as \'sha512\'', function () {
     it('should return correct one-time password', function () {
-      var topic = speakeasy.totp({secret: 'GEZDGNBVGY3TQOJQ', encoding: 'base32', time: 1111111109000, digits: 8, algorithm: 'sha512'});
+      var topic = speakeasy.totp({secret: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA', encoding: 'base32', time: 1111111109000, digits: 8, algorithm: 'sha512'});
       assert.equal(topic, '25091201');
     });
   });
