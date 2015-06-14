@@ -12,7 +12,7 @@ verification functions of [notp][].
 ## Install
 
 ```sh
-npm install passcode
+npm install --save passcode
 ```
 
 ## Usage
