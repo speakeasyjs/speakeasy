@@ -56,4 +56,15 @@ vows.describe('HOTP Counter-Based Algorithm Test').addBatch({
       assert.equal(topic, '338314');
     }
   },
+
+  'Test 0-padding encoding with key = \'h/,Iv]ET34!].kfNUU^Nf!I#gp1bNT1C\' at counter 3 and length = 8': {
+    topic: function() {
+      return speakeasy.hotp({key: 'h/,Iv]ET34!].kfNUU^Nf!I#gp1bNT1C', length: 8, counter: 3});
+    },
+
+    'correct one-time password returned': function(topic) {
+      assert.equal(topic, '05314231');
+    }
+  },
+
 }).exportTo(module);
