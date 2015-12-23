@@ -1,5 +1,7 @@
 <img src="http://i.imgur.com/qRyNMx4.png" width="550">
 
+[![Build Status](https://travis-ci.org/speakeasyjs/speakeasy.svg?branch=v2)](https://travis-ci.org/speakeasyjs/speakeasy)
+
 Speakeasy implements one-time passcode generators as standardized by the
 [Initiative for Open Authentication (OATH)][oath]. The HMAC-Based One-time
 Password (HOTP) algorithm defined by [RFC 4226][rfc4226] and the Time-based 
