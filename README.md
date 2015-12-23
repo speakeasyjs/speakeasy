@@ -42,6 +42,7 @@ This project incorporates code from [passcode][], which was originally a
 fork of speakeasy, and [notp][], both of which are licensed under MIT.
 Please see the [LICENSE](LICENSE) file for the full combined license.
 
+Icon created by Gregor Črešnar from the Noun Project.
 
 [passcode]: http://github.com/mikepb/passcode
 [notp]: https://github.com/guyht/notp
