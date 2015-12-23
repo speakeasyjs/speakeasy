@@ -1,6 +1,8 @@
 <img src="http://i.imgur.com/qRyNMx4.png" width="550">
 
 [![Build Status](https://travis-ci.org/speakeasyjs/speakeasy.svg?branch=v2)](https://travis-ci.org/speakeasyjs/speakeasy)
+[![NPM downloads](https://img.shields.io/npm/dt/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
+[![NPM version](https://img.shields.io/npm/v/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
 
 Speakeasy implements one-time passcode generators as standardized by the
 [Initiative for Open Authentication (OATH)][oath]. The HMAC-Based One-time
