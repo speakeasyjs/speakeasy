@@ -1,30 +1,16 @@
-Speakeasy
+1.0.2 / 2015-07-13
+==================
 
-Version History
+  * [Fixed] Don't repeat the secret key generating the digest.
 
-1.0.3
-=====
 
-Convenience release. Sabaidee from Luang Prabang, Laos.
+1.0.1 / 2015-07-13
+==================
 
-- Add vows to devDependencies and support `npm test` in package.json. Thanks, freewill!
+  * [Fixed] Ignore case on algorithm option.
 
-1.0.2
-=====
 
-Bugfix release.
+1.0.0 / 2015-07-12
+==================
 
-- Remove global leaks. Thanks for the fix, mashihua.
-
-1.0.1
-=====
-
-Bugfix release. Ciao from Florence, Italy.
-
-- Fixes issue where Google Chart API was being called at a deprecated URL. Thanks for the fix, sakkaku.
-- Fixes issue where `generate_key`'s `symbols` option was not working, and was also causing pollution with global var. Thanks for reporting the bug, ARAtlas.
-
-1.0.0
-=====
-
-Initial release.
+  * Initial release based on speakeasy and notp.
