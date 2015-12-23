@@ -1,5 +1,7 @@
 # speakeasy
 
+[![Join the chat at https://gitter.im/speakeasyjs/speakeasy](https://badges.gitter.im/speakeasyjs/speakeasy.svg)](https://gitter.im/speakeasyjs/speakeasy?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 ## Easy two-factor authentication for node.js. Calculate time-based or counter-based one-time passwords. Supports the Google Authenticator mobile app.
 
 Uses the HMAC One-Time Password algorithms, supporting counter-based and time-based moving factors (HOTP and TOTP).
