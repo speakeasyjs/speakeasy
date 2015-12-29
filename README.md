@@ -50,7 +50,7 @@ var ok = speakeasy.hotp.verify({
 
 ## Documentation
 
-Full documentation at http://mikepb.github.io/passcode/
+Full documentation at http://speakeasyjs.github.io/speakeasy/
 
 ## License
 
