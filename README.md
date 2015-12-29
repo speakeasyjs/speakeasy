@@ -23,7 +23,10 @@ npm install --save speakeasy
 
 ## Demo
 
-This demo uses the `generate_key` method of Speakeasy to generate a secret key, displays a Google Authenticator–compatible QR code which you can scan into your phone's two-factor app, and shows the token, which you can verify with your phone.
+This demo uses the `generate_key` method of Speakeasy to generate a secret key,
+displays a Google Authenticator–compatible QR code which you can scan into your
+phone's two-factor app, and shows the token, which you can verify with your
+phone. Includes sample code.
 
 <a href="https://sedemo-mktb.rhcloud.com/"><img src="http://i.imgur.com/HN11GTW.png" width="191"></a>
 
