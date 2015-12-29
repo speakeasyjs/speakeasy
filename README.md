@@ -4,8 +4,10 @@
 [![NPM downloads](https://img.shields.io/npm/dt/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
 [![NPM version](https://img.shields.io/npm/v/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
 
+---
+
 Speakeasy is a one-time passcode generator, suitable for use in two-factor
-authentication, and supports Google Authenticator and other two-factor apps.
+authentication, that supports Google Authenticator and other two-factor apps.
 It includes robust support for custom token lengths, authentication windows,
 and other features, and includes helpers like a secret key generator.
 
