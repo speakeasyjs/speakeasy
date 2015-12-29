@@ -4,9 +4,14 @@
 [![NPM downloads](https://img.shields.io/npm/dt/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
 [![NPM version](https://img.shields.io/npm/v/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
 
+Speakeasy is a one-time passcode generator, suitable for use in two-factor
+authentication, and supports Google Authenticator and other two-factor apps.
+It includes robust support for custom token lengths, authentication windows,
+and other features, and includes helpers like a secret key generator.
+
 Speakeasy implements one-time passcode generators as standardized by the
-[Initiative for Open Authentication (OATH)][oath]. The HMAC-Based One-time
-Password (HOTP) algorithm defined by [RFC 4226][rfc4226] and the Time-based 
+[Initiative for Open Authentication (OATH)][oath]. The HMAC-Based One-Time
+Password (HOTP) algorithm defined by [RFC 4226][rfc4226] and the Time-Based
 One-time Password (TOTP) algorithm defined in [RFC 6238][rfc6238] are
 supported.
 
@@ -15,6 +20,12 @@ supported.
 ```sh
 npm install --save speakeasy
 ```
+
+## Demo
+
+This demo uses the `generate_key` method of Speakeasy to generate a secret key, displays a Google Authenticator–compatible QR code which you can scan into your phone's two-factor app, and shows the token, which you can verify with your phone.
+
+<a href="https://sedemo-mktb.rhcloud.com/"><img src="http://i.imgur.com/HN11GTW.png" width="191"></a>
 
 ## Usage
 

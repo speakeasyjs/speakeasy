@@ -1,20 +1,19 @@
 {
-  "name": "passcode",
-  "description": "One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
-  "version": "1.0.2",
+  "name": "speakeasy",
+  "description": "Two-factor authentication for Node. One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
+  "version": "2.0.0",
   "author": {
-    "name": "Michael Phan-Ba",
-    "email": "michael@mikepb.com"
+    "name": "Mark Bao & Speakeasy Contributors",
+    "email": "mark@markbao.com"
   },
   "contributors": [{
-    "name": "Mark Bao",
-    "email": "mark@markbao.com",
-    "url": "http://markbao.com"
+    "name": "Michael Phan-Ba",
+    "email": "michael@mikepb.com"
   }, {
     "name": "Guy Halford-Thompson",
     "email": "guy@cach.me"
   }],
-  "homepage": "http://github.com/mikepb/passcode",
+  "homepage": "http://github.com/speakeasyjs/speakeasy",
   "keywords": [
     "authentication",
     "google authenticator",
@@ -29,7 +28,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mikepb/passcode.git"
+    "url": "git://github.com/speakeasyjs/speakeasy.git"
   },
   "main": "index.js",
   "engines": {
