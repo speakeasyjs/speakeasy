@@ -18,6 +18,8 @@ var url = require("url");
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
+ * @param {String} options.key (DEPRECATED. Use `secret` instead.)
+ *   Shared secret key
  * @return {Buffer} The one-time passcode as a buffer.
  */
 
@@ -29,6 +31,9 @@ exports.digest = function digest (options) {
   var counter = options.counter;
   var encoding = options.encoding || "ascii";
   var algorithm = (options.algorithm || "sha1").toLowerCase();
+
+  // Backwards compatibility - deprecated
+  if (options.key) key = options.key;
 
   // convert key to buffer
   if (!Buffer.isBuffer(key)) {
@@ -71,13 +76,21 @@ exports.digest = function digest (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
+ * @param {String} options.key (DEPRECATED. Use `secret` instead.)
+ *   Shared secret key
+ * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
+ *   number of digits for the one-time passcode.
  * @return {String} The one-time passcode.
  */
 
 exports.hotp = function hotpGenerate (options) {
 
-  // unpack options
+  // unpack digits
   var digits = options.digits || 6;
+
+  // Backwards compatibility (Deprecated)
+  // unpack length, if it exists
+  if (options.length) digits = options.length;
 
   // digest the options
   var digest = options.digest || exports.digest(options);
@@ -99,7 +112,7 @@ exports.hotp = function hotpGenerate (options) {
 };
 
 /**
- * Verify a counter-based One Time passcode.
+ * Verify a counter-based One Time passcode and return the delta.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -153,6 +166,9 @@ exports.hotp.verify = function hotpVerify (options) {
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
  *   which to calculate the counter value. Defaults to `Date.now()`.
+ * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
+ *   Initial time since the UNIX epoch from which to calculate the counter
+ *   value. Defaults to `Date.now()`.
  * @return {Integer} The calculated counter value
  * @private
  */
@@ -161,6 +177,7 @@ exports._counter = function _counter (options) {
   var step = options.step || 30;
   var time = options.time != null ? options.time : Date.now();
   var epoch = options.epoch || 0;
+  if (options.initial_time) epoch = initial_time; // Deprecated
   return Math.floor((time - epoch) / step / 1000);
 };
 
@@ -180,6 +197,13 @@ exports._counter = function _counter (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
+ * @param {String} options.key (DEPRECATED. Use `secret` instead.)
+ *   Shared secret key
+ * @param {Integer} [options.epoch=0] (DEPRECATED. Use `epoch` instead.) Initial
+ *   time since the UNIX epoch from which to calculate the counter value.
+ *   Defaults to `Date.now()`.
+ * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
+ *   number of digits for the one-time passcode.
  * @return {String} The one-time passcode.
  */
 
@@ -245,7 +269,7 @@ exports.totp.verify = function totpVerify (options) {
 /**
  * Generate an URL for use with the Google Authenticator app.
  *
- * Authenticator considers TOTP codes  valid for 30 seconds. Additionally,
+ * Authenticator considers TOTP codes valid for 30 seconds. Additionally,
  * the app presents 6 digits codes to the user. According to the
  * documentation, the period and number of digits are currently ignored by
  * the app.
