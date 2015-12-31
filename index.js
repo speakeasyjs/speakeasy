@@ -135,7 +135,7 @@ exports.hotp = function hotpGenerate (options) {
  * @global
  */
 
-exports.hotp.verify = function hotpVerify (options) {
+exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
   var i;
 
   // shadow options
@@ -157,6 +157,38 @@ exports.hotp.verify = function hotpVerify (options) {
 
   // no codes have matched
 };
+
+/**
+ * Verify a counter-based One Time passcode via strict comparison (i.e.
+ * delta = 0).
+ *
+ * @param {Object} options
+ * @param {String} options.secret Shared secret key
+ * @param {String} options.token Passcode to validate
+ * @param {Integer} options.counter Counter value. This should be stored by
+ *   the application and must be incremented for each request.
+ * @param {Integer} [options.digits=6] The number of digits for the one-time
+ *   passcode.
+ * @param {Integer} [options.window=50] The allowable margin for the counter.
+ *   The function will check "W" codes in the future against the provided
+ *   passcode, e.g. if W = 10, and C = 5, this function will check the
+ *   passcode against all One Time Passcodes between 5 and 15, inclusive.
+ * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
+ *   base32, base64).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
+ * @return {Boolean} Returns true if token strictly matches (delta = 0),
+ *   false otherwise.
+ * @method hotp․verify
+ * @global
+ */
+exports.hotp.verify = function hotpVerify (options) {
+  // Check against verifyDelta
+  var verify = exports.hotp.verifyDelta(options);
+  console.log(verify)
+
+  return (verify && typeof verify.delta !== 'undefined' && verify.delta === 0);
+}
 
 /**
  * Calculate counter value based on given options.
@@ -220,7 +252,7 @@ exports.totp = function totpGenerate (options) {
 };
 
 /**
- * Verify a time-based One Time passcode.
+ * Verify a time-based One Time passcode and return the delta.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -247,7 +279,7 @@ exports.totp = function totpGenerate (options) {
  * @global
  */
 
-exports.totp.verify = function totpVerify (options) {
+exports.totp.verifyDelta = function totpVerifyDelta (options) {
 
   // shadow options
   options = Object.create(options);
@@ -262,9 +294,45 @@ exports.totp.verify = function totpVerify (options) {
   options.counter -= window;
   options.window += window;
 
-  // pass to hotp.verify
-  return exports.hotp.verify(options);
+  // pass to hotp.verifyDelta
+  return exports.hotp.verifyDelta(options);
 };
+
+/**
+ * Verify a time-based One Time passcode via strict comparison (i.e.
+ * delta = 0).
+ *
+ * @param {Object} options
+ * @param {String} options.secret Shared secret key
+ * @param {String} options.token Passcode to validate
+ * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.step=30] Time step in seconds
+ * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
+ *   which to calculate the counter value. Defaults to `Date.now()`.
+ * @param {Integer} [options.counter] Counter value, calculated by default.
+ * @param {Integer} [options.digits=6] The number of digits for the one-time
+ *   passcode.
+ * @param {Integer} [options.window=6] The allowable margin for the counter.
+ *   The function will check "W" codes in the future and the past against the
+ *   provided passcode, e.g. if W = 5, and C = 1000, this function will check
+ *   the passcode against all One Time Passcodes between 995 and 1005,
+ *   inclusive.
+ * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
+ *   base32, base64).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
+ * @return {Boolean} Returns true if token strictly matches (delta = 0),
+ *   false otherwise.
+ * @method totp․verify
+ * @global
+ */
+exports.totp.verify = function totpVerify (options) {
+  // Check against verifyDelta
+  var verify = exports.totp.verifyDelta(options);
+
+  // Return true if delta is 0 (exact)
+  return (verify && typeof verify.delta !== 'undefined' && verify.delta === 0);
+}
 
 /**
  * Generate an URL for use with the Google Authenticator app.
