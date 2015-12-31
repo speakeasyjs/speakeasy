@@ -335,6 +335,105 @@ exports.totp.verify = function totpVerify (options) {
 }
 
 /**
+ * @typedef GeneratedSecret
+ * @type Object
+ * @property {String} ascii ASCII representation of the secret
+ * @property {String} hex Hex representation of the secret
+ * @property {String} base32 Base32 representation of the secret
+ * @property {String} qr_code_ascii URL for the QR code for the ASCII secret.
+ * @property {String} qr_code_hex URL for the QR code for the hex secret.
+ * @property {String} qr_code_base32 URL for the QR code for the base32 secret.
+ * @property {String} google_auth_qr URL for the Google Authenticator otpauth
+ *   URL's QR code.
+ */
+
+/**
+ * Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
+ * (default 32). Returns the secret key in ASCII, hexadecimal, and base32 format.
+ * @param {Object} options
+ * @param {Integer} [options.length=32] Length of the secret
+ * @param {Boolean} [options.symbols=false] Whether to include symbols
+ * @param {Boolean} [options.qr_codes=false] Whether to output QR code URLs
+ * @param {Boolean} [options.google_auth_qr=false] Whether to output a Google
+ *   Authenticator otpauth:// QR code URL (returns the URL to the QR code)
+ * @param {Boolean} [options.google_auth_url=true] Whether to output a Google
+ *   Authenticator otpauth:// URL (only returns otpauth:// URL, no QR code)
+ * @param {String} [options.name] The name to use with Google Authenticator.
+ * @return {Object}
+ * @return {GeneratedSecret} The generated secret key.
+ */
+exports.generate_key = function generateKey (options) {
+  // options
+  if(!options) options = {};
+  var length = options.length || 32;
+  var name = options.name || "Secret Key";
+  var qr_codes = options.qr_codes || false;
+  var google_auth_qr = options.google_auth_qr || false;
+  var google_auth_url = options.google_auth_url || true;
+  var symbols = true;
+
+  // turn off symbols only when explicity told to
+  if (options.symbols !== undefined && options.symbols === false) {
+    symbols = false;
+  }
+
+  // generate an ascii key
+  var key = this.generate_key_ascii(length, symbols);
+
+  // return a SecretKey with ascii, hex, and base32
+  var SecretKey = {};
+  SecretKey.ascii = key;
+  SecretKey.hex = this.ascii_to_hex(key);
+  SecretKey.base32 = base32.encode(key).toString().replace(/=/g,'');
+
+  // generate some qr codes if requested
+  if (qr_codes) {
+    SecretKey.qr_code_ascii = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.ascii);
+    SecretKey.qr_code_hex = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.hex);
+    SecretKey.qr_code_base32 = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.base32);
+  }
+
+  if (google_auth_url) {
+    SecretKey.google_auth_url = exports.google_auth_url({
+      secret: key,
+      label: name
+    });
+  }
+
+  // generate a QR code for use in Google Authenticator if requested
+  // (Google Authenticator has a special style and requires base32)
+  if (google_auth_qr) {
+    // first, make sure that the name doesn't have spaces, since Google Authenticator doesn't like them
+    name = name.replace(/ /g,'');
+    SecretKey.google_auth_qr = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/' + encodeURIComponent(name) + '%3Fsecret=' + encodeURIComponent(SecretKey.base32);
+  }
+
+  return SecretKey;
+};
+
+/**
+ * Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
+ * symbols (if requested).
+ *
+ * @param  {Integer} [length=32]  The length of the key.
+ * @param  {Boolean} [symbols=false] Whether to include symbols in the key.
+ * @return {String} The generated key.
+ */
+exports.generate_key_ascii = function(length, symbols) {
+  var bytes = crypto.randomBytes(length || 32);
+  var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+  if (symbols) {
+    set += '!@#$%^&*()<>?/[]{},.:;';
+  }
+
+  var output = '';
+  for (var i = 0, l = bytes.length; i < l; i++) {
+    output += set[~~(bytes[i] / 0xFF * set.length)];
+  }
+  return output;
+};
+
+/**
  * Generate an URL for use with the Google Authenticator app.
  *
  * Authenticator considers TOTP codes valid for 30 seconds. Additionally,
@@ -347,12 +446,12 @@ exports.totp.verify = function totpVerify (options) {
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
- * @param {Integer} options.label Used to identify the account with which
+ * @param {String} options.label Used to identify the account with which
  *   the secret key is associated, e.g. the user's email address.
- * @param {Integer} [options.type="totp"] Either "hotp" or "totp".
+ * @param {String} [options.type="totp"] Either "hotp" or "totp".
  * @param {Integer} [options.counter] The initial counter value, required
  *   for HOTP.
- * @param {Integer} [options.issuer] The provider or service with which the
+ * @param {String} [options.issuer] The provider or service with which the
  *   secret key is associated.
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
@@ -367,7 +466,7 @@ exports.totp.verify = function totpVerify (options) {
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
-exports.url = function (options) {
+exports.google_auth_url = function (options) {
 
   // unpack options
   var secret = options.secret;
