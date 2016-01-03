@@ -86,11 +86,8 @@ exports.digest = function digest (options) {
 exports.hotp = function hotpGenerate (options) {
 
   // unpack digits
-  var digits = options.digits || 6;
-
-  // Backwards compatibility (Deprecated)
-  // unpack length, if it exists
-  if (options.length) digits = options.length;
+  // backward compatibility: `length` is also accepted here, but deprecated
+  var digits = (options.digits != null ? options.digits : options.length) || 6;
 
   // digest the options
   var digest = options.digest || exports.digest(options);
@@ -185,7 +182,6 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 exports.hotp.verify = function hotpVerify (options) {
   // Check against verifyDelta
   var verify = exports.hotp.verifyDelta(options);
-  console.log(verify)
 
   return (verify && typeof verify.delta !== 'undefined' && verify.delta === 0);
 }
@@ -208,8 +204,10 @@ exports.hotp.verify = function hotpVerify (options) {
 exports._counter = function _counter (options) {
   var step = options.step || 30;
   var time = options.time != null ? options.time : Date.now();
-  var epoch = options.epoch || 0;
-  if (options.initial_time) epoch = initial_time; // Deprecated
+
+  // also accepts 'initial_time', but deprecated
+  var epoch = (options.epoch != null ? options.epoch : options.initial_time) || 0;
+
   return Math.floor((time - epoch) / step / 1000);
 };
 
