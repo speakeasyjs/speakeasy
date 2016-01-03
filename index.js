@@ -190,13 +190,14 @@ exports.hotp.verify = function hotpVerify (options) {
  * Calculate counter value based on given options.
  *
  * @param {Object} options
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.time] Time with which to calculate counter value.
+ *   Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
+ *   which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
  *   Initial time since the UNIX epoch from which to calculate the counter
- *   value. Defaults to `Date.now()`.
+ *   value. Defaults to 0 (no offset).
  * @return {Integer} The calculated counter value
  * @private
  */
@@ -216,10 +217,11 @@ exports._counter = function _counter (options) {
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.time] Time with which to calculate counter value.
+ *   Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
+ *   which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
@@ -229,9 +231,9 @@ exports._counter = function _counter (options) {
  *   sha512).
  * @param {String} options.key (DEPRECATED. Use `secret` instead.)
  *   Shared secret key
- * @param {Integer} [options.epoch=0] (DEPRECATED. Use `epoch` instead.) Initial
- *   time since the UNIX epoch from which to calculate the counter value.
- *   Defaults to `Date.now()`.
+ * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
+ *   Initial time since the UNIX epoch from which to calculate the counter
+ *   value. Defaults to 0 (no offset).
  * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
  *   number of digits for the one-time passcode.
  * @return {String} The one-time passcode.
@@ -255,10 +257,11 @@ exports.totp = function totpGenerate (options) {
  * @param {Object} options
  * @param {String} options.secret Shared secret key
  * @param {String} options.token Passcode to validate
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.time] Time with which to calculate counter value.
+ *   Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
+ *   which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
@@ -303,10 +306,11 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  * @param {Object} options
  * @param {String} options.secret Shared secret key
  * @param {String} options.token Passcode to validate
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.time] Time with which to calculate counter value.
+ *   Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
+ *   which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
