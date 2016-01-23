@@ -360,10 +360,10 @@ exports.generate_key = function generateKey (options) {
   // options
   if(!options) options = {};
   var length = options.length || 32;
-  var name = options.name || "Secret Key";
+  var name = options.name || "SecretKey";
   var qr_codes = options.qr_codes || false;
   var google_auth_qr = options.google_auth_qr || false;
-  var google_auth_url = options.google_auth_url || true;
+  var google_auth_url = options.google_auth_url != null ? options.google_auth_url : true;
   var symbols = true;
 
   // turn off symbols only when explicity told to
