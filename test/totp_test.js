@@ -1,4 +1,6 @@
-"use scrict";
+"use strict";
+
+/* global describe, it */
 
 var chai = require('chai');
 var assert = chai.assert;

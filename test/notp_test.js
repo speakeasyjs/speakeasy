@@ -1,4 +1,6 @@
-"use scrict";
+"use strict";
+
+/* global describe, it */
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -63,7 +65,7 @@ it("HOTP", function() {
   assert.ok(!speakeasy.hotp.verify(options), 'Should not pass');
 
   // countercheck for passes
-  for(i=0;i<HOTP.length;i++) {
+  for(var i=0;i<HOTP.length;i++) {
     options.counter = i;
     options.token = HOTP[i];
 
@@ -182,7 +184,7 @@ it("HOTPOutOfSync", function() {
   assert.ok(speakeasy.hotp.verify(options), 'Should pass for value of window >= 9');
 
   // countercheck that test should pass for negative counter values
-  token = '755224';
+  // token = '755224';
   options.counter = 7
   options.window = 8;
   assert.ok(speakeasy.hotp.verify(options), 'Should pass for negative counter values');
@@ -224,7 +226,7 @@ it("hotp_gen", function() {
   speakeasy.hotp(options);
 
   // countercheck for passes
-  for(i=0;i<HOTP.length;i++) {
+  for(var i=0;i<HOTP.length;i++) {
     options.counter = i;
     assert.equal(speakeasy.hotp(options), HOTP[i], 'HOTP value should be correct');
   }

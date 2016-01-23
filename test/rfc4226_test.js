@@ -1,5 +1,7 @@
 "use strict";
 
+/* global describe, it */
+
 var chai = require('chai');
 var assert = chai.assert;
 var speakeasy = require('..');
