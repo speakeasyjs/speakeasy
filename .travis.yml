@@ -5,3 +5,4 @@ node_js:
   - "4.1"
   - "4.0"
   - "0.12"
+after_script: 'istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage'

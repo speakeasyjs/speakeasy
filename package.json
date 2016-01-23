@@ -49,9 +49,10 @@
   ],
   "devDependencies": {
     "chai": "^3.4.1",
+    "coveralls": "^2.11.6",
+    "istanbul": "^0.4.2",
     "jsdoc": "^3.3.1",
     "mocha": "^2.2.5",
-    "istanbul": "^0.4.2",
     "semistandard": "^7.0.5",
     "snazzy": "^2.0.1"
   },
