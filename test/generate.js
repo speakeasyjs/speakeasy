@@ -55,4 +55,16 @@ describe('Generator tests', function () {
     assert.isDefined(secret.google_auth_qr, 'Google Auth QR should be returned')
   });
 
+  it('Testing generate_key_ascii with defaults', function () {
+    var secret = speakeasy.generate_key_ascii();
+    assert.equal(secret.length, 32, 'Should return the correct length');
+    assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
+  });
+
+  it('Testing generate_key_ascii with custom length', function () {
+    var secret = speakeasy.generate_key_ascii(20);
+    assert.equal(secret.length, 20, 'Should return the correct length');
+    assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
+  });
+
 });
