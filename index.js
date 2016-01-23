@@ -339,6 +339,7 @@ exports.totp.verify = function totpVerify (options) {
  * @property {String} qr_code_base32 URL for the QR code for the base32 secret.
  * @property {String} google_auth_qr URL for the Google Authenticator otpauth
  *   URL's QR code.
+ * @property {String} google_auth_url Google Authenticator otpauth URL.
  */
 
 /**
