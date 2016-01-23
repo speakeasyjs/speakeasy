@@ -1,9 +1,5 @@
 "use strict";
 
-/**
- * Module dependencies.
- */
-
 var base32 = require("base32.js");
 var crypto = require("crypto");
 var url = require("url");
@@ -64,7 +60,7 @@ exports.digest = function digest (options) {
 };
 
 /**
- * Generate a counter-based one-time passcode.
+ * Generate a counter-based one-time token.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -109,7 +105,14 @@ exports.hotp = function hotpGenerate (options) {
 };
 
 /**
- * Verify a counter-based One Time passcode and return the delta.
+ * Verify a counter-based one-time token against the secret and return the delta.
+ * By default, it verifies the token at the given counter value, with no leeway
+ * (no look-ahead or look-behind). A token validated at the current counter value
+ * will have a delta of 0.
+ *
+ * You can specify a window to add more leeway to the verification process.
+ * `verifyDelta()` will then return the delta between the given token and the
+ * given counter value.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -127,7 +130,8 @@ exports.hotp = function hotpGenerate (options) {
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
  * @return {Object} On success, returns an object with the counter
- *   difference between the client and the server as the `delta` property.
+ *   difference between the client and the server as the `delta` property (i.e. 
+ *   `{ delta: 0 }`).
  * @method hotp․verifyDelta
  * @global
  */
@@ -156,7 +160,9 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 };
 
 /**
- * Verify a counter-based One Time passcode.
+ * Verify a time-based one-time token against the secret and return true if it
+ * verifies. Helper function for verifyDelta() that returns a boolean instead of
+ * an object.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -173,7 +179,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
- * @return {Boolean} Returns true if the token matches within the configured
+ * @return {Boolean} Returns true if the token matches within the given
  *   window, false otherwise.
  * @method hotp․verify
  * @global
@@ -209,7 +215,8 @@ exports._counter = function _counter (options) {
 };
 
 /**
- * Generate a time-based one-time passcode.
+ * Generate a time-based one-time token. By default, it returns the token for
+ * the current time.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -225,7 +232,7 @@ exports._counter = function _counter (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
- * @param {String} options.key (DEPRECATED. Use `secret` instead.)
+ * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
  *   Shared secret key
  * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
  *   Initial time since the UNIX epoch from which to calculate the counter
@@ -248,7 +255,14 @@ exports.totp = function totpGenerate (options) {
 };
 
 /**
- * Verify a time-based One Time passcode and return the delta.
+ * Verify a time-based one-time token against the secret and return the delta.
+ * By default, it verifies the token at the current time window, with no leeway
+ * (no look-ahead or look-behind). A token validated at the current time window
+ * will have a delta of 0.
+ *
+ * You can specify a window to add more leeway to the verification process.
+ * `verifyDelta()` will then return the delta between the given token and the
+ * current time in time steps.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -271,7 +285,8 @@ exports.totp = function totpGenerate (options) {
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
  * @return {Object} On success, returns an object with the time step
- *   difference between the client and the server as the `delta` property.
+ *   difference between the client and the server as the `delta` property (e.g.
+ *   `{ delta: 0 }`).
  * @method totp․verifyDelta
  * @global
  */
@@ -296,8 +311,9 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
 };
 
 /**
- * Verify a time-based One Time passcode via strict comparison (i.e.
- * delta = 0).
+ * Verify a time-based one-time token against the secret and return true if it
+ * verifies. Helper function for verifyDelta() that returns a boolean instead of
+ * an object.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -319,8 +335,8 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
- * @return {Boolean} Returns true if token strictly matches (delta = 0),
- *   false otherwise.
+ * @return {Boolean} Returns true if the token matches within the given
+ *   window, false otherwise.
  * @method totp․verify
  * @global
  */
@@ -344,7 +360,13 @@ exports.totp.verify = function totpVerify (options) {
 
 /**
  * Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
- * (default 32). Returns the secret key in ASCII, hexadecimal, and base32 format.
+ * (default 32). Returns the secret key in ASCII, hexadecimal, and base32 format,
+ * along with the URL used for the QR code for Google Authenticator (an otpauth
+ * URL).
+ *
+ * Can also optionally return QR codes for the secret and for the Google
+ * Authenticator URL.
+ *
  * @param {Object} options
  * @param {Integer} [options.length=32] Length of the secret
  * @param {Boolean} [options.symbols=false] Whether to include symbols
