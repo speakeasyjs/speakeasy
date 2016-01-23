@@ -130,7 +130,7 @@ exports.hotp = function hotpGenerate (options) {
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
  * @return {Object} On success, returns an object with the counter
- *   difference between the client and the server as the `delta` property (i.e. 
+ *   difference between the client and the server as the `delta` property (i.e.
  *   `{ delta: 0 }`).
  * @method hotp․verifyDelta
  * @global
@@ -445,7 +445,7 @@ exports.generate_key_ascii = function(length, symbols) {
 
   var output = '';
   for (var i = 0, l = bytes.length; i < l; i++) {
-    output += set[~~(bytes[i] / 0xFF * (set.length-1))];
+    output += set[Math.floor(bytes[i] / 255.0 * (set.length-1))];
   }
   return output;
 };
