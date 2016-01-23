@@ -377,8 +377,8 @@ exports.generate_key = function generateKey (options) {
   // return a SecretKey with ascii, hex, and base32
   var SecretKey = {};
   SecretKey.ascii = key;
-  SecretKey.hex = this.ascii_to_hex(key);
-  SecretKey.base32 = base32.encode(key).toString().replace(/=/g,'');
+  SecretKey.hex = Buffer(key, 'ascii').toString('hex');
+  SecretKey.base32 = base32.encode(Buffer(key)).toString().replace(/=/g,'');
 
   // generate some qr codes if requested
   if (qr_codes) {
@@ -425,20 +425,6 @@ exports.generate_key_ascii = function(length, symbols) {
     output += set[~~(bytes[i] / 0xFF * (set.length-1))];
   }
   return output;
-};
-
-// speakeasy.ascii_to_hex(key)
-//
-// helper function to convert an ascii key to hex.
-//
-exports.ascii_to_hex = function(str) {
-  var hex_string = '';
-
-  for (var i = 0; i < str.length; i++) {
-    hex_string += str.charCodeAt(i).toString(16);
-  }
-
-  return hex_string;
 };
 
 /**
