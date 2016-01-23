@@ -118,7 +118,7 @@ exports.hotp = function hotpGenerate (options) {
  *   the application and must be incremented for each request.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
- * @param {Integer} [options.window=50] The allowable margin for the counter.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
  *   The function will check "W" codes in the future against the provided
  *   passcode, e.g. if W = 10, and C = 5, this function will check the
  *   passcode against all One Time Passcodes between 5 and 15, inclusive.
@@ -128,7 +128,7 @@ exports.hotp = function hotpGenerate (options) {
  *   sha512).
  * @return {Object} On success, returns an object with the counter
  *   difference between the client and the server as the `delta` property.
- * @method hotp․verify
+ * @method hotp․verifyDelta
  * @global
  */
 
@@ -140,8 +140,8 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // unpack options
   var token = options.token;
-  var window = options.window || 50;
-  var counter = options.counter || 0;
+  var window = parseInt(options.window || 0, 10);
+  var counter = parseInt(options.counter || 0, 10);
 
   // loop from C to C + W
   for (i = counter; i <= counter + window; ++i) {
@@ -156,8 +156,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 };
 
 /**
- * Verify a counter-based One Time passcode via strict comparison (i.e.
- * delta = 0).
+ * Verify a counter-based One Time passcode.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -166,7 +165,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
  *   the application and must be incremented for each request.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
- * @param {Integer} [options.window=50] The allowable margin for the counter.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
  *   The function will check "W" codes in the future against the provided
  *   passcode, e.g. if W = 10, and C = 5, this function will check the
  *   passcode against all One Time Passcodes between 5 and 15, inclusive.
@@ -174,16 +173,13 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
- * @return {Boolean} Returns true if token strictly matches (delta = 0),
- *   false otherwise.
+ * @return {Boolean} Returns true if the token matches within the configured
+ *   window, false otherwise.
  * @method hotp․verify
  * @global
  */
 exports.hotp.verify = function hotpVerify (options) {
-  // Check against verifyDelta
-  var verify = exports.hotp.verifyDelta(options);
-
-  return (verify && typeof verify.delta !== 'undefined' && verify.delta === 0);
+  return exports.hotp.verifyDelta(options) != null;
 }
 
 /**
@@ -265,7 +261,7 @@ exports.totp = function totpGenerate (options) {
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
- * @param {Integer} [options.window=6] The allowable margin for the counter.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
  *   The function will check "W" codes in the future and the past against the
  *   provided passcode, e.g. if W = 5, and C = 1000, this function will check
  *   the passcode against all One Time Passcodes between 995 and 1005,
@@ -276,7 +272,7 @@ exports.totp = function totpGenerate (options) {
  *   sha512).
  * @return {Object} On success, returns an object with the time step
  *   difference between the client and the server as the `delta` property.
- * @method totp․verify
+ * @method totp․verifyDelta
  * @global
  */
 
@@ -314,7 +310,7 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
- * @param {Integer} [options.window=6] The allowable margin for the counter.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
  *   The function will check "W" codes in the future and the past against the
  *   provided passcode, e.g. if W = 5, and C = 1000, this function will check
  *   the passcode against all One Time Passcodes between 995 and 1005,
@@ -329,11 +325,7 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  * @global
  */
 exports.totp.verify = function totpVerify (options) {
-  // Check against verifyDelta
-  var verify = exports.totp.verifyDelta(options);
-
-  // Return true if delta is 0 (exact)
-  return (verify && typeof verify.delta !== 'undefined' && verify.delta === 0);
+  return exports.totp.verifyDelta(options) != null;
 }
 
 /**

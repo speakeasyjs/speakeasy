@@ -74,17 +74,26 @@ var token = speakeasy.totp({
 // Verify a given token
 var tokenValidates = speakeasy.totp.verify({
   secret: base32secret,
-  token: '123456'
+  token: '123456',
+  window: 6
 });
 // Returns true if the token matches
 ```
 
 #### Verifying a token and calculating a delta
+
+A TOTP is incremented every `step` time-step seconds. By default, the time-step
+is 30 seconds. You may change the time-step using the `step` option, with units
+in seconds.
+
 ```js
-// Verify a given token and check nearby tokens
+// Verify a given token is within 3 time-steps (+/- 2 minutes) from the server
+// time-step.
 var tokenDelta = speakeasy.totp.verifyDelta({
   secret: base32secret,
-  token: '123456'
+  token: '123456',
+  window: 2,
+  step: 60
 });
 // Returns {delta: 0} where the delta is the time step difference
 // between the given token and the current time
