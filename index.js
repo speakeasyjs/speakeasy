@@ -422,9 +422,23 @@ exports.generate_key_ascii = function(length, symbols) {
 
   var output = '';
   for (var i = 0, l = bytes.length; i < l; i++) {
-    output += set[~~(bytes[i] / 0xFF * set.length)];
+    output += set[~~(bytes[i] / 0xFF * (set.length-1))];
   }
   return output;
+};
+
+// speakeasy.ascii_to_hex(key)
+//
+// helper function to convert an ascii key to hex.
+//
+exports.ascii_to_hex = function(str) {
+  var hex_string = '';
+
+  for (var i = 0; i < str.length; i++) {
+    hex_string += str.charCodeAt(i).toString(16);
+  }
+
+  return hex_string;
 };
 
 /**
