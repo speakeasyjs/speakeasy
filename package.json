@@ -49,10 +49,12 @@
   ],
   "devDependencies": {
     "jsdoc": "^3.3.1",
-    "mocha": "^2.2.5"
+    "mocha": "^2.2.5",
+    "istanbul": "^0.4.2"
   },
   "scripts": {
     "test": "mocha",
-    "doc": "jsdoc -c jsdoc.json && sed -i '' -e 's/․/./g' docs/speakeasy/*/*.html"
+    "doc": "jsdoc -c jsdoc.json && sed -i '' -e 's/․/./g' docs/speakeasy/*/*.html",
+    "cover": "istanbul cover _mocha -- test/* -R spec"
   }
 }
