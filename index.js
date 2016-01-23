@@ -389,7 +389,7 @@ exports.generate_key = function generateKey (options) {
 
   if (google_auth_url) {
     SecretKey.google_auth_url = exports.google_auth_url({
-      secret: key,
+      secret: SecretKey.hex,
       label: name
     });
   }
