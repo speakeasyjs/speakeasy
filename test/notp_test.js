@@ -143,6 +143,18 @@ it("TOTtoken", function() {
   // countercheck for test vector at 2000000000 with verify
   var res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
+
+  // countercheck for test vector at 1234567890 with custom counter with delta
+  options.token = '005924';
+  options.counter = 41152263;
+  var res = speakeasy.totp.verifyDelta(options);
+  assert.ok(res, 'Should pass');
+  assert.equal(res.delta, 0, 'Should be in sync');
+
+  // countercheck for test vector at 1234567890 with verify
+  var res = speakeasy.totp.verify(options);
+  assert.ok(res, 'Should pass');
+
 });
 
 

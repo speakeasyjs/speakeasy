@@ -16,6 +16,13 @@ describe('TOTP Time-Based Algorithm Test', function () {
     });
   });
 
+  describe('normal operation with secret = \'12345678901234567890\' at time = 59000 using key (deprecated)', function () {
+    it('should return correct one-time password', function() {
+      var topic = speakeasy.totp({key: '12345678901234567890', time: 59000});
+      assert.equal(topic, '287082');
+    });
+  });
+
   describe('a different time normal operation with secret = \'12345678901234567890\' at time = 1111111109000', function () {
     it('should return correct one-time password', function () {
       var topic = speakeasy.totp({secret: '12345678901234567890', time: 1111111109000});
@@ -76,6 +83,20 @@ describe('TOTP Time-Based Algorithm Test', function () {
     it('should return correct one-time password', function () {
       var topic = speakeasy.totp({secret: 'GEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNBVGY3TQOJQGEZDGNA', encoding: 'base32', time: 1111111109000, digits: 8, algorithm: 'sha512'});
       assert.equal(topic, '25091201');
+    });
+  });
+
+  describe('normal operation with secret = \'12345678901234567890\' with overridden counter 3', function () {
+    it('should return correct one-time password', function() {
+      var topic = speakeasy.totp({secret: '12345678901234567890', counter: 3});
+      assert.equal(topic, '969429');
+    });
+  });
+
+  describe('normal operation with secret = \'12345678901234567890\' with overridden counter 3', function () {
+    it('should return correct one-time password', function() {
+      var topic = speakeasy.totp({secret: '12345678901234567890', counter: 3});
+      assert.equal(topic, '969429');
     });
   });
 
