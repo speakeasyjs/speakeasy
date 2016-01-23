@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/speakeasyjs/speakeasy.svg?branch=v2)](https://travis-ci.org/speakeasyjs/speakeasy)
 [![NPM downloads](https://img.shields.io/npm/dt/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
+[![Coverage Status](https://coveralls.io/repos/github/speakeasyjs/speakeasy/badge.svg?branch=v2)](https://coveralls.io/github/speakeasyjs/speakeasy?branch=v2)
 [![NPM version](https://img.shields.io/npm/v/speakeasy.svg)](https://www.npmjs.com/package/speakeasy)
 
 ---
