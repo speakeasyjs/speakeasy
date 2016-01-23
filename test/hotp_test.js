@@ -1,6 +1,7 @@
 "use scrict";
 
-var assert = require('assert');
+var chai = require('chai');
+var assert = chai.assert;
 var speakeasy = require('..');
 
 // These tests use the information from RFC 4226's Appendix D: Test Values.

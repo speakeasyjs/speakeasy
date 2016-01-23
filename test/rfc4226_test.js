@@ -1,7 +1,8 @@
 "use strict";
 
-var assert = require('assert');
-var passcode = require('..');
+var chai = require('chai');
+var assert = chai.assert;
+var speakeasy = require('..');
 
 /*
 
@@ -58,7 +59,7 @@ describe("RFC 4226 test values", function () {
       "1637409809a679dc698207310c8c7fc07290d9e5"
     ].forEach(function (expect, count) {
       it("should match for counter = " + count, function () {
-        var hash = passcode.digest({
+        var hash = speakeasy.digest({
           secret: "12345678901234567890",
           counter: count
         }).toString("hex");
@@ -81,7 +82,7 @@ describe("RFC 4226 test values", function () {
       "520489"
     ].forEach(function (expect, count) {
       it("should match for count = " + count, function () {
-        var code = passcode.hotp({
+        var code = speakeasy.hotp({
           secret: "12345678901234567890",
           counter: count
         });

@@ -1,6 +1,7 @@
 "use scrict";
 
-var assert = require('assert');
+var chai = require('chai');
+var assert = chai.assert;
 var speakeasy = require('..');
 
 // These tests use the test vectors from RFC 6238's Appendix B: Test Vectors

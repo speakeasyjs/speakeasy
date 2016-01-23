@@ -1,7 +1,8 @@
 "use strict";
 
-var assert = require('assert');
-var passcode = require('..');
+var chai = require('chai');
+var assert = chai.assert;
+var speakeasy = require('..');
 
 /*
 
@@ -190,21 +191,21 @@ describe("RFC 6238 test vector", function () {
     }
 
     it("should calculate counter value for time " + subject.time, function () {
-      var counter = passcode._counter({
+      var counter = speakeasy._counter({
         time: subject.time
       });
       assert.equal(counter, subject.counter);
     });
 
     it("should calculate counter value for date " + subject.date, function () {
-      var counter = passcode._counter({
+      var counter = speakeasy._counter({
         time: subject.date
       });
       assert.equal(counter, subject.counter);
     });
 
     it("should generate TOTP code for time " + subject.time + " and algorithm " + subject.algorithm, function () {
-      var counter = passcode.totp({
+      var counter = speakeasy.totp({
         secret: key,
         time: subject.time,
         algorithm: subject.algorithm,
