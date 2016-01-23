@@ -50,11 +50,14 @@
   "devDependencies": {
     "jsdoc": "^3.3.1",
     "mocha": "^2.2.5",
-    "istanbul": "^0.4.2"
+    "istanbul": "^0.4.2",
+    "semistandard": "^7.0.5",
+    "snazzy": "^2.0.1"
   },
   "scripts": {
     "test": "mocha",
     "doc": "jsdoc -c jsdoc.json && sed -i '' -e 's/․/./g' docs/speakeasy/*/*.html",
-    "cover": "istanbul cover _mocha -- test/* -R spec"
+    "cover": "istanbul cover _mocha -- test/* -R spec",
+    "lint": "semistandard --verbose | snazzy"
   }
 }
