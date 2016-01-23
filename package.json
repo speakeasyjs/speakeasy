@@ -48,6 +48,7 @@
     "passwords"
   ],
   "devDependencies": {
+    "chai": "^3.4.1",
     "jsdoc": "^3.3.1",
     "mocha": "^2.2.5",
     "istanbul": "^0.4.2",
