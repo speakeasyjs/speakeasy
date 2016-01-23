@@ -282,7 +282,7 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
   options = Object.create(options);
 
   // unpack options
-  var window = options.window != null ? options.window : 0;
+  var window = parseInt(options.window || 0, 10);
 
   // calculate default counter value
   if (options.counter == null) options.counter = exports._counter(options);
