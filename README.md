@@ -7,7 +7,7 @@
 
 ---
 
-**Jump to** — [Install](#install) · [Demo](#demo) · [Usage](#usage) · [Documentation](#documentation) · [Quick Reference](#quick-reference) · [License](#license)
+**Jump to** — [Install](#install) · [Demo](#demo) · [Usage](#usage) · [Documentation](#documentation) · [Contributing](#contributing) · [License](#license)
 
 ---
 
@@ -123,109 +123,296 @@ is available at http://speakeasyjs.github.io/speakeasy/
 
 <a href="http://speakeasyjs.github.io/speakeasy/"><img src="http://i.imgur.com/hD9w41T.png" height="43"></a>
 
+### Functions
 
-<a name="quick-reference"></a>
-## Quick Reference
+<dl>
+<dt><a href="#digest">digest(options)</a> ⇒ <code>Buffer</code></dt>
+<dd><p>Digest the one-time passcode options.</p>
+</dd>
+<dt><a href="#hotp">hotp(options)</a> ⇒ <code>String</code></dt>
+<dd><p>Generate a counter-based one-time passcode.</p>
+</dd>
+<dt><a href="#hotp․verifyDelta">hotp․verifyDelta(options)</a> ⇒ <code>Object</code></dt>
+<dd><p>Verify a counter-based One Time passcode and return the delta.</p>
+</dd>
+<dt><a href="#hotp․verify">hotp․verify(options)</a> ⇒ <code>Boolean</code></dt>
+<dd><p>Verify a counter-based One Time passcode.</p>
+</dd>
+<dt><a href="#totp">totp(options)</a> ⇒ <code>String</code></dt>
+<dd><p>Generate a time-based one-time passcode.</p>
+</dd>
+<dt><a href="#totp․verifyDelta">totp․verifyDelta(options)</a> ⇒ <code>Object</code></dt>
+<dd><p>Verify a time-based One Time passcode and return the delta.</p>
+</dd>
+<dt><a href="#totp․verify">totp․verify(options)</a> ⇒ <code>Boolean</code></dt>
+<dd><p>Verify a time-based One Time passcode via strict comparison (i.e.
+delta = 0).</p>
+</dd>
+<dt><a href="#generate_key">generate_key(options)</a> ⇒ <code>Object</code> | <code><a href="#GeneratedSecret">GeneratedSecret</a></code></dt>
+<dd><p>Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
+(default 32). Returns the secret key in ASCII, hexadecimal, and base32 format.</p>
+</dd>
+<dt><a href="#generate_key_ascii">generate_key_ascii([length], [symbols])</a> ⇒ <code>String</code></dt>
+<dd><p>Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
+symbols (if requested).</p>
+</dd>
+<dt><a href="#google_auth_url">google_auth_url(options)</a> ⇒ <code>String</code></dt>
+<dd><p>Generate an URL for use with the Google Authenticator app.</p>
+<p>Authenticator considers TOTP codes valid for 30 seconds. Additionally,
+the app presents 6 digits codes to the user. According to the
+documentation, the period and number of digits are currently ignored by
+the app.</p>
+<p>To generate a suitable QR Code, pass the generated URL to a QR Code
+generator, such as the <code>qr-image</code> module.</p>
+</dd>
+</dl>
 
-TODO: Update
+### Typedefs
 
-### speakeasy.hotp(options) | speakeasy.counter(options)
+<dl>
+<dt><a href="#GeneratedSecret">GeneratedSecret</a> : <code>Object</code></dt>
+<dd></dd>
+</dl>
 
-Calculate the one-time password using the counter-based algorithm, HOTP. Specify the key and counter, and receive the one-time password for that counter position. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password as a string.
+<a name="digest"></a>
+### digest(options) ⇒ <code>Buffer</code>
+Digest the one-time passcode options.
 
-Written to follow [RFC 4226](http://tools.ietf.org/html/rfc4226). Calculated with: `HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))`
+**Kind**: global function  
 
-#### Options
+**Returns**: <code>Buffer</code> - The one-time passcode as a buffer.  
 
-* `secret`: the secret key in ASCII, hexadecimal, or base32 format.
-* `counter`: the counter position (moving factor).
-* `length` (default `6`): the length of the resulting one-time password.
-* `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.counter | <code>Integer</code> |  | Counter value |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
+| options.key | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
 
-#### Example
+<a name="hotp"></a>
+### hotp(options) ⇒ <code>String</code>
+Generate a counter-based one-time passcode.
 
-```javascript
-// normal use.
-speakeasy.hotp({key: 'secret', counter: 582});
-// => 246642
+**Kind**: global function  
 
-// use a custom length.
-speakeasy.hotp({key: 'secret', counter: 582, length: 8});
-// => 67246642
+**Returns**: <code>String</code> - The one-time passcode.  
 
-// use a custom encoding.
-speakeasy.hotp({key: 'AJFIEJGEHIFIU7148SF', counter: 147, encoding: 'base32'});
-// => 974955
-```
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.counter | <code>Integer</code> |  | Counter value |
+| [options.digest] | <code>Buffer</code> |  | Digest, automatically generated by default |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
+| options.key | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
+| [options.length] | <code>Integer</code> | <code>6</code> | (DEPRECATED. Use `digits` instead.) The   number of digits for the one-time passcode. |
 
-### speakeasy.totp(options) | speakeasy.time(options)
+<a name="hotp․verifyDelta"></a>
+### hotp․verifyDelta(options) ⇒ <code>Object</code>
+Verify a counter-based One Time passcode and return the delta.
 
-Calculate the one-time password using the time-based algorithm, TOTP. Specify the key, and receive the one-time password for that time. By default, the time step is 30 seconds, so there is a new password every 30 seconds. However, you may override the time step. You may also override the time you want to calculate the time from. You can also specify a password length, as well as the encoding (ASCII, hexadecimal, or base32) for convenience. Returns the one-time password as a string.
+**Kind**: global function  
 
-Written to follow [RFC 6238](http://tools.ietf.org/html/rfc6238). Calculated with: `C = ((T - T0) / X); HOTP(K,C) = Truncate(HMAC-SHA-1(K,C))`
+**Returns**: <code>Object</code> - On success, returns an object with the counter
+  difference between the client and the server as the `delta` property.  
 
-#### Options
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.token | <code>String</code> |  | Passcode to validate |
+| options.counter | <code>Integer</code> |  | Counter value. This should be stored by   the application and must be incremented for each request. |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
+| [options.window] | <code>Integer</code> | <code>0</code> | The allowable margin for the counter.   The function will check "W" codes in the future against the provided   passcode, e.g. if W = 10, and C = 5, this function will check the   passcode against all One Time Passcodes between 5 and 15, inclusive. |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
 
-* `secret`: the secret key in ASCII, hexadecimal, or base32 format.
-* `step` (default `30`): the time step, in seconds, between new passwords (moving factor).
-* `time` (default current time): the time to calculate the TOTP from, by default the current time. If you're doing something clever with TOTP, you may override this (see *Techniques* below).
-* `initial_time` (default `0`): the starting time where we calculate the TOTP from. Usually, this is set to the UNIX epoch at 0.
-* `length` (default `6`): the length of the resulting one-time password.
-* `encoding` (default `ascii`): the encoding of the `key`. Can be `'ascii'`, `'hex'`, or `'base32'`. The key will automatically be converted to ASCII.
+<a name="hotp․verify"></a>
+### hotp․verify(options) ⇒ <code>Boolean</code>
+Verify a counter-based One Time passcode.
 
-#### Example
+**Kind**: global function  
 
-```javascript
-// normal use.
-speakeasy.totp({key: 'secret'});
+**Returns**: <code>Boolean</code> - Returns true if the token matches within the configured
+  window, false otherwise.  
 
-// use a custom time step.
-speakeasy.totp({key: 'secret', step: 60});
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.token | <code>String</code> |  | Passcode to validate |
+| options.counter | <code>Integer</code> |  | Counter value. This should be stored by   the application and must be incremented for each request. |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
+| [options.window] | <code>Integer</code> | <code>0</code> | The allowable margin for the counter.   The function will check "W" codes in the future against the provided   passcode, e.g. if W = 10, and C = 5, this function will check the   passcode against all One Time Passcodes between 5 and 15, inclusive. |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
 
-// use a custom time.
-speakeasy.totp({key: 'secret', time: 159183717});
-// => 558014
+<a name="totp"></a>
+### totp(options) ⇒ <code>String</code>
+Generate a time-based one-time passcode.
 
-// use a initial time.
-speakeasy.totp({key: 'secret', initial_time: 4182881485});
-// => 670417
-```
+**Kind**: global function  
 
-#### Techniques
+**Returns**: <code>String</code> - The one-time passcode.  
 
-You can implement a double-authentication scheme, where you ask the user to input the one-time password once, wait until the next 30-second refresh, and then input the one-time password again. In this case, you can calculate the second (later) input by calculating TOTP as usual, then also verify the first (earlier) input by taking the current epoch time in seconds and subtracting 30 seconds to get to the previous step (for example: `time1 = (parseInt(new Date()/1000) - 30)`)
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| [options.time] | <code>Integer</code> |  | Time with which to calculate counter value.   Defaults to `Date.now()`. |
+| [options.step] | <code>Integer</code> | <code>30</code> | Time step in seconds |
+| [options.epoch] | <code>Integer</code> | <code>0</code> | Initial time since the UNIX epoch from   which to calculate the counter value. Defaults to 0 (no offset). |
+| [options.counter] | <code>Integer</code> |  | Counter value, calculated by default. |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
+| options.key | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
+| [options.initial_time] | <code>Integer</code> | <code>0</code> | (DEPRECATED. Use `epoch` instead.)   Initial time since the UNIX epoch from which to calculate the counter   value. Defaults to 0 (no offset). |
+| [options.length] | <code>Integer</code> | <code>6</code> | (DEPRECATED. Use `digits` instead.) The   number of digits for the one-time passcode. |
 
-### speakeasy.generate_key(options)
+<a name="totp․verifyDelta"></a>
+### totp․verifyDelta(options) ⇒ <code>Object</code>
+Verify a time-based One Time passcode and return the delta.
 
-Generate a random secret key. It will return the key in ASCII, hexadecimal, and base32 formats. You can specify the length, whether or not to use symbols, and ask it (nicely) to generate URLs for QR codes. Returns an object with the ASCII, hex, and base32 representations of the secret key, plus any QR codes you can optionally ask for.
+**Kind**: global function  
 
-#### Options
+**Returns**: <code>Object</code> - On success, returns an object with the time step
+  difference between the client and the server as the `delta` property.  
 
-* `length` (default `32`): the length of the generated secret key.
-* `symbols` (default `true`): include symbols in the key? if not, the key will be alphanumeric, {A-Z, a-z, 0-9}
-* `qr_codes` (default `false`): generate links to QR codes for each encoding (ASCII, hexadecimal, and base32). It uses the Google Charts API and they are served over HTTPS. A future version might allow for QR code generation client-side for security.
-* `google_auth_qr` (default `false`): generate a link to a QR code that you can scan using the Google Authenticator app. The contents of the QR code are in this format: `otpauth://totp/[KEY NAME]?secret=[KEY SECRET, BASE 32]`.
-* `name` (optional): specify a name when you are using `google_auth_qr`, which will show up as the label after scanning. `[KEY NAME]` in the previous line.
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.token | <code>String</code> |  | Passcode to validate |
+| [options.time] | <code>Integer</code> |  | Time with which to calculate counter value.   Defaults to `Date.now()`. |
+| [options.step] | <code>Integer</code> | <code>30</code> | Time step in seconds |
+| [options.epoch] | <code>Integer</code> | <code>0</code> | Initial time since the UNIX epoch from   which to calculate the counter value. Defaults to 0 (no offset). |
+| [options.counter] | <code>Integer</code> |  | Counter value, calculated by default. |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
+| [options.window] | <code>Integer</code> | <code>0</code> | The allowable margin for the counter.   The function will check "W" codes in the future and the past against the   provided passcode, e.g. if W = 5, and C = 1000, this function will check   the passcode against all One Time Passcodes between 995 and 1005,   inclusive. |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
 
-#### Examples
+<a name="totp․verify"></a>
+### totp․verify(options) ⇒ <code>Boolean</code>
+Verify a time-based One Time passcode via strict comparison (i.e.
+delta = 0).
 
-```javascript
-// generate a key
-speakeasy.generate_key({length: 20, symbols: true});
-// => { ascii: 'km^A?n&sOPJW.iCKPHKU', hex: '6b6d5e413f6e26734f504a572e69434b50484b55', base32: 'NNWV4QJ7NYTHGT2QJJLS42KDJNIEQS2V' }
+**Kind**: global function  
 
-// generate a key and request QR code links
-speakeasy.generate_key({length: 20, qr_codes: true});
-// => { ascii: 'eV:JQ1NedJkKn&]6^i>s', ... (truncated)
-//      qr_code_ascii: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=eV%3AJQ1NedJkKn%26%5D6%5Ei%3Es',
-//      qr_code_hex: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=65563a4a51314e65644a6b4b6e265d365e693e73',
-//      qr_code_base32: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=MVLDUSSRGFHGKZCKNNFW4JS5GZPGSPTT' }
+**Returns**: <code>Boolean</code> - Returns true if token strictly matches (delta = 0),
+  false otherwise.  
 
-// generate a key and get a QR code you can scan with the Google Authenticator app
-speakeasy.generate_key({length: 20, google_auth_qr: true});
-// => { ascii: 'V?9f6.Cq1&<H?<nxe.XJ', ... (truncated)
-//      google_auth_qr: 'https://www.google.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/SecretKey%3Fsecret=KY7TSZRWFZBXCMJGHRED6PDOPBSS4WCK' }
-```
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.token | <code>String</code> |  | Passcode to validate |
+| [options.time] | <code>Integer</code> |  | Time with which to calculate counter value.   Defaults to `Date.now()`. |
+| [options.step] | <code>Integer</code> | <code>30</code> | Time step in seconds |
+| [options.epoch] | <code>Integer</code> | <code>0</code> | Initial time since the UNIX epoch from   which to calculate the counter value. Defaults to 0 (no offset). |
+| [options.counter] | <code>Integer</code> |  | Counter value, calculated by default. |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
+| [options.window] | <code>Integer</code> | <code>0</code> | The allowable margin for the counter.   The function will check "W" codes in the future and the past against the   provided passcode, e.g. if W = 5, and C = 1000, this function will check   the passcode against all One Time Passcodes between 995 and 1005,   inclusive. |
+| [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
+
+<a name="generate_key"></a>
+### generate_key(options) ⇒ <code>Object</code> &#124; <code>[GeneratedSecret](#GeneratedSecret)</code>
+Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
+(default 32). Returns the secret key in ASCII, hexadecimal, and base32 format.
+
+**Kind**: global function  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| [options.length] | <code>Integer</code> | <code>32</code> | Length of the secret |
+| [options.symbols] | <code>Boolean</code> | <code>false</code> | Whether to include symbols |
+| [options.qr_codes] | <code>Boolean</code> | <code>false</code> | Whether to output QR code URLs |
+| [options.google_auth_qr] | <code>Boolean</code> | <code>false</code> | Whether to output a Google   Authenticator otpauth:// QR code URL (returns the URL to the QR code) |
+| [options.google_auth_url] | <code>Boolean</code> | <code>true</code> | Whether to output a Google   Authenticator otpauth:// URL (only returns otpauth:// URL, no QR code) |
+| [options.name] | <code>String</code> |  | The name to use with Google Authenticator. |
+
+<a name="generate_key_ascii"></a>
+### generate_key_ascii([length], [symbols]) ⇒ <code>String</code>
+Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
+symbols (if requested).
+
+**Kind**: global function  
+
+**Returns**: <code>String</code> - The generated key.  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| [length] | <code>Integer</code> | <code>32</code> | The length of the key. |
+| [symbols] | <code>Boolean</code> | <code>false</code> | Whether to include symbols in the key. |
+
+<a name="google_auth_url"></a>
+### google_auth_url(options) ⇒ <code>String</code>
+Generate an URL for use with the Google Authenticator app.
+
+Authenticator considers TOTP codes valid for 30 seconds. Additionally,
+the app presents 6 digits codes to the user. According to the
+documentation, the period and number of digits are currently ignored by
+the app.
+
+To generate a suitable QR Code, pass the generated URL to a QR Code
+generator, such as the `qr-image` module.
+
+**Kind**: global function  
+
+**Returns**: <code>String</code> - A URL suitable for use with the Google Authenticator.  
+
+**See**: https://github.com/google/google-authenticator/wiki/Key-Uri-Format  
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| options | <code>Object</code> |  |  |
+| options.secret | <code>String</code> |  | Shared secret key |
+| options.label | <code>String</code> |  | Used to identify the account with which   the secret key is associated, e.g. the user's email address. |
+| [options.type] | <code>String</code> | <code>&quot;totp&quot;</code> | Either "hotp" or "totp". |
+| [options.counter] | <code>Integer</code> |  | The initial counter value, required   for HOTP. |
+| [options.issuer] | <code>String</code> |  | The provider or service with which the   secret key is associated. |
+| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
+| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. Currently ignored by Google Authenticator. |
+| [options.period] | <code>Integer</code> | <code>30</code> | The length of time for which a TOTP   code will be valid, in seconds. Currently ignored by Google   Authenticator. |
+| [options.encoding] | <code>String</code> |  | Key encoding (ascii, hex, base32,   base64). If the key is not encoded in Base-32, it will be reencoded. |
+
+<a name="GeneratedSecret"></a>
+### GeneratedSecret : <code>Object</code>
+
+**Kind**: global typedef  
+
+**Properties**
+
+| Name | Type | Description |
+| --- | --- | --- |
+| ascii | <code>String</code> | ASCII representation of the secret |
+| hex | <code>String</code> | Hex representation of the secret |
+| base32 | <code>String</code> | Base32 representation of the secret |
+| qr_code_ascii | <code>String</code> | URL for the QR code for the ASCII secret. |
+| qr_code_hex | <code>String</code> | URL for the QR code for the hex secret. |
+| qr_code_base32 | <code>String</code> | URL for the QR code for the base32 secret. |
+| google_auth_qr | <code>String</code> | URL for the Google Authenticator otpauth   URL's QR code. |
+
+<a name="contributing"></a>
+## Contributing
+
+We're very happy to have your contributions in Speakeasy.
+
+**Contributing code** — First, make sure you've added tests if adding new functionality. Then, run `npm test` to run all the tests to make sure they pass. Next, make a pull request to this repo. Thanks!
+
+**Filing an issue** — Submit issues to the [GitHub Issues][issues] page.
+
+**Maintainers** —
+
+- Mark Bao ([markbao][markbao])
+- Michael Phan-Ba ([mikepb][mikepb])
 
 ## License
 
@@ -236,8 +423,11 @@ Please see the [LICENSE](LICENSE) file for the full combined license.
 Icons created by Gregor Črešnar, iconoci, and Danny Sturgess from the Noun
 Project.
 
+[issues]: https://github.com/speakeasyjs/speakeasy
 [passcode]: http://github.com/mikepb/passcode
 [notp]: https://github.com/guyht/notp
 [oath]: http://www.openauthentication.org/
 [rfc4226]: https://tools.ietf.org/html/rfc4226
 [rfc6238]: https://tools.ietf.org/html/rfc6238
+[markbao]: https://github.com/markbao
+[mikepb]: https://github.com/mikepb
