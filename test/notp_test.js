@@ -7,6 +7,9 @@ var assert = chai.assert;
 var speakeasy = require('..');
 
 /*
+ * Tests originally from the notp module with specific changes and bugfixes for
+ * Speakeasy: https://github.com/guyht/notp
+ *
  * Test HOTtoken.  Uses test values from RFcounter 4226
  *
  *
@@ -163,11 +166,18 @@ it("TOTtoken", function() {
 
 /*
  * countercheck for codes that are out of sync
- * windowe are going to use a value of counter = 1 and test against
+ * window are going to use a value of counter = 1 and test against
  * a code for counter = 9
  */
 
 it("HOTPOutOfSync", function() {
+
+  /*
+   * for secret 12345678901234567890:
+   * 755224 = counter 0
+   * 287082 = counter 1
+   * 520489 = counter 8
+   */
 
   var options = {
     secret: '12345678901234567890',
@@ -183,11 +193,14 @@ it("HOTPOutOfSync", function() {
   options.window = 8;
   assert.ok(speakeasy.hotp.verify(options), 'Should pass for value of window >= 9');
 
-  // countercheck that test should pass for negative counter values
-  // token = '755224';
+  // countercheck that test should not pass for tokens behind the current counter
+  // 755224 is counter 0, and unlike notp (which has a two-sided window),
+  // Speakeasy will only allow a one-sided window, so counter = 7 and window = 8
+  // will not look at counter 0.
+  options.token = '755224';
   options.counter = 7
   options.window = 8;
-  assert.ok(speakeasy.hotp.verify(options), 'Should pass for negative counter values');
+  assert.notOk(speakeasy.hotp.verify(options), 'Should not pass for tokens behind the current counter');
 });
 
 
