@@ -14,7 +14,7 @@ var url = require("url");
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
- * @param {String} options.key (DEPRECATED. Use `secret` instead.)
+ * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
  *   Shared secret key
  * @return {Buffer} The one-time passcode as a buffer.
  */
@@ -72,7 +72,7 @@ exports.digest = function digest (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
- * @param {String} options.key (DEPRECATED. Use `secret` instead.)
+ * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
  *   Shared secret key
  * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
  *   number of digits for the one-time passcode.
@@ -111,8 +111,13 @@ exports.hotp = function hotpGenerate (options) {
  * will have a delta of 0.
  *
  * You can specify a window to add more leeway to the verification process.
- * `verifyDelta()` will then return the delta between the given token and the
- * given counter value.
+ * Setting the window param will check for the token at the given counter value
+ * as well as `window` tokens ahead (one-sided window). See param for more info.
+ *
+ * `verifyDelta()` will return the delta between the counter value of the token
+ * and the given counter value. For example, if given a counter 5 and a window
+ * 10, `verifyDelta()` will look at tokens from 5 to 15, inclusive. If it finds
+ * it at counter position 7, it will return `{ delta: 2 }`.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -161,8 +166,9 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
 /**
  * Verify a time-based one-time token against the secret and return true if it
- * verifies. Helper function for verifyDelta() that returns a boolean instead of
- * an object.
+ * verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
+ * instead of an object. For more on how to use a window with this, see
+ * {@link hotp.verifyDelta}.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -261,8 +267,16 @@ exports.totp = function totpGenerate (options) {
  * will have a delta of 0.
  *
  * You can specify a window to add more leeway to the verification process.
- * `verifyDelta()` will then return the delta between the given token and the
- * current time in time steps.
+ * Setting the window param will check for the token at the given counter value
+ * as well as `window` tokens ahead and `window` tokens behind (two-sided
+ * window). See param for more info.
+ *
+ * `verifyDelta()` will return the delta between the counter value of the token
+ * and the given counter value. For example, if given a time at counter 1000 and
+ * a window of 5, `verifyDelta()` will look at tokens from 995 to 1005,
+ * inclusive. In other words, if the time-step is 30 seconds, it will look at
+ * tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
+ * If it finds it at counter position 1002, it will return `{ delta: 2 }`.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -313,7 +327,7 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
 /**
  * Verify a time-based one-time token against the secret and return true if it
  * verifies. Helper function for verifyDelta() that returns a boolean instead of
- * an object.
+ * an object. For more on how to use a window with this, see {@link totp.verify}.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
