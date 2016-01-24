@@ -174,4 +174,17 @@ describe('#url', function () {
       url.parse(expect)
     );
   });
+
+  it('should generate an URL compatible with the Google Authenticator app and convert an ASCII-encoded string', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'MKiNHTvmfQ',
+      label: 'Example:alice@google.com',
+      issuer: 'Example'
+    });
+    var expect = 'otpauth://totp/Example:alice@google.com?secret=JVFWSTSIKR3G2ZSR&issuer=Example';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  });
 });

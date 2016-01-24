@@ -408,7 +408,7 @@ exports.generateSecret = function generateSecret (options) {
   // options
   if (!options) options = {};
   var length = options.length || 32;
-  var name = encodeURIComponent(options.name) || 'SecretKey';
+  var name = encodeURIComponent(options.name || 'SecretKey');
   var qr_codes = options.qr_codes || false;
   var google_auth_qr = options.google_auth_qr || false;
   var otpauth_url = options.otpauth_url != null ? options.otpauth_url : true;
@@ -439,7 +439,7 @@ exports.generateSecret = function generateSecret (options) {
   // add in the Google Authenticator-compatible otpauth URL
   if (otpauth_url) {
     SecretKey.otpauth_url = exports.otpauthURL({
-      secret: SecretKey.base32,
+      secret: SecretKey.ascii,
       label: name
     });
   }
@@ -528,7 +528,7 @@ exports.otpauthURL = function otpauthURL (options) {
   var algorithm = options.algorithm;
   var digits = options.digits;
   var period = options.period;
-  var encoding = options.encoding;
+  var encoding = options.encoding || 'ascii';
 
   // validate type
   switch (type) {
@@ -547,6 +547,10 @@ exports.otpauthURL = function otpauthURL (options) {
   if (type === 'hotp' && (counter === null || typeof counter === 'undefined')) {
     throw new Error('missing counter value for HOTP');
   }
+
+  // convert secret to base32
+  if (encoding !== 'base32') secret = new Buffer(secret, encoding);
+  if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
   // build query while validating
   var query = {secret: secret};
@@ -585,10 +589,6 @@ exports.otpauthURL = function otpauthURL (options) {
     }
     query.period = period;
   }
-
-  // convert secret to base32
-  if (encoding !== 'base32') secret = new Buffer(secret, encoding);
-  if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
   // return url
   return url.format({
