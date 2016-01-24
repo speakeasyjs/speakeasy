@@ -33,7 +33,7 @@ npm install --save speakeasy
 <a name="demo"></a>
 ## Demo
 
-This demo uses the `generate_key` method of Speakeasy to generate a secret key,
+This demo uses the `generateSecret` method of Speakeasy to generate a secret key,
 displays a Google Authenticator–compatible QR code which you can scan into your
 phone's two-factor app, and shows the token, which you can verify with your
 phone. Includes sample code. https://sedemo-mktb.rhcloud.com/
@@ -132,57 +132,34 @@ Full API documentation (in JSDoc format) is available below and at http://speake
 <dd><p>Generate a counter-based one-time token.</p>
 </dd>
 <dt><a href="#hotp․verifyDelta">hotp․verifyDelta(options)</a> ⇒ <code>Object</code></dt>
-<dd><p>Verify a counter-based one-time token against the secret and return the delta.
-By default, it verifies the token at the given counter value, with no leeway
-(no look-ahead or look-behind). A token validated at the current counter value
-will have a delta of 0.</p>
-<p>You can specify a window to add more leeway to the verification process.
-<code>verifyDelta()</code> will then return the delta between the given token and the
-given counter value.</p>
+<dd><p>Verify a counter-based one-time token against the secret and return the delta.</p>
 </dd>
 <dt><a href="#hotp․verify">hotp․verify(options)</a> ⇒ <code>Boolean</code></dt>
 <dd><p>Verify a time-based one-time token against the secret and return true if it
-verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object.</p>
+verifies.</p>
 </dd>
 <dt><a href="#totp">totp(options)</a> ⇒ <code>String</code></dt>
 <dd><p>Generate a time-based one-time token. By default, it returns the token for
 the current time.</p>
 </dd>
 <dt><a href="#totp․verifyDelta">totp․verifyDelta(options)</a> ⇒ <code>Object</code></dt>
-<dd><p>Verify a time-based one-time token against the secret and return the delta.
-By default, it verifies the token at the current time window, with no leeway
-(no look-ahead or look-behind). A token validated at the current time window
-will have a delta of 0.</p>
-<p>You can specify a window to add more leeway to the verification process.
-<code>verifyDelta()</code> will then return the delta between the given token and the
-current time in time steps.</p>
+<dd><p>Verify a time-based one-time token against the secret and return the delta.</p>
 </dd>
 <dt><a href="#totp․verify">totp․verify(options)</a> ⇒ <code>Boolean</code></dt>
 <dd><p>Verify a time-based one-time token against the secret and return true if it
 verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object.</p>
+an object. For more on how to use a window with this, see <a href="totp.verify">totp.verify</a>.</p>
 </dd>
-<dt><a href="#generate_key">generate_key(options)</a> ⇒ <code>Object</code> | <code><a href="#GeneratedSecret">GeneratedSecret</a></code></dt>
+<dt><a href="#generateSecret">generateSecret(options)</a> ⇒ <code>Object</code> | <code><a href="#GeneratedSecret">GeneratedSecret</a></code></dt>
 <dd><p>Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
-(default 32). Returns the secret key in ASCII, hexadecimal, and base32 format,
-along with the URL used for the QR code for Google Authenticator (an otpauth
-URL).</p>
-<p>Can also optionally return QR codes for the secret and for the Google
-Authenticator URL.</p>
+(default 32).</p>
 </dd>
-<dt><a href="#generate_key_ascii">generate_key_ascii([length], [symbols])</a> ⇒ <code>String</code></dt>
+<dt><a href="#generateSecretASCII">generateSecretASCII([length], [symbols])</a> ⇒ <code>String</code></dt>
 <dd><p>Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
 symbols (if requested).</p>
 </dd>
-<dt><a href="#google_auth_url">google_auth_url(options)</a> ⇒ <code>String</code></dt>
+<dt><a href="#googleAuthURL">googleAuthURL(options)</a> ⇒ <code>String</code></dt>
 <dd><p>Generate an URL for use with the Google Authenticator app.</p>
-<p>Authenticator considers TOTP codes valid for 30 seconds. Additionally,
-the app presents 6 digits codes to the user. According to the
-documentation, the period and number of digits are currently ignored by
-the app.</p>
-<p>To generate a suitable QR Code, pass the generated URL to a QR Code
-generator, such as the <code>qr-image</code> module.</p>
 </dd>
 </dl>
 
@@ -207,7 +184,7 @@ Digest the one-time passcode options.
 | options.counter | <code>Integer</code> |  | Counter value |
 | [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
 | [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
-| options.key | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
+| [options.key] | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
 
 <a name="hotp"></a>
 ### hotp(options) ⇒ <code>String</code>
@@ -225,7 +202,7 @@ Generate a counter-based one-time token.
 | [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. |
 | [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
 | [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
-| options.key | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
+| [options.key] | <code>String</code> |  | (DEPRECATED. Use `secret` instead.)   Shared secret key |
 | [options.length] | <code>Integer</code> | <code>6</code> | (DEPRECATED. Use `digits` instead.) The   number of digits for the one-time passcode. |
 
 <a name="hotp․verifyDelta"></a>
@@ -236,12 +213,17 @@ By default, it verifies the token at the given counter value, with no leeway
 will have a delta of 0.
 
 You can specify a window to add more leeway to the verification process.
-`verifyDelta()` will then return the delta between the given token and the
-given counter value.
+Setting the window param will check for the token at the given counter value
+as well as `window` tokens ahead (one-sided window). See param for more info.
+
+`verifyDelta()` will return the delta between the counter value of the token
+and the given counter value. For example, if given a counter 5 and a window
+10, `verifyDelta()` will look at tokens from 5 to 15, inclusive. If it finds
+it at counter position 7, it will return `{ delta: 2 }`.
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - On success, returns an object with the counter
-  difference between the client and the server as the `delta` property (i.e. 
+  difference between the client and the server as the `delta` property (i.e.
   `{ delta: 0 }`).  
 
 | Param | Type | Default | Description |
@@ -258,8 +240,9 @@ given counter value.
 <a name="hotp․verify"></a>
 ### hotp․verify(options) ⇒ <code>Boolean</code>
 Verify a time-based one-time token against the secret and return true if it
-verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object.
+verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
+instead of an object. For more on how to use a window with this, see
+[hotp.verifyDelta](hotp.verifyDelta).
 
 **Kind**: global function  
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
@@ -307,8 +290,16 @@ By default, it verifies the token at the current time window, with no leeway
 will have a delta of 0.
 
 You can specify a window to add more leeway to the verification process.
-`verifyDelta()` will then return the delta between the given token and the
-current time in time steps.
+Setting the window param will check for the token at the given counter value
+as well as `window` tokens ahead and `window` tokens behind (two-sided
+window). See param for more info.
+
+`verifyDelta()` will return the delta between the counter value of the token
+and the given counter value. For example, if given a time at counter 1000 and
+a window of 5, `verifyDelta()` will look at tokens from 995 to 1005,
+inclusive. In other words, if the time-step is 30 seconds, it will look at
+tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
+If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 
 **Kind**: global function  
 **Returns**: <code>Object</code> - On success, returns an object with the time step
@@ -333,7 +324,7 @@ current time in time steps.
 ### totp․verify(options) ⇒ <code>Boolean</code>
 Verify a time-based one-time token against the secret and return true if it
 verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object.
+an object. For more on how to use a window with this, see [totp.verify](totp.verify).
 
 **Kind**: global function  
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
@@ -353,15 +344,13 @@ an object.
 | [options.encoding] | <code>String</code> | <code>&quot;ascii&quot;</code> | Key encoding (ascii, hex,   base32, base64). |
 | [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
 
-<a name="generate_key"></a>
-### generate_key(options) ⇒ <code>Object</code> &#124; <code>[GeneratedSecret](#GeneratedSecret)</code>
+<a name="generateSecret"></a>
+### generateSecret(options) ⇒ <code>Object</code> &#124; <code>[GeneratedSecret](#GeneratedSecret)</code>
 Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
 (default 32). Returns the secret key in ASCII, hexadecimal, and base32 format,
 along with the URL used for the QR code for Google Authenticator (an otpauth
-URL).
-
-Can also optionally return QR codes for the secret and for the Google
-Authenticator URL.
+URL). Use a QR code library to generate a QR code based on the Google
+Authenticator URL to obtain a QR code you can scan into the app.
 
 **Kind**: global function  
 
@@ -370,13 +359,13 @@ Authenticator URL.
 | options | <code>Object</code> |  |  |
 | [options.length] | <code>Integer</code> | <code>32</code> | Length of the secret |
 | [options.symbols] | <code>Boolean</code> | <code>false</code> | Whether to include symbols |
-| [options.qr_codes] | <code>Boolean</code> | <code>false</code> | Whether to output QR code URLs |
-| [options.google_auth_qr] | <code>Boolean</code> | <code>false</code> | Whether to output a Google   Authenticator otpauth:// QR code URL (returns the URL to the QR code) |
 | [options.google_auth_url] | <code>Boolean</code> | <code>true</code> | Whether to output a Google   Authenticator otpauth:// URL (only returns otpauth:// URL, no QR code) |
 | [options.name] | <code>String</code> |  | The name to use with Google Authenticator. |
+| [options.qr_codes] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to prevent   leaking of secret to a third party. Use your own QR code implementation.)   Output QR code URLs for the token. |
+| [options.google_auth_qr] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to   prevent leaking of secret to a third party. Use your own QR code   implementation.) Output a Google Authenticator otpauth:// QR code URL. |
 
-<a name="generate_key_ascii"></a>
-### generate_key_ascii([length], [symbols]) ⇒ <code>String</code>
+<a name="generateSecretASCII"></a>
+### generateSecretASCII([length], [symbols]) ⇒ <code>String</code>
 Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
 symbols (if requested).
 
@@ -388,8 +377,8 @@ symbols (if requested).
 | [length] | <code>Integer</code> | <code>32</code> | The length of the key. |
 | [symbols] | <code>Boolean</code> | <code>false</code> | Whether to include symbols in the key. |
 
-<a name="google_auth_url"></a>
-### google_auth_url(options) ⇒ <code>String</code>
+<a name="googleAuthURL"></a>
+### googleAuthURL(options) ⇒ <code>String</code>
 Generate an URL for use with the Google Authenticator app.
 
 Authenticator considers TOTP codes valid for 30 seconds. Additionally,
