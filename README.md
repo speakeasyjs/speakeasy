@@ -15,7 +15,8 @@ Speakeasy is a one-time passcode generator, suitable for use in two-factor
 authentication, that supports Google Authenticator and other two-factor apps.
 
 It includes robust support for custom token lengths, authentication windows,
-and other features, and includes helpers like a secret key generator.
+hash algorithms like SHA256 and SHA512, and other features, and includes
+helpers like a secret key generator.
 
 Speakeasy implements one-time passcode generators as standardized by the
 [Initiative for Open Authentication (OATH)][oath]. The HMAC-Based One-Time
