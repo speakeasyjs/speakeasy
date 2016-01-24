@@ -209,7 +209,7 @@ Full API documentation (in JSDoc format) is available below and at http://speake
 <dd><p>Verify a counter-based one-time token against the secret and return the delta.</p>
 </dd>
 <dt><a href="#hotp․verify">hotp․verify(options)</a> ⇒ <code>Boolean</code></dt>
-<dd><p>Verify a time-based one-time token against the secret and return true if it
+<dd><p>Verify a counter-based one-time token against the secret and return true if it
 verifies.</p>
 </dd>
 <dt><a href="#totp">totp(options)</a> ⇒ <code>String</code></dt>
@@ -313,7 +313,7 @@ it at counter position 7, it will return `{ delta: 2 }`.
 
 <a name="hotp․verify"></a>
 ### hotp․verify(options) ⇒ <code>Boolean</code>
-Verify a time-based one-time token against the secret and return true if it
+Verify a counter-based one-time token against the secret and return true if it
 verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
 instead of an object. For more on how to use a window with this, see
 [hotp.verifyDelta](#hotp.verifyDelta).
@@ -345,7 +345,7 @@ the current time.
 | --- | --- | --- | --- |
 | options | <code>Object</code> |  |  |
 | options.secret | <code>String</code> |  | Shared secret key |
-| [options.time] | <code>Integer</code> |  | Time with which to calculate counter value.   Defaults to `Date.now()`. |
+| [options.time] | <code>Integer</code> |  | Time in seconds with which to calculate counter value.   Defaults to `Date.now()`. |
 | [options.step] | <code>Integer</code> | <code>30</code> | Time step in seconds |
 | [options.epoch] | <code>Integer</code> | <code>0</code> | Initial time since the UNIX epoch from   which to calculate the counter value. Defaults to 0 (no offset). |
 | [options.counter] | <code>Integer</code> |  | Counter value, calculated by default. |
@@ -385,7 +385,7 @@ If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 | options | <code>Object</code> |  |  |
 | options.secret | <code>String</code> |  | Shared secret key |
 | options.token | <code>String</code> |  | Passcode to validate |
-| [options.time] | <code>Integer</code> |  | Time with which to calculate counter value.   Defaults to `Date.now()`. |
+| [options.time] | <code>Integer</code> |  | Time in seconds with which to calculate counter value.   Defaults to `Date.now()`. |
 | [options.step] | <code>Integer</code> | <code>30</code> | Time step in seconds |
 | [options.epoch] | <code>Integer</code> | <code>0</code> | Initial time since the UNIX epoch from   which to calculate the counter value. Defaults to 0 (no offset). |
 | [options.counter] | <code>Integer</code> |  | Counter value, calculated by default. |
@@ -409,7 +409,7 @@ an object. For more on how to use a window with this, see [totp.verifyDelta](#to
 | options | <code>Object</code> |  |  |
 | options.secret | <code>String</code> |  | Shared secret key |
 | options.token | <code>String</code> |  | Passcode to validate |
-| [options.time] | <code>Integer</code> |  | Time with which to calculate counter value.   Defaults to `Date.now()`. |
+| [options.time] | <code>Integer</code> |  | Time in seconds with which to calculate counter value.   Defaults to `Date.now()`. |
 | [options.step] | <code>Integer</code> | <code>30</code> | Time step in seconds |
 | [options.epoch] | <code>Integer</code> | <code>0</code> | Initial time since the UNIX epoch from   which to calculate the counter value. Defaults to 0 (no offset). |
 | [options.counter] | <code>Integer</code> |  | Counter value, calculated by default. |
