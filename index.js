@@ -339,7 +339,8 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
 /**
  * Verify a time-based one-time token against the secret and return true if it
  * verifies. Helper function for verifyDelta() that returns a boolean instead of
- * an object. For more on how to use a window with this, see {@link totp.verify}.
+ * an object. For more on how to use a window with this, see
+ * {@link totp.verifyDelta}.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key

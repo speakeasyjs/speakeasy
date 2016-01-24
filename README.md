@@ -7,7 +7,7 @@
 
 ---
 
-**Jump to** — [Install](#install) · [Demo](#demo) · [Usage](#usage) · [Documentation](#documentation) · [Contributing](#contributing) · [License](#license)
+**Jump to** — [Install](#install) · [Demo](#demo) · [Two-Factor Usage](#two-factor) · [General Usage](#general-usage) · [Documentation](#documentation) · [Contributing](#contributing) · [License](#license)
 
 ---
 
@@ -40,8 +40,82 @@ phone. Includes sample code. https://sedemo-mktb.rhcloud.com/
 
 <a href="https://sedemo-mktb.rhcloud.com/"><img src="http://i.imgur.com/gPwPP4u.png" height="43"></a>
 
-<a name="usage"></a>
-## Usage
+<a name="two-factor"></a>
+## Two-Factor Usage
+
+Let's say you have a user that wants to enable two-factor authentication, and you intend to do two-factor authentication using an app like Google Authenticator, Duo Security, Authy, etc. This is a three-step process:
+
+1. Generate a secret
+2. Show a QR code for the user to scan in
+3. Authenticate the token
+
+### Generating a key
+
+Use Speakeasy's key generator to get a key.
+
+```js
+var secret = speakeasy.generateSecret();
+// Returns an object with secret.ascii, secret.hex, and secret.base32.
+// Also returns secret.google_auth_url, which we'll use later.
+```
+
+This will generate a secret key of length 32, which will be the secret key for the user. We don't want to set this as the user's secret key just yet – we first want to verify their token for the first time. So, store one of the encodings for the secret, preferably `secret.base32`, somewhere temporary.
+
+### Displaying a QR code
+
+Next, we'll want to display a QR code to the user so they can scan in the secret into their app. Google Authenticator and similar apps take in a QR code that holds a URL with the protocol `otpauth://`, which you get automatically from `secret.google_auth_url`.
+
+Use a QR code module to generate a QR code that stores the data in `secret.google_auth_url`, and then display the QR code to the user. This is one simple way to do it, which generates a PNG data URL which you can put into an `<img>` tag on a webpage:
+
+```js
+// Use the node-qrcode package
+// npm install --save node-qrcode
+var QRCode = require('qrcode');
+
+// Get the data URL of the authenticator URL
+QRCode.toDataURL(secret.google_auth_url, function(err, data_url) {
+    console.log(data_url);
+});
+
+// Display this data URL to the user in an <img> tag
+// Example:
+write('<img src="' + data_url + '">');
+```
+
+Ask the user to scan this QR code into their authenticator app.
+
+### Verifying the token
+
+Finally, we want to make sure that the token on the server side and the token on the client side match. The best practice is to do a token check before fully enabling two-factor authenticaton for the user. This code applies to the first and subsequent token checks.
+
+After the user scans the QR code, ask the user to enter in the token that they see in their app. Then, verify it against the secret.
+
+```js
+// Let's say the user says that the token they have is 132890
+userToken = 132890;
+```
+```js
+// Option A: use verify() to check the token against the secret
+var auth = speakeasy.totp.verify({ secret: secret.base32,
+                                   encoding: 'base32',
+                                   token: userToken });
+```
+```js
+// Option B: get the token at the current time and compare
+//           to the token that the user gave
+var serverToken = speakeasy.totp({ secret: secret.base32,
+                                   encoding: 'base32' });
+var auth = userToken == serverToken;
+```
+
+`auth` will be true if the token is verified, false if not.
+
+If successfully verified, you can now save the secret to the user's account and use the same process above whenever you need to use two-factor to authenticate the user, like during login.
+
+Now you're done implementing two-factor authentication!
+
+<a name="general-usage"></a>
+## General Usage
 
 ```js
 var speakeasy = require("speakeasy");
@@ -51,7 +125,7 @@ var speakeasy = require("speakeasy");
 
 ```js
 // Generate a secret key.
-var secret = speakeasy.generate_key({length: 20});
+var secret = speakeasy.generateSecret({length: 20});
 // Access using secret.ascii, secret.hex, or secret.base32.
 ```
 
@@ -242,7 +316,7 @@ it at counter position 7, it will return `{ delta: 2 }`.
 Verify a time-based one-time token against the secret and return true if it
 verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
 instead of an object. For more on how to use a window with this, see
-[hotp.verifyDelta](hotp.verifyDelta).
+[hotp.verifyDelta](#hotp.verifyDelta).
 
 **Kind**: global function  
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
@@ -324,7 +398,7 @@ If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 ### totp․verify(options) ⇒ <code>Boolean</code>
 Verify a time-based one-time token against the secret and return true if it
 verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object. For more on how to use a window with this, see [totp.verify](totp.verify).
+an object. For more on how to use a window with this, see [totp.verifyDelta](#totp.verifyDelta).
 
 **Kind**: global function  
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
