@@ -3,6 +3,7 @@
 var base32 = require("base32.js");
 var crypto = require("crypto");
 var url = require("url");
+var util = require("util");
 
 /**
  * Digest the one-time passcode options.
@@ -393,7 +394,7 @@ exports.totp.verify = function totpVerify (options) {
  * @return {Object}
  * @return {GeneratedSecret} The generated secret key.
  */
-exports.generate_key = function generateKey (options) {
+exports.generateSecret = function generateSecret (options) {
   // options
   if(!options) options = {};
   var length = options.length || 32;
@@ -425,7 +426,7 @@ exports.generate_key = function generateKey (options) {
   }
 
   if (google_auth_url) {
-    SecretKey.google_auth_url = exports.google_auth_url({
+    SecretKey.google_auth_url = exports.googleAuthURL({
       secret: SecretKey.hex,
       label: name
     });
@@ -442,6 +443,11 @@ exports.generate_key = function generateKey (options) {
   return SecretKey;
 };
 
+// Backwards compatibility - generate_key is deprecated
+exports.generate_key = util.deprecate(function(options) {
+  return exports.generateSecret(options);
+}, 'Speakeasy - Deprecation Notice - `generate_key()` is depreciated, please use `generateSecret()` instead.');
+
 /**
  * Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
  * symbols (if requested).
@@ -450,7 +456,7 @@ exports.generate_key = function generateKey (options) {
  * @param  {Boolean} [symbols=false] Whether to include symbols in the key.
  * @return {String} The generated key.
  */
-exports.generate_key_ascii = function(length, symbols) {
+exports.generateSecretASCII = function generateSecretASCII(length, symbols) {
   var bytes = crypto.randomBytes(length || 32);
   var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
   if (symbols) {
@@ -463,6 +469,11 @@ exports.generate_key_ascii = function(length, symbols) {
   }
   return output;
 };
+
+// Backwards compatibility - generate_key_ascii is deprecated
+exports.generate_key_ascii = util.deprecate(function(length, symbols) {
+  return exports.generateSecretASCII(length, symbols);
+}, 'Speakeasy - Deprecation Notice - `generate_key_ascii()` is depreciated, please use `generateSecretASCII()` instead.');
 
 /**
  * Generate an URL for use with the Google Authenticator app.
@@ -497,7 +508,7 @@ exports.generate_key_ascii = function(length, symbols) {
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
-exports.google_auth_url = function (options) {
+exports.googleAuthURL = function googleAuthURL(options) {
 
   // unpack options
   var secret = options.secret;
