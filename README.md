@@ -259,6 +259,19 @@ var token = speakeasy.totp({
 });
 ```
 
+#### Getting an otpauth:// URL and QR code for non-SHA1 hash algorithms
+
+```js
+// Generate a secret, if needed
+var secret = speakeasy.generateSecret();
+// By default, generateSecret() returns an otpauth_url for SHA1
+
+// Use otpauthURL() to get a custom authentication URL for SHA512
+var url = speakeasy.otpauthURL({ secret: secret.ascii, label: 'Name of Secret', algorithm: 'sha512' });
+
+// Pass URL into a QR code generator
+```
+
 <a name="documentation"></a>
 ## Documentation
 
