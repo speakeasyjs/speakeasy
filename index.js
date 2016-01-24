@@ -210,8 +210,8 @@ exports.hotp.verify = function hotpVerify (options) {
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
  *   which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
- *   Initial time since the UNIX epoch from which to calculate the counter
- *   value. Defaults to 0 (no offset).
+ *   Initial time in seconds since the UNIX epoch from which to calculate the
+ *   counter value. Defaults to 0 (no offset).
  * @return {Integer} The calculated counter value
  * @private
  */
@@ -290,11 +290,11 @@ exports.time = exports.totp;
  * @param {Object} options
  * @param {String} options.secret Shared secret key
  * @param {String} options.token Passcode to validate
- * @param {Integer} [options.time] Time with which to calculate counter value.
- *   Defaults to `Date.now()`.
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
- * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to 0 (no offset).
+ * @param {Integer} [options.epoch=0] Initial time in seconds since the UNIX
+ *   epoch from which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
@@ -341,11 +341,11 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  * @param {Object} options
  * @param {String} options.secret Shared secret key
  * @param {String} options.token Passcode to validate
- * @param {Integer} [options.time] Time with which to calculate counter value.
- *   Defaults to `Date.now()`.
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
- * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to 0 (no offset).
+ * @param {Integer} [options.epoch=0] Initial time in seconds  since the UNIX
+ *   epoch from which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
