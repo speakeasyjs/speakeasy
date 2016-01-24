@@ -92,7 +92,7 @@ After the user scans the QR code, ask the user to enter in the token that they s
 
 ```js
 // Let's say the user says that the token they have is 132890
-userToken = '132890';
+var userToken = '132890';
 ```
 ```js
 // Option A: use verify() to check the token against the secret
