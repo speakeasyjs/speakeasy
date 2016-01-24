@@ -171,8 +171,8 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 };
 
 /**
- * Verify a time-based one-time token against the secret and return true if it
- * verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
+ * Verify a counter-based one-time token against the secret and return true if
+ * it verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
  * instead of an object. For more on how to use a window with this, see
  * {@link hotp.verifyDelta}.
  *
@@ -204,8 +204,8 @@ exports.hotp.verify = function hotpVerify (options) {
  * Calculate counter value based on given options.
  *
  * @param {Object} options
- * @param {Integer} [options.time] Time with which to calculate counter value.
- *   Defaults to `Date.now()`.
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
  *   which to calculate the counter value. Defaults to 0 (no offset).
@@ -218,10 +218,10 @@ exports.hotp.verify = function hotpVerify (options) {
 
 exports._counter = function _counter (options) {
   var step = options.step || 30;
-  var time = options.time != null ? options.time : Date.now();
+  var time = options.time != null ? (options.time * 1000) : Date.now();
 
   // also accepts 'initial_time', but deprecated
-  var epoch = (options.epoch != null ? options.epoch : options.initial_time) || 0;
+  var epoch = (options.epoch != null ? (options.epoch * 1000) : (options.initial_time * 1000)) || 0;
   if (options.initial_time) console.log('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.');
 
   return Math.floor((time - epoch) / step / 1000);
@@ -233,11 +233,11 @@ exports._counter = function _counter (options) {
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
- * @param {Integer} [options.time] Time with which to calculate counter value.
- *   Defaults to `Date.now()`.
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
- * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to 0 (no offset).
+ * @param {Integer} [options.epoch=0] Initial time in seconds since the UNIX
+ *   epoch from which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
@@ -248,8 +248,8 @@ exports._counter = function _counter (options) {
  * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
  *   Shared secret key
  * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
- *   Initial time since the UNIX epoch from which to calculate the counter
- *   value. Defaults to 0 (no offset).
+ *   Initial time in seconds since the UNIX epoch from which to calculate the
+ *   counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
  *   number of digits for the one-time passcode.
  * @return {String} The one-time passcode.

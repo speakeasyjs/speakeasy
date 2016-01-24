@@ -106,7 +106,7 @@ it('TOTtoken', function () {
   assert.ok(!speakeasy.totp.verifyDelta(options), 'Should not pass');
 
   // countercheck for test vector at 59s with verifyDelta
-  options.time = 59000;
+  options.time = 59;
   options.token = '287082';
   var res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
@@ -117,7 +117,7 @@ it('TOTtoken', function () {
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 1234567890 with delta
-  options.time = 1234567890000;
+  options.time = 1234567890;
   options.token = '005924';
   res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
@@ -128,7 +128,7 @@ it('TOTtoken', function () {
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 1111111109 with delta
-  options.time = 1111111109000;
+  options.time = 1111111109;
   options.token = '081804';
   res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
@@ -139,7 +139,7 @@ it('TOTtoken', function () {
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 2000000000 with delta
-  options.time = 2000000000000;
+  options.time = 2000000000;
   options.token = '279037';
   res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
@@ -208,7 +208,7 @@ it('TOTPOutOfSync', function () {
   var options = {
     secret: '12345678901234567890',
     token: '279037',
-    time: 1999999909000
+    time: 1999999909
   };
 
   // countercheck that the test should fail for window < 2
@@ -248,18 +248,18 @@ it('totp_gen', function () {
   speakeasy.totp(options);
 
   // countercheck for test vector at 59s
-  options.time = 59000;
+  options.time = 59;
   assert.equal(speakeasy.totp(options), '287082', 'TOTtoken values should match');
 
   // countercheck for test vector at 1234567890
-  options.time = 1234567890000;
+  options.time = 1234567890;
   assert.equal(speakeasy.totp(options), '005924', 'TOTtoken values should match');
 
   // countercheck for test vector at 1111111109
-  options.time = 1111111109000;
+  options.time = 1111111109;
   assert.equal(speakeasy.totp(options), '081804', 'TOTtoken values should match');
 
   // countercheck for test vector at 2000000000
-  options.time = 2000000000000;
+  options.time = 2000000000;
   assert.equal(speakeasy.totp(options), '279037', 'TOTtoken values should match');
 });

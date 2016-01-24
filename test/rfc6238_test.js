@@ -64,109 +64,109 @@ var speakeasy = require('..');
 
 describe('RFC 6238 test vector', function () {
   [{
-    time: 59000,
+    time: 59,
     date: new Date('1970-01-01T00:00:59Z'),
     counter: 0x01,
     code: '94287082',
     algorithm: 'SHA1'
   }, {
-    time: 59000,
+    time: 59,
     date: new Date('1970-01-01T00:00:59Z'),
     counter: 0x01,
     code: '46119246',
     algorithm: 'SHA256'
   }, {
-    time: 59000,
+    time: 59,
     date: new Date('1970-01-01T00:00:59Z'),
     counter: 0x01,
     code: '90693936',
     algorithm: 'SHA512'
   }, {
-    time: 1111111109000,
+    time: 1111111109,
     date: new Date('2005-03-18T01:58:29Z'),
     counter: 0x023523EC,
     code: '07081804',
     algorithm: 'SHA1'
   }, {
-    time: 1111111109000,
+    time: 1111111109,
     date: new Date('2005-03-18T01:58:29Z'),
     counter: 0x023523EC,
     code: '68084774',
     algorithm: 'SHA256'
   }, {
-    time: 1111111109000,
+    time: 1111111109,
     date: new Date('2005-03-18T01:58:29Z'),
     counter: 0x023523EC,
     code: '25091201',
     algorithm: 'SHA512'
   }, {
-    time: 1111111111000,
+    time: 1111111111,
     date: new Date('2005-03-18T01:58:31Z'),
     counter: 0x023523ED,
     code: '14050471',
     algorithm: 'SHA1'
   }, {
-    time: 1111111111000,
+    time: 1111111111,
     date: new Date('2005-03-18T01:58:31Z'),
     counter: 0x023523ED,
     code: '67062674',
     algorithm: 'SHA256'
   }, {
-    time: 1111111111000,
+    time: 1111111111,
     date: new Date('2005-03-18T01:58:31Z'),
     counter: 0x023523ED,
     code: '99943326',
     algorithm: 'SHA512'
   }, {
-    time: 1234567890000,
+    time: 1234567890,
     date: new Date('2009-02-13T23:31:30Z'),
     counter: 0x0273EF07,
     code: '89005924',
     algorithm: 'SHA1'
   }, {
-    time: 1234567890000,
+    time: 1234567890,
     date: new Date('2009-02-13T23:31:30Z'),
     counter: 0x0273EF07,
     code: '91819424',
     algorithm: 'SHA256'
   }, {
-    time: 1234567890000,
+    time: 1234567890,
     date: new Date('2009-02-13T23:31:30Z'),
     counter: 0x0273EF07,
     code: '93441116',
     algorithm: 'SHA512'
   }, {
-    time: 2000000000000,
+    time: 2000000000,
     date: new Date('2033-05-18T03:33:20Z'),
     counter: 0x03F940AA,
     code: '69279037',
     algorithm: 'SHA1'
   }, {
-    time: 2000000000000,
+    time: 2000000000,
     date: new Date('2033-05-18T03:33:20Z'),
     counter: 0x03F940AA,
     code: '90698825',
     algorithm: 'SHA256'
   }, {
-    time: 2000000000000,
+    time: 2000000000,
     date: new Date('2033-05-18T03:33:20Z'),
     counter: 0x03F940AA,
     code: '38618901',
     algorithm: 'SHA512'
   }, {
-    time: 20000000000000,
+    time: 20000000000,
     date: new Date('2603-10-11T11:33:20Z'),
     counter: 0x27BC86AA,
     code: '65353130',
     algorithm: 'SHA1'
   }, {
-    time: 20000000000000,
+    time: 20000000000,
     date: new Date('2603-10-11T11:33:20Z'),
     counter: 0x27BC86AA,
     code: '77737706',
     algorithm: 'SHA256'
   }, {
-    time: 20000000000000,
+    time: 20000000000,
     date: new Date('2603-10-11T11:33:20Z'),
     counter: 0x27BC86AA,
     code: '47863826',
@@ -203,7 +203,7 @@ describe('RFC 6238 test vector', function () {
 
     it('should calculate counter value for date ' + subject.date, function () {
       var counter = speakeasy._counter({
-        time: subject.date
+        time: Math.floor(subject.date / 1000)
       });
       assert.equal(counter, subject.counter);
     });
