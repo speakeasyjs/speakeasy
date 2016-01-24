@@ -420,7 +420,7 @@ exports.generateSecret = function generateSecret (options) {
   }
 
   // generate an ascii key
-  var key = this.generate_key_ascii(length, symbols);
+  var key = this.generateSecretASCII(length, symbols);
 
   // return a SecretKey with ascii, hex, and base32
   var SecretKey = {};
