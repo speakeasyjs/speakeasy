@@ -155,8 +155,8 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // unpack options
   var token = options.token;
-  var window = parseInt(options.window || 0, 10);
-  var counter = parseInt(options.counter || 0, 10);
+  var window = parseInt(options.window, 10) || 0;
+  var counter = parseInt(options.counter, 10) || 0;
 
   // loop from C to C + W
   for (i = counter; i <= counter + window; ++i) {
@@ -319,7 +319,7 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
   options = Object.create(options);
 
   // unpack options
-  var window = parseInt(options.window || 0, 10);
+  var window = parseInt(options.window, 10) || 0;
 
   // calculate default counter value
   if (options.counter == null) options.counter = exports._counter(options);
