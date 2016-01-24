@@ -16,7 +16,7 @@ describe('Generator tests', function () {
     assert.equal(secret.ascii.length, 32, 'Should return the correct length');
 
     // check returned fields
-    assert.isDefined(secret.google_auth_url, 'Google Auth URL should be returned');
+    assert.isDefined(secret.otpauth_url, 'otpauth:// URL should be returned');
     assert.isUndefined(secret.qr_code_ascii, 'QR Code ASCII should not be returned');
     assert.isUndefined(secret.qr_code_hex, 'QR Code Hex should not be returned');
     assert.isUndefined(secret.qr_code_base32, 'QR Code Base 32 should not be returned');
@@ -44,9 +44,9 @@ describe('Generator tests', function () {
     assert.isDefined(secret.qr_code_base32, 'QR Code Base 32 should be returned');
   });
 
-  it('Generation with Google Auth URL output disabled', function () {
-    var secret = speakeasy.generate_key({google_auth_url: false});
-    assert.isUndefined(secret.google_auth_url, 'Google Auth URL should not be returned');
+  it('Generation with otpath:// URL output disabled', function () {
+    var secret = speakeasy.generate_key({otpauth_url: false});
+    assert.isUndefined(secret.otpauth_url, 'Google Auth URL should not be returned');
   });
 
   it('Generation with Google Auth QR URL output enabled', function () {
