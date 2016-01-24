@@ -75,7 +75,7 @@ var QRCode = require('qrcode');
 // Get the data URL of the authenticator URL
 QRCode.toDataURL(secret.otpauth_url, function(err, data_url) {
   console.log(data_url);
-  
+
   // Display this data URL to the user in an <img> tag
   // Example:
   write('<img src="' + data_url + '">');
@@ -92,7 +92,7 @@ After the user scans the QR code, ask the user to enter in the token that they s
 
 ```js
 // Let's say the user says that the token they have is 132890
-userToken = 132890;
+userToken = '132890';
 ```
 ```js
 // Option A: use verify() to check the token against the secret
