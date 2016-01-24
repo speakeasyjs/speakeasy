@@ -47,7 +47,7 @@ Let's say you have a user that wants to enable two-factor authentication, and yo
 
 1. Generate a secret
 2. Show a QR code for the user to scan in
-3. Authenticate the token
+3. Authenticate the token for the first time
 
 ### Generating a key
 
@@ -59,7 +59,16 @@ var secret = speakeasy.generateSecret();
 // Also returns secret.otpauth_url, which we'll use later.
 ```
 
-This will generate a secret key of length 32, which will be the secret key for the user. We don't want to set this as the user's secret key just yet – we first want to verify their token for the first time. So, store one of the encodings for the secret, preferably `secret.base32`, somewhere temporary.
+This will generate a secret key of length 32, which will be the secret key for the user.
+
+Now, we want to make sure that this secret works by validating the token that the user gets from it for the first time. In other words, we don't want to set this as the user's secret key just yet – we first want to verify their token for the first time. We need to persist the secret so that we can validate it later.
+
+So, store one of the encodings for the secret, preferably `secret.base32`, somewhere temporary, since we'll use that in the future to authenticate the user's first token.
+
+```js
+// Example for storing the secret key somewhere (varies by implementation):
+user.two_factor_temp_secret = secret.base32;
+```
 
 ### Displaying a QR code
 
@@ -93,24 +102,27 @@ After the user scans the QR code, ask the user to enter in the token that they s
 ```js
 // Let's say the user says that the token they have is 132890
 var userToken = '132890';
+
+// Let's say we stored the user's temporary secret in a user object like above:
+// (This is specific to your implementation)
+var base32secret = user.two_factor_temp_secret;
 ```
 ```js
-// Option A: use verify() to check the token against the secret
-var auth = speakeasy.totp.verify({ secret: secret.base32,
+// Use verify() to check the token against the secret
+var auth = speakeasy.totp.verify({ secret: base32secret,
                                    encoding: 'base32',
                                    token: userToken });
-```
-```js
-// Option B: get the token at the current time and compare
-//           to the token that the user gave
-var serverToken = speakeasy.totp({ secret: secret.base32,
-                                   encoding: 'base32' });
-var auth = userToken == serverToken;
 ```
 
 `auth` will be true if the token is verified, false if not.
 
 If successfully verified, you can now save the secret to the user's account and use the same process above whenever you need to use two-factor to authenticate the user, like during login.
+
+```js
+// Example for saving user's token (varies by implementation):
+user.two_factor_secret = user.two_factor_temp_secret;
+user.two_factor_enabled = true
+```
 
 Now you're done implementing two-factor authentication!
 
@@ -136,7 +148,8 @@ var secret = speakeasy.generateSecret({length: 20});
 // HOTP (counter-based tokens) can also be used if `totp` is replaced by
 // `hotp` (i.e. speakeasy.hotp()) and a `counter` is given in the options.
 var token = speakeasy.totp({
-  secret: base32secret
+  secret: secret.base32,
+  encoding: 'base32'
 });
 
 // Returns token for the secret at the current time
@@ -148,7 +161,8 @@ var token = speakeasy.totp({
 ```js
 // Verify a given token
 var tokenValidates = speakeasy.totp.verify({
-  secret: base32secret,
+  secret: secret.base32,
+  encoding: 'base32',
   token: '123456',
   window: 6
 });
@@ -165,7 +179,8 @@ in seconds.
 // Verify a given token is within 3 time-steps (+/- 2 minutes) from the server
 // time-step.
 var tokenDelta = speakeasy.totp.verifyDelta({
-  secret: base32secret,
+  secret: secret.base32,
+  encoding: 'base32',
   token: '123456',
   window: 2,
   step: 60
@@ -174,18 +189,72 @@ var tokenDelta = speakeasy.totp.verifyDelta({
 // between the given token and the current time
 ```
 
+#### Getting a time-based token for a custom time
+
+```js
+var token = speakeasy.totp({
+  secret: secret.base32,
+  encoding: 'base32',
+  time: 1453667708 // specified in seconds
+});
+```
+
 #### Calculating a counter-based token
 
 ```js
+// Get a counter-based token
 var token = speakeasy.hotp({
-  secret: base32secret,
+  secret: secret.base32,
+  encoding: 'base32',
   counter: 123
 });
 
+// Verify a counter-based token
 var tokenValidates = speakeasy.hotp.verify({
   secret: secret.base32,
-  token: token,
+  encoding: 'base32',
+  token: '123456',
   counter: 123
+});
+```
+
+#### Using other encodings
+
+The default encoding (when `encoding` is not specified) is `ascii`.
+
+```js
+// Specifying an ASCII token for TOTP
+// (encoding is 'ascii' by default)
+var token = speakeasy.totp({
+  secret: secret.ascii
+});
+```
+
+```js
+// Specifying a hex token for TOTP
+var token = speakeasy.totp({
+  secret: secret.hex,
+  encoding: 'hex'
+});
+```
+
+#### Using other hash algorithms
+
+The default hash algorithm is SHA1.
+
+```js
+// Specifying SHA256
+var token = speakeasy.totp({
+  secret: secret.ascii,
+  algorithm: 'sha256'
+});
+```
+
+```js
+// Specifying SHA512
+var token = speakeasy.totp({
+  secret: secret.ascii,
+  algorithm: 'sha512'
 });
 ```
 
