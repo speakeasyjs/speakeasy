@@ -30,7 +30,10 @@ exports.digest = function digest (options) {
   var algorithm = (options.algorithm || "sha1").toLowerCase();
 
   // Backwards compatibility - deprecated
-  if (options.key) key = options.key;
+  if (options.key) {
+    console.log('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.')
+    key = options.key;
+  }
 
   // convert key to buffer
   if (!Buffer.isBuffer(key)) {
@@ -85,6 +88,7 @@ exports.hotp = function hotpGenerate (options) {
   // unpack digits
   // backward compatibility: `length` is also accepted here, but deprecated
   var digits = (options.digits != null ? options.digits : options.length) || 6;
+  if options.length console.log('Speakeasy - Deprecation Notice - Specifying token digits using `length` is no longer supported. Use `digits` instead.');
 
   // digest the options
   var digest = options.digest || exports.digest(options);
@@ -220,6 +224,7 @@ exports._counter = function _counter (options) {
 
   // also accepts 'initial_time', but deprecated
   var epoch = (options.epoch != null ? options.epoch : options.initial_time) || 0;
+  if options.initial_time console.log('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.')
 
   return Math.floor((time - epoch) / step / 1000);
 };
