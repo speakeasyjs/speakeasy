@@ -383,20 +383,21 @@ exports.totp.verify = function totpVerify (options) {
  * Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
  * (default 32). Returns the secret key in ASCII, hexadecimal, and base32 format,
  * along with the URL used for the QR code for Google Authenticator (an otpauth
- * URL).
- *
- * Can also optionally return QR codes for the secret and for the Google
- * Authenticator URL.
+ * URL). Use a QR code library to generate a QR code based on the Google
+ * Authenticator URL to obtain a QR code you can scan into the app.
  *
  * @param {Object} options
  * @param {Integer} [options.length=32] Length of the secret
  * @param {Boolean} [options.symbols=false] Whether to include symbols
- * @param {Boolean} [options.qr_codes=false] Whether to output QR code URLs
- * @param {Boolean} [options.google_auth_qr=false] Whether to output a Google
- *   Authenticator otpauth:// QR code URL (returns the URL to the QR code)
  * @param {Boolean} [options.google_auth_url=true] Whether to output a Google
  *   Authenticator otpauth:// URL (only returns otpauth:// URL, no QR code)
  * @param {String} [options.name] The name to use with Google Authenticator.
+ * @param {Boolean} [options.qr_codes=false] (DEPRECATED. Do not use to prevent
+ *   leaking of secret to a third party. Use your own QR code implementation.)
+ *   Output QR code URLs for the token.
+ * @param {Boolean} [options.google_auth_qr=false] (DEPRECATED. Do not use to
+ *   prevent leaking of secret to a third party. Use your own QR code
+ *   implementation.) Output a Google Authenticator otpauth:// QR code URL.
  * @return {Object}
  * @return {GeneratedSecret} The generated secret key.
  */
@@ -404,7 +405,7 @@ exports.generateSecret = function generateSecret (options) {
   // options
   if(!options) options = {};
   var length = options.length || 32;
-  var name = options.name || "SecretKey";
+  var name = encodeURIComponent(options.name) || "SecretKey";
   var qr_codes = options.qr_codes || false;
   var google_auth_qr = options.google_auth_qr || false;
   var google_auth_url = options.google_auth_url != null ? options.google_auth_url : true;
@@ -426,11 +427,13 @@ exports.generateSecret = function generateSecret (options) {
 
   // generate some qr codes if requested
   if (qr_codes) {
+    console.log('Speakeasy - Deprecation Notice - generateSecret() QR codes are deprecated and no longer supported. Please use your own QR code implementation.');
     SecretKey.qr_code_ascii = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.ascii);
     SecretKey.qr_code_hex = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.hex);
     SecretKey.qr_code_base32 = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.base32);
   }
 
+  // add in the Google Authenticator-compatible otpauth URL
   if (google_auth_url) {
     SecretKey.google_auth_url = exports.googleAuthURL({
       secret: SecretKey.hex,
@@ -439,11 +442,9 @@ exports.generateSecret = function generateSecret (options) {
   }
 
   // generate a QR code for use in Google Authenticator if requested
-  // (Google Authenticator has a special style and requires base32)
   if (google_auth_qr) {
-    // first, make sure that the name doesn't have spaces, since Google Authenticator doesn't like them
-    name = name.replace(/ /g,'');
-    SecretKey.google_auth_qr = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=otpauth://totp/' + encodeURIComponent(name) + '%3Fsecret=' + encodeURIComponent(SecretKey.base32);
+    console.log('Speakeasy - Deprecation Notice - generateSecret() Google Auth QR code is deprecated and no longer supported. Please use your own QR code implementation.');
+    SecretKey.google_auth_qr = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(exports.googleAuthURL({ secret: SecretKey.hex, label: name }));
   }
 
   return SecretKey;
