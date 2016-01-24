@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-var base32 = require("base32.js");
-var crypto = require("crypto");
-var url = require("url");
-var util = require("util");
+var base32 = require('base32.js');
+var crypto = require('crypto');
+var url = require('url');
+var util = require('util');
 
 /**
  * Digest the one-time passcode options.
@@ -26,26 +26,25 @@ exports.digest = function digest (options) {
   // unpack options
   var key = options.secret;
   var counter = options.counter;
-  var encoding = options.encoding || "ascii";
-  var algorithm = (options.algorithm || "sha1").toLowerCase();
+  var encoding = options.encoding || 'ascii';
+  var algorithm = (options.algorithm || 'sha1').toLowerCase();
 
   // Backwards compatibility - deprecated
   if (options.key) {
-    console.log('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.')
+    console.log('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.');
     key = options.key;
   }
 
   // convert key to buffer
   if (!Buffer.isBuffer(key)) {
-    key = encoding == "base32" ? base32.decode(key)
-                               : new Buffer(key, encoding);
+    key = encoding === 'base32' ? base32.decode(key)
+      : new Buffer(key, encoding);
   }
 
   // create an buffer from the counter
   var buf = new Buffer(8);
   var tmp = counter;
   for (i = 0; i < 8; i++) {
-
     // mask 0xff over number to get last 8
     buf[7 - i] = tmp & 0xff;
 
@@ -84,7 +83,6 @@ exports.digest = function digest (options) {
  */
 
 exports.hotp = function hotpGenerate (options) {
-
   // unpack digits
   // backward compatibility: `length` is also accepted here, but deprecated
   var digits = (options.digits != null ? options.digits : options.length) || 6;
@@ -97,13 +95,13 @@ exports.hotp = function hotpGenerate (options) {
   var offset = digest[digest.length - 1] & 0xf;
 
   // calculate binary code (RFC4226 5.4)
-  var code = (digest[offset] & 0x7f) << 24
-               | (digest[offset + 1] & 0xff) << 16
-               | (digest[offset + 2] & 0xff) << 8
-               | (digest[offset + 3] & 0xff);
+  var code = (digest[offset] & 0x7f) << 24 |
+    (digest[offset + 1] & 0xff) << 16 |
+    (digest[offset + 2] & 0xff) << 8 |
+    (digest[offset + 3] & 0xff);
 
   // left-pad code
-  code = new Array(digits + 1).join("0") + code.toString(10);
+  code = new Array(digits + 1).join('0') + code.toString(10);
 
   // return length number off digits
   return code.substr(-digits);
@@ -163,13 +161,13 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
   // loop from C to C + W
   for (i = counter; i <= counter + window; ++i) {
     options.counter = i;
-    if (exports.hotp(options) == token) {
+    if (exports.hotp(options) === token) {
       // found a matching code, return delta
       return {delta: i - counter};
     }
   }
 
-  // no codes have matched
+// no codes have matched
 };
 
 /**
@@ -200,7 +198,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
  */
 exports.hotp.verify = function hotpVerify (options) {
   return exports.hotp.verifyDelta(options) != null;
-}
+};
 
 /**
  * Calculate counter value based on given options.
@@ -224,7 +222,7 @@ exports._counter = function _counter (options) {
 
   // also accepts 'initial_time', but deprecated
   var epoch = (options.epoch != null ? options.epoch : options.initial_time) || 0;
-  if (options.initial_time) console.log('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.')
+  if (options.initial_time) console.log('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.');
 
   return Math.floor((time - epoch) / step / 1000);
 };
@@ -258,7 +256,6 @@ exports._counter = function _counter (options) {
  */
 
 exports.totp = function totpGenerate (options) {
-
   // shadow options
   options = Object.create(options);
 
@@ -285,7 +282,7 @@ exports.time = exports.totp;
  *
  * `verifyDelta()` will return the delta between the counter value of the token
  * and the given counter value. For example, if given a time at counter 1000 and
- * a window of 5, `verifyDelta()` will look at tokens from 995 to 1005,
+ * a window of 5, `verifyDelta()` will look at tokens from 995 to 1005,
  * inclusive. In other words, if the time-step is 30 seconds, it will look at
  * tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
  * If it finds it at counter position 1002, it will return `{ delta: 2 }`.
@@ -318,7 +315,6 @@ exports.time = exports.totp;
  */
 
 exports.totp.verifyDelta = function totpVerifyDelta (options) {
-
   // shadow options
   options = Object.create(options);
 
@@ -369,7 +365,7 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  */
 exports.totp.verify = function totpVerify (options) {
   return exports.totp.verifyDelta(options) != null;
-}
+};
 
 /**
  * @typedef GeneratedSecret
@@ -409,9 +405,9 @@ exports.totp.verify = function totpVerify (options) {
  */
 exports.generateSecret = function generateSecret (options) {
   // options
-  if(!options) options = {};
+  if (!options) options = {};
   var length = options.length || 32;
-  var name = encodeURIComponent(options.name) || "SecretKey";
+  var name = encodeURIComponent(options.name) || 'SecretKey';
   var qr_codes = options.qr_codes || false;
   var google_auth_qr = options.google_auth_qr || false;
   var google_auth_url = options.google_auth_url != null ? options.google_auth_url : true;
@@ -429,7 +425,7 @@ exports.generateSecret = function generateSecret (options) {
   var SecretKey = {};
   SecretKey.ascii = key;
   SecretKey.hex = Buffer(key, 'ascii').toString('hex');
-  SecretKey.base32 = base32.encode(Buffer(key)).toString().replace(/=/g,'');
+  SecretKey.base32 = base32.encode(Buffer(key)).toString().replace(/=/g, '');
 
   // generate some qr codes if requested
   if (qr_codes) {
@@ -457,7 +453,7 @@ exports.generateSecret = function generateSecret (options) {
 };
 
 // Backwards compatibility - generate_key is deprecated
-exports.generate_key = util.deprecate(function(options) {
+exports.generate_key = util.deprecate(function (options) {
   return exports.generateSecret(options);
 }, 'Speakeasy - Deprecation Notice - `generate_key()` is depreciated, please use `generateSecret()` instead.');
 
@@ -469,7 +465,7 @@ exports.generate_key = util.deprecate(function(options) {
  * @param  {Boolean} [symbols=false] Whether to include symbols in the key.
  * @return {String} The generated key.
  */
-exports.generateSecretASCII = function generateSecretASCII(length, symbols) {
+exports.generateSecretASCII = function generateSecretASCII (length, symbols) {
   var bytes = crypto.randomBytes(length || 32);
   var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
   if (symbols) {
@@ -478,13 +474,13 @@ exports.generateSecretASCII = function generateSecretASCII(length, symbols) {
 
   var output = '';
   for (var i = 0, l = bytes.length; i < l; i++) {
-    output += set[Math.floor(bytes[i] / 255.0 * (set.length-1))];
+    output += set[Math.floor(bytes[i] / 255.0 * (set.length - 1))];
   }
   return output;
 };
 
 // Backwards compatibility - generate_key_ascii is deprecated
-exports.generate_key_ascii = util.deprecate(function(length, symbols) {
+exports.generate_key_ascii = util.deprecate(function (length, symbols) {
   return exports.generateSecretASCII(length, symbols);
 }, 'Speakeasy - Deprecation Notice - `generate_key_ascii()` is depreciated, please use `generateSecretASCII()` instead.');
 
@@ -521,13 +517,12 @@ exports.generate_key_ascii = util.deprecate(function(length, symbols) {
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
-exports.googleAuthURL = function googleAuthURL(options) {
-
+exports.googleAuthURL = function googleAuthURL (options) {
   // unpack options
   var secret = options.secret;
   var label = options.label;
   var issuer = options.issuer;
-  var type = (options.type || "totp").toLowerCase();
+  var type = (options.type || 'totp').toLowerCase();
   var counter = options.counter;
   var algorithm = options.algorithm;
   var digits = options.digits;
@@ -536,35 +531,35 @@ exports.googleAuthURL = function googleAuthURL(options) {
 
   // validate type
   switch (type) {
-    case "totp":
-    case "hotp":
+    case 'totp':
+    case 'hotp':
       break;
     default:
-      throw new Error("invalid type `" + type + "`");
+      throw new Error('invalid type `' + type + '`');
   }
 
   // validate required options
-  if (!secret) throw new Error("missing secret");
-  if (!label) throw new Error("missing label");
+  if (!secret) throw new Error('missing secret');
+  if (!label) throw new Error('missing label');
 
   // require counter for HOTP
-  if (type == "hotp" && counter == null) {
-    throw new Error("missing counter value for HOTP");
+  if (type === 'hotp' && (counter === null || typeof counter === 'undefined')) {
+    throw new Error('missing counter value for HOTP');
   }
 
   // build query while validating
   var query = {secret: secret};
-  if (options.issuer) query.issuer = options.issuer;
+  if (issuer) query.issuer = issuer;
 
   // validate algorithm
   if (algorithm != null) {
     switch (algorithm.toUpperCase()) {
-      case "SHA1":
-      case "SHA256":
-      case "SHA512":
+      case 'SHA1':
+      case 'SHA256':
+      case 'SHA512':
         break;
       default:
-        throw new Error("invalid algorithm `" + algorithm + "`");
+        throw new Error('invalid algorithm `' + algorithm + '`');
     }
     query.algorithm = algorithm.toUpperCase();
   }
@@ -576,26 +571,27 @@ exports.googleAuthURL = function googleAuthURL(options) {
       case 8:
         break;
       default:
-        throw new Error("invalid digits `" + digits + "`");
+        throw new Error('invalid digits `' + digits + '`');
     }
     query.digits = digits;
   }
 
   // validate period
   if (period != null) {
-    if (~~period != period) {
-      throw new Error("invalid period `" + period + "`");
+    period = parseInt(period, 10);
+    if (~~period !== period) {
+      throw new Error('invalid period `' + period + '`');
     }
     query.period = period;
   }
 
   // convert secret to base32
-  if (encoding != "base32") secret = new Buffer(secret, encoding);
+  if (encoding !== 'base32') secret = new Buffer(secret, encoding);
   if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
   // return url
   return url.format({
-    protocol: "otpauth",
+    protocol: 'otpauth',
     slashes: true,
     hostname: type,
     pathname: label,

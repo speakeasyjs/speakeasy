@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 /* global describe, it */
 
@@ -62,124 +62,126 @@ var speakeasy = require('..');
 
 */
 
-describe("RFC 6238 test vector", function () {
+describe('RFC 6238 test vector', function () {
   [{
     time: 59000,
-    date: new Date("1970-01-01T00:00:59Z"),
+    date: new Date('1970-01-01T00:00:59Z'),
     counter: 0x01,
-    code: "94287082",
-    algorithm: "SHA1"
+    code: '94287082',
+    algorithm: 'SHA1'
   }, {
     time: 59000,
-    date: new Date("1970-01-01T00:00:59Z"),
+    date: new Date('1970-01-01T00:00:59Z'),
     counter: 0x01,
-    code: "46119246",
-    algorithm: "SHA256"
+    code: '46119246',
+    algorithm: 'SHA256'
   }, {
     time: 59000,
-    date: new Date("1970-01-01T00:00:59Z"),
+    date: new Date('1970-01-01T00:00:59Z'),
     counter: 0x01,
-    code: "90693936",
-    algorithm: "SHA512"
+    code: '90693936',
+    algorithm: 'SHA512'
   }, {
     time: 1111111109000,
-    date: new Date("2005-03-18T01:58:29Z"),
+    date: new Date('2005-03-18T01:58:29Z'),
     counter: 0x023523EC,
-    code: "07081804",
-    algorithm: "SHA1"
+    code: '07081804',
+    algorithm: 'SHA1'
   }, {
     time: 1111111109000,
-    date: new Date("2005-03-18T01:58:29Z"),
+    date: new Date('2005-03-18T01:58:29Z'),
     counter: 0x023523EC,
-    code: "68084774",
-    algorithm: "SHA256"
+    code: '68084774',
+    algorithm: 'SHA256'
   }, {
     time: 1111111109000,
-    date: new Date("2005-03-18T01:58:29Z"),
+    date: new Date('2005-03-18T01:58:29Z'),
     counter: 0x023523EC,
-    code: "25091201",
-    algorithm: "SHA512"
+    code: '25091201',
+    algorithm: 'SHA512'
   }, {
     time: 1111111111000,
-    date: new Date("2005-03-18T01:58:31Z"),
+    date: new Date('2005-03-18T01:58:31Z'),
     counter: 0x023523ED,
-    code: "14050471",
-    algorithm: "SHA1"
+    code: '14050471',
+    algorithm: 'SHA1'
   }, {
     time: 1111111111000,
-    date: new Date("2005-03-18T01:58:31Z"),
+    date: new Date('2005-03-18T01:58:31Z'),
     counter: 0x023523ED,
-    code: "67062674",
-    algorithm: "SHA256"
+    code: '67062674',
+    algorithm: 'SHA256'
   }, {
     time: 1111111111000,
-    date: new Date("2005-03-18T01:58:31Z"),
+    date: new Date('2005-03-18T01:58:31Z'),
     counter: 0x023523ED,
-    code: "99943326",
-    algorithm: "SHA512"
+    code: '99943326',
+    algorithm: 'SHA512'
   }, {
     time: 1234567890000,
-    date: new Date("2009-02-13T23:31:30Z"),
+    date: new Date('2009-02-13T23:31:30Z'),
     counter: 0x0273EF07,
-    code: "89005924",
-    algorithm: "SHA1"
+    code: '89005924',
+    algorithm: 'SHA1'
   }, {
     time: 1234567890000,
-    date: new Date("2009-02-13T23:31:30Z"),
+    date: new Date('2009-02-13T23:31:30Z'),
     counter: 0x0273EF07,
-    code: "91819424",
-    algorithm: "SHA256"
+    code: '91819424',
+    algorithm: 'SHA256'
   }, {
     time: 1234567890000,
-    date: new Date("2009-02-13T23:31:30Z"),
+    date: new Date('2009-02-13T23:31:30Z'),
     counter: 0x0273EF07,
-    code: "93441116",
-    algorithm: "SHA512"
+    code: '93441116',
+    algorithm: 'SHA512'
   }, {
     time: 2000000000000,
-    date: new Date("2033-05-18T03:33:20Z"),
+    date: new Date('2033-05-18T03:33:20Z'),
     counter: 0x03F940AA,
-    code: "69279037",
-    algorithm: "SHA1"
+    code: '69279037',
+    algorithm: 'SHA1'
   }, {
     time: 2000000000000,
-    date: new Date("2033-05-18T03:33:20Z"),
+    date: new Date('2033-05-18T03:33:20Z'),
     counter: 0x03F940AA,
-    code: "90698825",
-    algorithm: "SHA256"
+    code: '90698825',
+    algorithm: 'SHA256'
   }, {
     time: 2000000000000,
-    date: new Date("2033-05-18T03:33:20Z"),
+    date: new Date('2033-05-18T03:33:20Z'),
     counter: 0x03F940AA,
-    code: "38618901",
-    algorithm: "SHA512"
+    code: '38618901',
+    algorithm: 'SHA512'
   }, {
     time: 20000000000000,
-    date: new Date("2603-10-11T11:33:20Z"),
+    date: new Date('2603-10-11T11:33:20Z'),
     counter: 0x27BC86AA,
-    code: "65353130",
-    algorithm: "SHA1"
+    code: '65353130',
+    algorithm: 'SHA1'
   }, {
     time: 20000000000000,
-    date: new Date("2603-10-11T11:33:20Z"),
+    date: new Date('2603-10-11T11:33:20Z'),
     counter: 0x27BC86AA,
-    code: "77737706",
-    algorithm: "SHA256"
+    code: '77737706',
+    algorithm: 'SHA256'
   }, {
     time: 20000000000000,
-    date: new Date("2603-10-11T11:33:20Z"),
+    date: new Date('2603-10-11T11:33:20Z'),
     counter: 0x27BC86AA,
-    code: "47863826",
-    algorithm: "SHA512"
+    code: '47863826',
+    algorithm: 'SHA512'
   }].forEach(function (subject) {
-    var key = new Buffer("12345678901234567890");
+    var key = new Buffer('12345678901234567890');
     var nbytes, i;
 
     // set hash size based on algorithm
     switch (subject.algorithm) {
-      case "SHA256": nbytes = 32; break;
-      case "SHA512": nbytes = 64; break;
-      default:       nbytes = 20;
+      case 'SHA256': nbytes = 32;
+        break;
+      case 'SHA512': nbytes = 64;
+        break;
+      default: nbytes = 20;
     }
 
     // repeat the key to the minimum length
@@ -192,21 +194,21 @@ describe("RFC 6238 test vector", function () {
       key = Buffer.concat(key).slice(0, nbytes);
     }
 
-    it("should calculate counter value for time " + subject.time, function () {
+    it('should calculate counter value for time ' + subject.time, function () {
       var counter = speakeasy._counter({
         time: subject.time
       });
       assert.equal(counter, subject.counter);
     });
 
-    it("should calculate counter value for date " + subject.date, function () {
+    it('should calculate counter value for date ' + subject.date, function () {
       var counter = speakeasy._counter({
         time: subject.date
       });
       assert.equal(counter, subject.counter);
     });
 
-    it("should generate TOTP code for time " + subject.time + " and algorithm " + subject.algorithm, function () {
+    it('should generate TOTP code for time ' + subject.time + ' and algorithm ' + subject.algorithm, function () {
       var counter = speakeasy.totp({
         secret: key,
         time: subject.time,
@@ -215,6 +217,5 @@ describe("RFC 6238 test vector", function () {
       });
       assert.equal(counter, subject.code);
     });
-
   });
 });

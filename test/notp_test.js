@@ -1,6 +1,6 @@
-"use strict";
+'use strict';
 
-/* global describe, it */
+/* global it */
 
 var chai = require('chai');
 var assert = chai.assert;
@@ -52,12 +52,12 @@ var speakeasy = require('..');
  * see http://tools.ietf.org/html/rfc4226
  */
 
-it("HOTP", function() {
+it('HOTP', function () {
   var options = {
     secret: '12345678901234567890',
     window: 0
   };
-  var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
+  var HOTP = ['755224', '287082', '359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
 
   // make sure we can not pass in opt
   options.token = 'WILL NOT PASS';
@@ -68,7 +68,7 @@ it("HOTP", function() {
   assert.ok(!speakeasy.hotp.verify(options), 'Should not pass');
 
   // countercheck for passes
-  for(var i=0;i<HOTP.length;i++) {
+  for (var i = 0; i < HOTP.length; i++) {
     options.counter = i;
     options.token = HOTP[i];
 
@@ -77,12 +77,11 @@ it("HOTP", function() {
     assert.ok(res, 'Should pass');
     assert.equal(res.delta, 0, 'Should be in sync');
 
-    var res = speakeasy.hotp.verify(options);
+    res = speakeasy.hotp.verify(options);
 
     assert.ok(res, 'Should pass');
   }
 });
-
 
 /*
  * Test TOTtoken using test vectors from TOTtoken RFcounter.
@@ -90,7 +89,7 @@ it("HOTP", function() {
  * see http://tools.ietf.org/id/draft-mraihi-totp-timebased-06.txt
  */
 
-it("TOTtoken", function() {
+it('TOTtoken', function () {
   var options = {
     secret: '12345678901234567890',
     window: 0
@@ -114,55 +113,53 @@ it("TOTtoken", function() {
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // countercheck for test vector at 59s with verify
-  var res = speakeasy.totp.verify(options);
+  res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 1234567890 with delta
   options.time = 1234567890000;
   options.token = '005924';
-  var res = speakeasy.totp.verifyDelta(options);
+  res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // countercheck for test vector at 1234567890 with verify
-  var res = speakeasy.totp.verify(options);
+  res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 1111111109 with delta
   options.time = 1111111109000;
   options.token = '081804';
-  var res = speakeasy.totp.verifyDelta(options);
+  res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // countercheck for test vector at 1111111109 with verify
-  var res = speakeasy.totp.verify(options);
+  res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 2000000000 with delta
   options.time = 2000000000000;
   options.token = '279037';
-  var res = speakeasy.totp.verifyDelta(options);
+  res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // countercheck for test vector at 2000000000 with verify
-  var res = speakeasy.totp.verify(options);
+  res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
 
   // countercheck for test vector at 1234567890 with custom counter with delta
   options.token = '005924';
   options.counter = 41152263;
-  var res = speakeasy.totp.verifyDelta(options);
+  res = speakeasy.totp.verifyDelta(options);
   assert.ok(res, 'Should pass');
   assert.equal(res.delta, 0, 'Should be in sync');
 
   // countercheck for test vector at 1234567890 with verify
-  var res = speakeasy.totp.verify(options);
+  res = speakeasy.totp.verify(options);
   assert.ok(res, 'Should pass');
-
 });
-
 
 /*
  * countercheck for codes that are out of sync
@@ -170,8 +167,7 @@ it("TOTtoken", function() {
  * a code for counter = 9
  */
 
-it("HOTPOutOfSync", function() {
-
+it('HOTPOutOfSync', function () {
   /*
    * for secret 12345678901234567890:
    * 755224 = counter 0
@@ -198,19 +194,17 @@ it("HOTPOutOfSync", function() {
   // Speakeasy will only allow a one-sided window, so counter = 7 and window = 8
   // will not look at counter 0.
   options.token = '755224';
-  options.counter = 7
+  options.counter = 7;
   options.window = 8;
   assert.notOk(speakeasy.hotp.verify(options), 'Should not pass for tokens behind the current counter');
 });
-
 
 /*
  * countercheck for codes that are out of sync
  * windowe are going to use a value of T = 1999999909 (91s behind 2000000000)
  */
 
-it("TOTPOutOfSync", function() {
-
+it('TOTPOutOfSync', function () {
   var options = {
     secret: '12345678901234567890',
     token: '279037',
@@ -226,27 +220,25 @@ it("TOTPOutOfSync", function() {
   assert.ok(speakeasy.totp.verify(options), 'Should pass for value of window >= 3');
 });
 
-
-it("hotp_gen", function() {
+it('hotp_gen', function () {
   var options = {
     secret: '12345678901234567890',
     window: 0
   };
 
-  var HOTP = ['755224', '287082','359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
+  var HOTP = ['755224', '287082', '359152', '969429', '338314', '254676', '287922', '162583', '399871', '520489'];
 
   // make sure we can not pass in opt
   speakeasy.hotp(options);
 
   // countercheck for passes
-  for(var i=0;i<HOTP.length;i++) {
+  for (var i = 0; i < HOTP.length; i++) {
     options.counter = i;
     assert.equal(speakeasy.hotp(options), HOTP[i], 'HOTP value should be correct');
   }
 });
 
-
-it("totp_gen", function() {
+it('totp_gen', function () {
   var options = {
     secret: '12345678901234567890',
     window: 0
