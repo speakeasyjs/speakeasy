@@ -12,7 +12,7 @@ var speakeasy = require('..');
 
 describe('Generator tests', function () {
   it('Normal generation with defaults', function () {
-    var secret = speakeasy.generate_key();
+    var secret = speakeasy.generateSecret();
     assert.equal(secret.ascii.length, 32, 'Should return the correct length');
 
     // check returned fields
@@ -28,40 +28,40 @@ describe('Generator tests', function () {
   });
 
   it('Generation with custom key length', function () {
-    var secret = speakeasy.generate_key({length: 50});
+    var secret = speakeasy.generateSecret({length: 50});
     assert.equal(secret.ascii.length, 50, 'Should return the correct length');
   });
 
   it('Generation with symbols disabled', function () {
-    var secret = speakeasy.generate_key({symbols: false});
+    var secret = speakeasy.generateSecret({symbols: false});
     assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
   });
 
   it('Generation with QR URL output enabled', function () {
-    var secret = speakeasy.generate_key({qr_codes: true});
+    var secret = speakeasy.generateSecret({qr_codes: true});
     assert.isDefined(secret.qr_code_ascii, 'QR Code ASCII should be returned');
     assert.isDefined(secret.qr_code_hex, 'QR Code Hex should be returned');
     assert.isDefined(secret.qr_code_base32, 'QR Code Base 32 should be returned');
   });
 
   it('Generation with otpath:// URL output disabled', function () {
-    var secret = speakeasy.generate_key({otpauth_url: false});
+    var secret = speakeasy.generateSecret({otpauth_url: false});
     assert.isUndefined(secret.otpauth_url, 'Google Auth URL should not be returned');
   });
 
   it('Generation with Google Auth QR URL output enabled', function () {
-    var secret = speakeasy.generate_key({google_auth_qr: true});
+    var secret = speakeasy.generateSecret({google_auth_qr: true});
     assert.isDefined(secret.google_auth_qr, 'Google Auth QR should be returned');
   });
 
-  it('Testing generate_key_ascii with defaults', function () {
-    var secret = speakeasy.generate_key_ascii();
+  it('Testing generateSecret_ascii with defaults', function () {
+    var secret = speakeasy.generateSecretASCII();
     assert.equal(secret.length, 32, 'Should return the correct length');
     assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
   });
 
-  it('Testing generate_key_ascii with custom length', function () {
-    var secret = speakeasy.generate_key_ascii(20);
+  it('Testing generateSecret_ascii with custom length', function () {
+    var secret = speakeasy.generateSecretASCII(20);
     assert.equal(secret.length, 20, 'Should return the correct length');
     assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
   });
