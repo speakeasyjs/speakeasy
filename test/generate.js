@@ -54,15 +54,27 @@ describe('Generator tests', function () {
     assert.isDefined(secret.google_auth_qr, 'Google Auth QR should be returned');
   });
 
-  it('Testing generateSecret_ascii with defaults', function () {
+  it('Testing generateSecretASCII with defaults', function () {
     var secret = speakeasy.generateSecretASCII();
     assert.equal(secret.length, 32, 'Should return the correct length');
     assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
   });
 
-  it('Testing generateSecret_ascii with custom length', function () {
+  it('Testing generateSecretASCII with custom length', function () {
     var secret = speakeasy.generateSecretASCII(20);
     assert.equal(secret.length, 20, 'Should return the correct length');
     assert.ok(/^[a-z0-9]+$/i.test(secret.ascii), 'Should return an alphanumeric key');
+  });
+
+  it('Testing backward compatibility (deprecated function) generate_key', function () {
+    var secret = speakeasy.generate_key();
+    assert.ok(secret, 'Should return a secret');
+    assert.equal(secret.ascii.length, 32, 'Should return default secret length');
+  });
+
+  it('Testing backward compatibility (deprecated function) generate_key_ascii', function () {
+    var secret = speakeasy.generate_key_ascii(20);
+    assert.ok(secret, 'Should return a secret');
+    assert.equal(secret.length, 20, 'Should return the correct length');
   });
 });
