@@ -105,6 +105,9 @@ exports.hotp = function hotpGenerate (options) {
   return code.substr(-digits);
 };
 
+// Alias counter() for hotp()
+exports.counter = exports.hotp;
+
 /**
  * Verify a counter-based one-time token against the secret and return the delta.
  * By default, it verifies the token at the given counter value, with no leeway
@@ -260,6 +263,9 @@ exports.totp = function totpGenerate (options) {
   // pass to hotp
   return this.hotp(options);
 };
+
+// Alias time() for totp()
+exports.time = exports.totp;
 
 /**
  * Verify a time-based one-time token against the secret and return the delta.
