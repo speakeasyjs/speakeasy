@@ -24,7 +24,7 @@ exports.digest = function digest (options) {
   var i;
 
   // unpack options
-  var key = options.secret;
+  var secret = options.secret;
   var counter = options.counter;
   var encoding = options.encoding || 'ascii';
   var algorithm = (options.algorithm || 'sha1').toLowerCase();
@@ -32,13 +32,13 @@ exports.digest = function digest (options) {
   // Backwards compatibility - deprecated
   if (options.key != null) {
     console.log('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.');
-    key = options.key;
+    secret = options.key;
   }
 
-  // convert key to buffer
-  if (!Buffer.isBuffer(key)) {
-    key = encoding === 'base32' ? base32.decode(key)
-      : new Buffer(key, encoding);
+  // convert secret to buffer
+  if (!Buffer.isBuffer(secret)) {
+    secret = encoding === 'base32' ? base32.decode(secret)
+      : new Buffer(secret, encoding);
   }
 
   // create an buffer from the counter
@@ -53,7 +53,7 @@ exports.digest = function digest (options) {
   }
 
   // init hmac with the key
-  var hmac = crypto.createHmac(algorithm, key);
+  var hmac = crypto.createHmac(algorithm, secret);
 
   // update hmac with the counter
   hmac.update(buf);
@@ -154,20 +154,30 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
   options = Object.create(options);
 
   // unpack options
-  var token = options.token;
+  var token = String(options.token);
+  var digits = parseInt(options.digits, 10) || 6;
   var window = parseInt(options.window, 10) || 0;
   var counter = parseInt(options.counter, 10) || 0;
 
-  // loop from C to C + W
+  // fail if token is not of correct length
+  if (token.length !== digits) {
+    return;
+  }
+
+  // parse token to integer
+  token = parseInt(token, 10);
+
+  // loop from C to C + W inclusive
   for (i = counter; i <= counter + window; ++i) {
     options.counter = i;
-    if (exports.hotp(options) === token) {
+    // domain-specific constant-time comparison for integer codes
+    if (parseInt(exports.hotp(options), 10) === token) {
       // found a matching code, return delta
       return {delta: i - counter};
     }
   }
 
-// no codes have matched
+  // no codes have matched
 };
 
 /**
