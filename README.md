@@ -62,7 +62,7 @@ var secret = speakeasy.generateSecret();
 
 This will generate a secret key of length 32, which will be the secret key for the user.
 
-Now, we want to make sure that this secret works by validating the token that the user gets from it for the first time. In other words, we don't want to set this as the user's secret key just yet – we first want to verify their token for the first time. We need to persist the secret so that we can validate it later.
+Now, we want to make sure that this secret works by validating the token that the user gets from it for the first time. In other words, we don't want to set this as the user's secret key just yet – we first want to verify their token for the first time. We need to persist the secret so that we can use it for token validation later.
 
 So, store one of the encodings for the secret, preferably `secret.base32`, somewhere temporary, since we'll use that in the future to authenticate the user's first token.
 
