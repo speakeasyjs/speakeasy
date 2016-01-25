@@ -31,6 +31,14 @@ describe('HOTP Counter-Based Algorithm Test', function () {
     });
   });
 
+  // Backwards compatibility - deprecated
+  describe("digits override with secret = '12345678901234567890' at counter 4 and length = 8", function () {
+    it('should return correct one-time password', function () {
+      var topic = speakeasy.hotp({secret: '12345678901234567890', counter: 4, length: 8});
+      assert.equal(topic, '40338314');
+    });
+  });
+
   describe("hexadecimal encoding with secret = '3132333435363738393031323334353637383930' as hexadecimal at counter 4", function () {
     it('should return correct one-time password', function () {
       var topic = speakeasy.hotp({secret: '3132333435363738393031323334353637383930', encoding: 'hex', counter: 4});

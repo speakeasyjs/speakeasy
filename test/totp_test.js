@@ -67,6 +67,14 @@ describe('TOTP Time-Based Algorithm Test', function () {
     });
   });
 
+  // Backwards compatibility - deprecated
+  describe("initial time with secret = '12345678901234567890' at time = 1111111109 and initial_time = 1111111100", function () {
+    it('should return correct one-time password', function () {
+      var topic = speakeasy.totp({secret: '12345678901234567890', time: 1111111109, initial_time: 1111111100});
+      assert.equal(topic, '755224');
+    });
+  });
+
   describe("base32 encoding with secret = '1234567890' at time = 1111111109", function () {
     it('should return correct one-time password', function () {
       var topic = speakeasy.totp({secret: '12345678901234567890', time: 1111111109});
