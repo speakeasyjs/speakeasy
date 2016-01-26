@@ -73,4 +73,30 @@ describe('HOTP Counter-Based Algorithm Test', function () {
       assert.equal(topic, '90693936');
     });
   });
+
+  describe('hotp.verifyDelta()', function () {
+    var secret = 'rNONHRni6BAk7y2TiKrv';
+    it('should get current TOTP value', function () {
+      this.token = speakeasy.totp({secret: secret, counter: 1});
+      assert.equal(this.token, '314097');
+    });
+    it('should get delta with varying window lengths', function () {
+      var delta;
+
+      delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '314097', counter: 1, window: 0
+      });
+      assert.isObject(delta); assert.strictEqual(delta.delta, 0);
+
+      delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '314097', counter: 1, window: 2
+      });
+      assert.isObject(delta); assert.strictEqual(delta.delta, 0);
+
+      delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '314097', counter: 1, window: 3
+      });
+      assert.isObject(delta); assert.strictEqual(delta.delta, 0);
+    });
+  });
 });
