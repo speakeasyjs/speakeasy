@@ -164,5 +164,13 @@ describe('TOTP Time-Based Algorithm Test', function () {
       });
       assert.isObject(delta); assert.strictEqual(delta.delta, -2);
     });
+
+    it('should support negative delta values when token is on the negative side of the window using time input', function () {
+      // Use token at counter 1, initial counter 3, and a window of 2
+      var delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '625175', time: 1453854005, window: 2
+      });
+      assert.isObject(delta); assert.strictEqual(delta.delta, -2);
+    });
   });
 });
