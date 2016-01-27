@@ -31,7 +31,7 @@ exports.digest = function digest (options) {
 
   // Backwards compatibility - deprecated
   if (options.key != null) {
-    console.log('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.');
+    console.warn('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.');
     secret = options.key;
   }
 
@@ -86,7 +86,7 @@ exports.hotp = function hotpGenerate (options) {
   // unpack digits
   // backward compatibility: `length` is also accepted here, but deprecated
   var digits = (options.digits != null ? options.digits : options.length) || 6;
-  if (options.length != null) console.log('Speakeasy - Deprecation Notice - Specifying token digits using `length` is no longer supported. Use `digits` instead.');
+  if (options.length != null) console.warn('Speakeasy - Deprecation Notice - Specifying token digits using `length` is no longer supported. Use `digits` instead.');
 
   // digest the options
   var digest = options.digest || exports.digest(options);
@@ -237,7 +237,7 @@ exports._counter = function _counter (options) {
 
   // also accepts 'initial_time', but deprecated
   var epoch = (options.epoch != null ? (options.epoch * 1000) : (options.initial_time * 1000)) || 0;
-  if (options.initial_time != null) console.log('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.');
+  if (options.initial_time != null) console.warn('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.');
 
   return Math.floor((time - epoch) / step / 1000);
 };
@@ -453,7 +453,7 @@ exports.generateSecret = function generateSecret (options) {
 
   // generate some qr codes if requested
   if (qr_codes) {
-    console.log('Speakeasy - Deprecation Notice - generateSecret() QR codes are deprecated and no longer supported. Please use your own QR code implementation.');
+    console.warn('Speakeasy - Deprecation Notice - generateSecret() QR codes are deprecated and no longer supported. Please use your own QR code implementation.');
     SecretKey.qr_code_ascii = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.ascii);
     SecretKey.qr_code_hex = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.hex);
     SecretKey.qr_code_base32 = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(SecretKey.base32);
@@ -469,7 +469,7 @@ exports.generateSecret = function generateSecret (options) {
 
   // generate a QR code for use in Google Authenticator if requested
   if (google_auth_qr) {
-    console.log('Speakeasy - Deprecation Notice - generateSecret() Google Auth QR code is deprecated and no longer supported. Please use your own QR code implementation.');
+    console.warn('Speakeasy - Deprecation Notice - generateSecret() Google Auth QR code is deprecated and no longer supported. Please use your own QR code implementation.');
     SecretKey.google_auth_qr = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=' + encodeURIComponent(exports.otpauthURL({ secret: SecretKey.base32, label: name }));
   }
 
