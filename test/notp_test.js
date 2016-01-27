@@ -61,15 +61,15 @@ it('HOTP', function () {
 
   // make sure we can not pass in opt
   options.token = 'WILL NOT PASS';
-  assert.throws(function () { speakeasy.hotp.verify(options); }, /Number of digits in token does not match digits specified/, 'Should error');
+  speakeasy.hotp.verify(options);
 
   // check for invalid token value in verifyDelta
   options.token = 'NOPASS';
-  assert.throws(function () { speakeasy.hotp.verifyDelta(options); }, /Given token is not a number/, 'Should not pass');
+  assert.ok(!speakeasy.hotp.verifyDelta(options), 'Should not pass');
 
   // countercheck for failure
   options.counter = 0;
-  assert.throws(function () { speakeasy.hotp.verify(options); }, /Given token is not a number/, 'Should not pass');
+  assert.ok(!speakeasy.hotp.verify(options), 'Should not pass');
 
   // countercheck for passes
   for (var i = 0; i < HOTP.length; i++) {
@@ -102,12 +102,12 @@ it('TOTtoken', function () {
   // countercheck for failure
   options.time = 0;
   options.token = 'windowILLNOTtokenASS';
-  assert.throws(function () { speakeasy.totp.verify(options); }, /Number of digits in token does not match digits specified/, 'Should not pass');
+  assert.ok(!speakeasy.totp.verify(options), 'Should not pass');
 
   // countercheck for failure
   options.time = 0;
   options.token = 'windowILLNOTtokenASS';
-  assert.throws(function () { speakeasy.totp.verify(options); }, /Number of digits in token does not match digits specified/, 'Should not pass');
+  assert.ok(!speakeasy.totp.verifyDelta(options), 'Should not pass');
 
   // countercheck for test vector at 59s with verifyDelta
   options.time = 59;

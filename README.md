@@ -464,11 +464,6 @@ it at counter position 7, it will return `{ delta: 2 }`.
 
 **Kind**: function  
 
-**Throws**: Error if a given token is not a number, or if the number of digits
-  in a token does not match the number of digits specified (i.e. if digits
-  is not specified and the token is not 6 digits, or if digits is specified
-  and the token digits does not equal the specified digits.)
-
 **Returns**: <code>Object</code> - On success, returns an object with the counter
   difference between the client and the server as the `delta` property (i.e.
   `{ delta: 0 }`).  
@@ -492,11 +487,6 @@ instead of an object. For more on how to use a window with this, see
 hotp.verifyDelta.
 
 **Kind**: function  
-
-**Throws**: Error if a given token is not a number, or if the number of digits
-  in a token does not match the number of digits specified (i.e. if digits
-  is not specified and the token is not 6 digits, or if digits is specified
-  and the token digits does not equal the specified digits.)
 
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
   window, false otherwise.  
@@ -557,11 +547,6 @@ If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 
 **Kind**: function  
 
-**Throws**: Error if a given token is not a number, or if the number of digits
-  in a token does not match the number of digits specified (i.e. if digits
-  is not specified and the token is not 6 digits, or if digits is specified
-  and the token digits does not equal the specified digits.)
-
 **Returns**: <code>Object</code> - On success, returns an object with the time step
   difference between the client and the server as the `delta` property (e.g.
   `{ delta: 0 }`).  
@@ -587,11 +572,6 @@ verifies. Helper function for verifyDelta() that returns a boolean instead of
 an object. For more on how to use a window with this, see totp.verifyDelta.
 
 **Kind**: function
-
-**Throws**: Error if a given token is not a number, or if the number of digits
-  in a token does not match the number of digits specified (i.e. if digits
-  is not specified and the token is not 6 digits, or if digits is specified
-  and the token digits does not equal the specified digits.)
 
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
   window, false otherwise.  
@@ -658,11 +638,6 @@ the app.
 
 To generate a suitable QR Code, pass the generated URL to a QR Code
 generator, such as the `qr-image` module.
-
-Throws an error if secret or label is missing, or if hotp is used and a
-counter is missing, if the type is not one of `hotp` or `totp`, if the
-algorithm is not one of the supported SHA1, SHA256, or SHA512, if the
-URL is called with an invalid number of digits, or an invalid period.
 
 **Kind**: function  
 

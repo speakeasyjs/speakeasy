@@ -143,10 +143,6 @@ exports.counter = exports.hotp;
  * @return {Object} On success, returns an object with the counter
  *   difference between the client and the server as the `delta` property (i.e.
  *   `{ delta: 0 }`).
- * @throws Error if a given token is not a number, or if the number of digits
- *   in a token does not match the number of digits specified (i.e. if digits
- *   is not specified and the token is not 6 digits, or if digits is specified
- *   and the token digits does not equal the specified digits.)
  * @method hotp․verifyDelta
  * @global
  */
@@ -165,7 +161,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // fail if token is not of correct length
   if (token.length !== digits) {
-    throw new Error('Speakeasy - Verify - Number of digits in token does not match digits specified (default 6)');
+    return;
   }
 
   // parse token to integer
@@ -173,7 +169,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // fail if token is NA
   if (isNaN(token)) {
-    throw new Error('Speakeasy - Verify - Given token is not a number');
+    return;
   }
 
   // loop from C to C + W inclusive
@@ -212,10 +208,6 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
  *   sha512).
  * @return {Boolean} Returns true if the token matches within the given
  *   window, false otherwise.
- * @throws Error if a given token is not a number, or if the number of digits
- *   in a token does not match the number of digits specified (i.e. if digits
- *   is not specified and the token is not 6 digits, or if digits is specified
- *   and the token digits does not equal the specified digits.)
  * @method hotp․verify
  * @global
  */
@@ -333,10 +325,6 @@ exports.time = exports.totp;
  * @return {Object} On success, returns an object with the time step
  *   difference between the client and the server as the `delta` property (e.g.
  *   `{ delta: 0 }`).
- * @throws Error if a given token is not a number, or if the number of digits
- *   in a token does not match the number of digits specified (i.e. if digits
- *   is not specified and the token is not 6 digits, or if digits is specified
- *   and the token digits does not equal the specified digits.)
  * @method totp․verifyDelta
  * @global
  */
@@ -394,10 +382,6 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  *   sha512).
  * @return {Boolean} Returns true if the token matches within the given
  *   window, false otherwise.
- * @throws Error if a given token is not a number, or if the number of digits
- *   in a token does not match the number of digits specified (i.e. if digits
- *   is not specified and the token is not 6 digits, or if digits is specified
- *   and the token digits does not equal the specified digits.)
  * @method totp․verify
  * @global
  */
@@ -554,10 +538,6 @@ exports.generate_key_ascii = util.deprecate(function (length, symbols) {
  * @param {String} [options.encoding] Key encoding (ascii, hex, base32,
  *   base64). If the key is not encoded in Base-32, it will be reencoded.
  * @return {String} A URL suitable for use with the Google Authenticator.
- * @throws Error if secret or label is missing, or if hotp is used and a
- *   counter is missing, if the type is not one of `hotp` or `totp`, if the
- *   algorithm is not one of the supported SHA1, SHA256, or SHA512, if the
- *   URL is called with an invalid number of digits, or an invalid period.
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
