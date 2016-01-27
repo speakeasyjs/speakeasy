@@ -23,7 +23,9 @@
     "one-time password",
     "passwords",
     "totp",
-    "two-factor"
+    "two factor",
+    "two-factor",
+    "two-factor authentication"
   ],
   "license": "MIT",
   "repository": {
@@ -37,16 +39,6 @@
   "dependencies": {
     "base32.js": "0.0.1"
   },
-  "keywords": [
-    "two-factor",
-    "authentication",
-    "hotp",
-    "totp",
-    "multi-factor",
-    "hmac",
-    "one-time password",
-    "passwords"
-  ],
   "devDependencies": {
     "chai": "^3.4.1",
     "coveralls": "^2.11.6",
