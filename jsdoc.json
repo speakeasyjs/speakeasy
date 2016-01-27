@@ -1,0 +1,25 @@
+{
+  "source": {
+    "include": [
+      "index.js",
+      "package.json",
+      "README.md"
+    ]
+  },
+  "plugins": ["plugins/markdown"],
+  "templates": {
+    "applicationName": "Speakeasy",
+    "meta": {
+      "title": "Speakeasy",
+      "description": "Speakeasy - Two-factor authentication for Node.js. One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
+      "keyword": "one-time passcode hotp totp google authenticator"
+    },
+    "default": {
+      "outputSourceFiles": true
+    },
+    "linenums": true
+  },
+  "opts": {
+    "destination": "docs"
+  }
+}

@@ -1,34 +1,58 @@
 {
-  "author": "Mark Bao <mark@markbao.com> (http://markbao.com/)",
   "name": "speakeasy",
-  "description": "Easy two-factor authentication with node.js. Time-based or counter-based (HOTP/TOTP), and supports the Google Authenticator mobile app. Also includes a key generator. Uses the HMAC One-Time Password algorithms.",
-  "version": "1.0.5",
-  "homepage": "http://github.com/markbao/speakeasy",
+  "description": "Two-factor authentication for Node.js. One-time passcode generator (HOTP/TOTP) with support for Google Authenticator.",
+  "version": "2.0.0",
+  "author": {
+    "name": "Mark Bao & Speakeasy Contributors",
+    "email": "mark@markbao.com"
+  },
+  "contributors": [{
+    "name": "Michael Phan-Ba",
+    "email": "michael@mikepb.com"
+  }, {
+    "name": "Guy Halford-Thompson",
+    "email": "guy@cach.me"
+  }],
+  "homepage": "http://github.com/speakeasyjs/speakeasy",
+  "bugs": "https://github.com/speakeasyjs/speakeasy/issues",
+  "keywords": [
+    "authentication",
+    "google authenticator",
+    "hmac",
+    "hotp",
+    "multi-factor",
+    "one-time password",
+    "passwords",
+    "totp",
+    "two factor",
+    "two-factor",
+    "two-factor authentication"
+  ],
+  "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git://github.com/markbao/speakeasy.git"
+    "url": "git://github.com/speakeasyjs/speakeasy.git"
   },
   "main": "index.js",
   "engines": {
-    "node": ">= 0.3.0"
+    "node": ">= 0.10.0"
   },
   "dependencies": {
-    "thirty-two": "0.0.2"
+    "base32.js": "0.0.1"
   },
-  "keywords": [
-    "two-factor",
-    "authentication",
-    "hotp",
-    "totp",
-    "multi-factor",
-    "hmac",
-    "one-time password",
-    "passwords"
-  ],
   "devDependencies": {
-    "vows": "*"
+    "chai": "^3.4.1",
+    "coveralls": "^2.11.6",
+    "istanbul": "^0.4.2",
+    "jsdoc": "^3.3.1",
+    "mocha": "^2.2.5",
+    "semistandard": "^7.0.5",
+    "snazzy": "^2.0.1"
   },
   "scripts": {
-    "test": "vows --spec test/*"
+    "test": "mocha",
+    "doc": "jsdoc -c jsdoc.json && sed -i '' -e 's/․/./g' docs/speakeasy/*/*.html",
+    "cover": "istanbul cover _mocha -- test/* -R spec",
+    "lint": "semistandard --verbose | snazzy"
   }
 }
