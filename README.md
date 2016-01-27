@@ -340,18 +340,18 @@ var secret = 'rNONHRni6BAk7y2TiKrv';
 
 // By way of example, we will force TOTP to return tokens at time 1453853945 and
 // at time 1453854005 (60 seconds ahead, or 2 steps ahead)
-var token1 = speakeasy.totp({ secret: secret, counter: 1 }); // 625175
-var token3 = speakeasy.totp({ secret: secret, counter: 3 }); // 766592
+var token1 = speakeasy.totp({ secret: secret, time: 1453853945 }); // 625175
+var token3 = speakeasy.totp({ secret: secret, time: 1453854005 }); // 222636
 
 // We can check the time at token 3, 1453853975, with token 1, but use a window of 2
 // With a time step of 30 seconds, this will check all tokens from 60 seconds 
-// before the time, and 60 seconds after the time
-var validated = speakeasy.totp.verifyDelta({ secret: secret, token: token1, window: 2, time: 1453854005 });
+// before the time to 60 seconds after the time
+speakeasy.totp.verifyDelta({ secret: secret, token: token1, window: 2, time: 1453854005 });
 // => { delta: -2 }
 
-// This signifies that the given token, token1, is -2 steps away from the given
-// time, which means that it is the token for the value at
-// (-2 * time step) = (-2 * 30) = 60 seconds ago.
+// This signifies that the given token, token1, is -2 steps away from
+// the given time, which means that it is the token for the value at
+// (-2 * time step) = (-2 * 30 seconds) = 60 seconds ago.
 ```
 
 As shown previously, you can also change `verifyDelta()` to `verify()` to simply return a boolean if the given token is within the given window.
