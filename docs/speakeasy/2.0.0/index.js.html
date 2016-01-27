@@ -26,15 +26,12 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>"use strict";
+            <pre class="prettyprint source linenums"><code>'use strict';
 
-/**
- * Module dependencies.
- */
-
-var base32 = require("base32.js");
-var crypto = require("crypto");
-var url = require("url");
+var base32 = require('base32.js');
+var crypto = require('crypto');
+var url = require('url');
+var util = require('util');
 
 /**
  * Digest the one-time passcode options.
@@ -46,6 +43,8 @@ var url = require("url");
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
+ * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
+ *   Shared secret key
  * @return {Buffer} The one-time passcode as a buffer.
  */
 
@@ -53,22 +52,27 @@ exports.digest = function digest (options) {
   var i;
 
   // unpack options
-  var key = options.secret;
+  var secret = options.secret;
   var counter = options.counter;
-  var encoding = options.encoding || "ascii";
-  var algorithm = (options.algorithm || "sha1").toLowerCase();
+  var encoding = options.encoding || 'ascii';
+  var algorithm = (options.algorithm || 'sha1').toLowerCase();
 
-  // convert key to buffer
-  if (!Buffer.isBuffer(key)) {
-    key = encoding == "base32" ? base32.decode(key)
-                               : new Buffer(key, encoding);
+  // Backwards compatibility - deprecated
+  if (options.key != null) {
+    console.warn('Speakeasy - Deprecation Notice - Specifying the secret using `key` is no longer supported. Use `secret` instead.');
+    secret = options.key;
+  }
+
+  // convert secret to buffer
+  if (!Buffer.isBuffer(secret)) {
+    secret = encoding === 'base32' ? base32.decode(secret)
+      : new Buffer(secret, encoding);
   }
 
   // create an buffer from the counter
   var buf = new Buffer(8);
   var tmp = counter;
   for (i = 0; i &lt; 8; i++) {
-
     // mask 0xff over number to get last 8
     buf[7 - i] = tmp &amp; 0xff;
 
@@ -77,7 +81,7 @@ exports.digest = function digest (options) {
   }
 
   // init hmac with the key
-  var hmac = crypto.createHmac(algorithm, key);
+  var hmac = crypto.createHmac(algorithm, secret);
 
   // update hmac with the counter
   hmac.update(buf);
@@ -87,7 +91,10 @@ exports.digest = function digest (options) {
 };
 
 /**
- * Generate a counter-based one-time passcode.
+ * Generate a counter-based one-time token. Specify the key and counter, and
+ * receive the one-time password for that counter position as a string. You can
+ * also specify a token length, as well as the encoding (ASCII, hexadecimal, or
+ * base32) and the hashing algorithm to use (SHA1, SHA256, SHA512).
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -99,13 +106,18 @@ exports.digest = function digest (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
+ * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
+ *   Shared secret key
+ * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
+ *   number of digits for the one-time passcode.
  * @return {String} The one-time passcode.
  */
 
 exports.hotp = function hotpGenerate (options) {
-
-  // unpack options
-  var digits = options.digits || 6;
+  // unpack digits
+  // backward compatibility: `length` is also accepted here, but deprecated
+  var digits = (options.digits != null ? options.digits : options.length) || 6;
+  if (options.length != null) console.warn('Speakeasy - Deprecation Notice - Specifying token digits using `length` is no longer supported. Use `digits` instead.');
 
   // digest the options
   var digest = options.digest || exports.digest(options);
@@ -114,20 +126,35 @@ exports.hotp = function hotpGenerate (options) {
   var offset = digest[digest.length - 1] &amp; 0xf;
 
   // calculate binary code (RFC4226 5.4)
-  var code = (digest[offset] &amp; 0x7f) &lt;&lt; 24
-               | (digest[offset + 1] &amp; 0xff) &lt;&lt; 16
-               | (digest[offset + 2] &amp; 0xff) &lt;&lt; 8
-               | (digest[offset + 3] &amp; 0xff);
+  var code = (digest[offset] &amp; 0x7f) &lt;&lt; 24 |
+    (digest[offset + 1] &amp; 0xff) &lt;&lt; 16 |
+    (digest[offset + 2] &amp; 0xff) &lt;&lt; 8 |
+    (digest[offset + 3] &amp; 0xff);
 
   // left-pad code
-  code = new Array(digits + 1).join("0") + code.toString(10);
+  code = new Array(digits + 1).join('0') + code.toString(10);
 
   // return length number off digits
   return code.substr(-digits);
 };
 
+// Alias counter() for hotp()
+exports.counter = exports.hotp;
+
 /**
- * Verify a counter-based One Time passcode.
+ * Verify a counter-based one-time token against the secret and return the delta.
+ * By default, it verifies the token at the given counter value, with no leeway
+ * (no look-ahead or look-behind). A token validated at the current counter value
+ * will have a delta of 0.
+ *
+ * You can specify a window to add more leeway to the verification process.
+ * Setting the window param will check for the token at the given counter value
+ * as well as `window` tokens ahead (one-sided window). See param for more info.
+ *
+ * `verifyDelta()` will return the delta between the counter value of the token
+ * and the given counter value. For example, if given a counter 5 and a window
+ * 10, `verifyDelta()` will look at tokens from 5 to 15, inclusive. If it finds
+ * it at counter position 7, it will return `{ delta: 2 }`.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -136,7 +163,7 @@ exports.hotp = function hotpGenerate (options) {
  *   the application and must be incremented for each request.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
- * @param {Integer} [options.window=50] The allowable margin for the counter.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
  *   The function will check "W" codes in the future against the provided
  *   passcode, e.g. if W = 10, and C = 5, this function will check the
  *   passcode against all One Time Passcodes between 5 and 15, inclusive.
@@ -145,26 +172,42 @@ exports.hotp = function hotpGenerate (options) {
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
  * @return {Object} On success, returns an object with the counter
- *   difference between the client and the server as the `delta` property.
- * @method hotp.verify
+ *   difference between the client and the server as the `delta` property (i.e.
+ *   `{ delta: 0 }`).
+ * @method hotp.verifyDelta
  * @global
  */
 
-exports.hotp.verify = function hotpVerify (options) {
+exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
   var i;
 
   // shadow options
   options = Object.create(options);
 
   // unpack options
-  var token = options.token;
-  var window = options.window || 50;
-  var counter = options.counter || 0;
+  var token = String(options.token);
+  var digits = parseInt(options.digits, 10) || 6;
+  var window = parseInt(options.window, 10) || 0;
+  var counter = parseInt(options.counter, 10) || 0;
 
-  // loop from C to C + W
+  // fail if token is not of correct length
+  if (token.length !== digits) {
+    return;
+  }
+
+  // parse token to integer
+  token = parseInt(token, 10);
+
+  // fail if token is NA
+  if (isNaN(token)) {
+    return;
+  }
+
+  // loop from C to C + W inclusive
   for (i = counter; i &lt;= counter + window; ++i) {
     options.counter = i;
-    if (exports.hotp(options) == token) {
+    // domain-specific constant-time comparison for integer codes
+    if (parseInt(exports.hotp(options), 10) === token) {
       // found a matching code, return delta
       return {delta: i - counter};
     }
@@ -174,33 +217,82 @@ exports.hotp.verify = function hotpVerify (options) {
 };
 
 /**
- * Calculate counter value based on given options.
+ * Verify a counter-based one-time token against the secret and return true if
+ * it verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
+ * instead of an object. For more on how to use a window with this, see
+ * {@link hotp.verifyDelta}.
  *
  * @param {Object} options
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {String} options.secret Shared secret key
+ * @param {String} options.token Passcode to validate
+ * @param {Integer} options.counter Counter value. This should be stored by
+ *   the application and must be incremented for each request.
+ * @param {Integer} [options.digits=6] The number of digits for the one-time
+ *   passcode.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
+ *   The function will check "W" codes in the future against the provided
+ *   passcode, e.g. if W = 10, and C = 5, this function will check the
+ *   passcode against all One Time Passcodes between 5 and 15, inclusive.
+ * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
+ *   base32, base64).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
+ * @return {Boolean} Returns true if the token matches within the given
+ *   window, false otherwise.
+ * @method hotp.verify
+ * @global
+ */
+exports.hotp.verify = function hotpVerify (options) {
+  return exports.hotp.verifyDelta(options) != null;
+};
+
+/**
+ * Calculate counter value based on given options. A counter value converts a
+ * TOTP time into a counter value by finding the number of time steps that have
+ * passed since the epoch to the current time.
+ *
+ * @param {Object} options
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
  * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
- * @return {Integer} The calculated counter value
+ *   which to calculate the counter value. Defaults to 0 (no offset).
+ * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
+ *   Initial time in seconds since the UNIX epoch from which to calculate the
+ *   counter value. Defaults to 0 (no offset).
+ * @return {Integer} The calculated counter value.
  * @private
  */
 
 exports._counter = function _counter (options) {
   var step = options.step || 30;
-  var time = options.time != null ? options.time : Date.now();
-  var epoch = options.epoch || 0;
+  var time = options.time != null ? (options.time * 1000) : Date.now();
+
+  // also accepts 'initial_time', but deprecated
+  var epoch = (options.epoch != null ? (options.epoch * 1000) : (options.initial_time * 1000)) || 0;
+  if (options.initial_time != null) console.warn('Speakeasy - Deprecation Notice - Specifying the epoch using `initial_time` is no longer supported. Use `epoch` instead.');
+
   return Math.floor((time - epoch) / step / 1000);
 };
 
 /**
- * Generate a time-based one-time passcode.
+ * Generate a time-based one-time token. Specify the key, and receive the
+ * one-time password for that time as a string. By default, it uses the current
+ * time and a time step of 30 seconds, so there is a new token every 30 seconds.
+ * You may override the time step and epoch for custom timing. You can also
+ * specify a token length, as well as the encoding (ASCII, hexadecimal, or
+ * base32) and the hashing algorithm to use (SHA1, SHA256, SHA512).
+ *
+ * Under the hood, TOTP calculates the counter value by finding how many time
+ * steps have passed since the epoch, and calls HOTP with that counter value.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
- * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
+ * @param {Integer} [options.epoch=0] Initial time in seconds since the UNIX
+ *   epoch from which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
@@ -208,11 +300,17 @@ exports._counter = function _counter (options) {
  *   base32, base64).
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
+ * @param {String} [options.key] (DEPRECATED. Use `secret` instead.)
+ *   Shared secret key
+ * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
+ *   Initial time in seconds since the UNIX epoch from which to calculate the
+ *   counter value. Defaults to 0 (no offset).
+ * @param {Integer} [options.length=6] (DEPRECATED. Use `digits` instead.) The
+ *   number of digits for the one-time passcode.
  * @return {String} The one-time passcode.
  */
 
 exports.totp = function totpGenerate (options) {
-
   // shadow options
   options = Object.create(options);
 
@@ -223,20 +321,40 @@ exports.totp = function totpGenerate (options) {
   return this.hotp(options);
 };
 
+// Alias time() for totp()
+exports.time = exports.totp;
+
 /**
- * Verify a time-based One Time passcode.
+ * Verify a time-based one-time token against the secret and return the delta.
+ * By default, it verifies the token at the current time window, with no leeway
+ * (no look-ahead or look-behind). A token validated at the current time window
+ * will have a delta of 0.
+ *
+ * You can specify a window to add more leeway to the verification process.
+ * Setting the window param will check for the token at the given counter value
+ * as well as `window` tokens ahead and `window` tokens behind (two-sided
+ * window). See param for more info.
+ *
+ * `verifyDelta()` will return the delta between the counter value of the token
+ * and the given counter value. For example, if given a time at counter 1000 and
+ * a window of 5, `verifyDelta()` will look at tokens from 995 to 1005,
+ * inclusive. In other words, if the time-step is 30 seconds, it will look at
+ * tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
+ * If it finds it at counter position 1002, it will return `{ delta: 2 }`.
+ * If it finds it at counter position 997, it will return `{ delta: -3 }`.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
  * @param {String} options.token Passcode to validate
- * @param {Integer} [options.time] Time with which to calculate counter value
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
  * @param {Integer} [options.step=30] Time step in seconds
- * @param {Integer} [options.epoch=0] Initial time since the UNIX epoch from
- *   which to calculate the counter value. Defaults to `Date.now()`.
+ * @param {Integer} [options.epoch=0] Initial time in seconds since the UNIX
+ *   epoch from which to calculate the counter value. Defaults to 0 (no offset).
  * @param {Integer} [options.counter] Counter value, calculated by default.
  * @param {Integer} [options.digits=6] The number of digits for the one-time
  *   passcode.
- * @param {Integer} [options.window=6] The allowable margin for the counter.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
  *   The function will check "W" codes in the future and the past against the
  *   provided passcode, e.g. if W = 5, and C = 1000, this function will check
  *   the passcode against all One Time Passcodes between 995 and 1005,
@@ -246,18 +364,18 @@ exports.totp = function totpGenerate (options) {
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
  * @return {Object} On success, returns an object with the time step
- *   difference between the client and the server as the `delta` property.
- * @method totp.verify
+ *   difference between the client and the server as the `delta` property (e.g.
+ *   `{ delta: 0 }`).
+ * @method totp.verifyDelta
  * @global
  */
 
-exports.totp.verify = function totpVerify (options) {
-
+exports.totp.verifyDelta = function totpVerifyDelta (options) {
   // shadow options
   options = Object.create(options);
 
   // unpack options
-  var window = options.window != null ? options.window : 0;
+  var window = parseInt(options.window, 10) || 0;
 
   // calculate default counter value
   if (options.counter == null) options.counter = exports._counter(options);
@@ -266,14 +384,175 @@ exports.totp.verify = function totpVerify (options) {
   options.counter -= window;
   options.window += window;
 
-  // pass to hotp.verify
-  return exports.hotp.verify(options);
+  // pass to hotp.verifyDelta
+  var delta = exports.hotp.verifyDelta(options);
+
+  // adjust for two-sided window
+  if (delta) {
+    delta.delta -= window;
+  }
+
+  return delta;
 };
 
 /**
- * Generate an URL for use with the Google Authenticator app.
+ * Verify a time-based one-time token against the secret and return true if it
+ * verifies. Helper function for verifyDelta() that returns a boolean instead of
+ * an object. For more on how to use a window with this, see
+ * {@link totp.verifyDelta}.
  *
- * Authenticator considers TOTP codes  valid for 30 seconds. Additionally,
+ * @param {Object} options
+ * @param {String} options.secret Shared secret key
+ * @param {String} options.token Passcode to validate
+ * @param {Integer} [options.time] Time in seconds with which to calculate
+ *   counter value. Defaults to `Date.now()`.
+ * @param {Integer} [options.step=30] Time step in seconds
+ * @param {Integer} [options.epoch=0] Initial time in seconds  since the UNIX
+ *   epoch from which to calculate the counter value. Defaults to 0 (no offset).
+ * @param {Integer} [options.counter] Counter value, calculated by default.
+ * @param {Integer} [options.digits=6] The number of digits for the one-time
+ *   passcode.
+ * @param {Integer} [options.window=0] The allowable margin for the counter.
+ *   The function will check "W" codes in the future and the past against the
+ *   provided passcode, e.g. if W = 5, and C = 1000, this function will check
+ *   the passcode against all One Time Passcodes between 995 and 1005,
+ *   inclusive.
+ * @param {String} [options.encoding="ascii"] Key encoding (ascii, hex,
+ *   base32, base64).
+ * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
+ *   sha512).
+ * @return {Boolean} Returns true if the token matches within the given
+ *   window, false otherwise.
+ * @method totp.verify
+ * @global
+ */
+exports.totp.verify = function totpVerify (options) {
+  return exports.totp.verifyDelta(options) != null;
+};
+
+/**
+ * @typedef GeneratedSecret
+ * @type Object
+ * @property {String} ascii ASCII representation of the secret
+ * @property {String} hex Hex representation of the secret
+ * @property {String} base32 Base32 representation of the secret
+ * @property {String} qr_code_ascii URL for the QR code for the ASCII secret.
+ * @property {String} qr_code_hex URL for the QR code for the hex secret.
+ * @property {String} qr_code_base32 URL for the QR code for the base32 secret.
+ * @property {String} google_auth_qr URL for the Google Authenticator otpauth
+ *   URL's QR code.
+ * @property {String} otpauth_url Google Authenticator-compatible otpauth URL.
+ */
+
+/**
+ * Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
+ * (default 32). Returns the secret key in ASCII, hexadecimal, and base32 format,
+ * along with the URL used for the QR code for Google Authenticator (an otpauth
+ * URL). Use a QR code library to generate a QR code based on the Google
+ * Authenticator URL to obtain a QR code you can scan into the app.
+ *
+ * @param {Object} options
+ * @param {Integer} [options.length=32] Length of the secret
+ * @param {Boolean} [options.symbols=false] Whether to include symbols
+ * @param {Boolean} [options.otpauth_url=true] Whether to output a Google
+ *   Authenticator-compatible otpauth:// URL (only returns otpauth:// URL, no
+ *   QR code)
+ * @param {String} [options.name] The name to use with Google Authenticator.
+ * @param {Boolean} [options.qr_codes=false] (DEPRECATED. Do not use to prevent
+ *   leaking of secret to a third party. Use your own QR code implementation.)
+ *   Output QR code URLs for the token.
+ * @param {Boolean} [options.google_auth_qr=false] (DEPRECATED. Do not use to
+ *   prevent leaking of secret to a third party. Use your own QR code
+ *   implementation.) Output a Google Authenticator otpauth:// QR code URL.
+ * @return {Object}
+ * @return {GeneratedSecret} The generated secret key.
+ */
+exports.generateSecret = function generateSecret (options) {
+  // options
+  if (!options) options = {};
+  var length = options.length || 32;
+  var name = encodeURIComponent(options.name || 'SecretKey');
+  var qr_codes = options.qr_codes || false;
+  var google_auth_qr = options.google_auth_qr || false;
+  var otpauth_url = options.otpauth_url != null ? options.otpauth_url : true;
+  var symbols = true;
+
+  // turn off symbols only when explicity told to
+  if (options.symbols !== undefined &amp;&amp; options.symbols === false) {
+    symbols = false;
+  }
+
+  // generate an ascii key
+  var key = this.generateSecretASCII(length, symbols);
+
+  // return a SecretKey with ascii, hex, and base32
+  var SecretKey = {};
+  SecretKey.ascii = key;
+  SecretKey.hex = Buffer(key, 'ascii').toString('hex');
+  SecretKey.base32 = base32.encode(Buffer(key)).toString().replace(/=/g, '');
+
+  // generate some qr codes if requested
+  if (qr_codes) {
+    console.warn('Speakeasy - Deprecation Notice - generateSecret() QR codes are deprecated and no longer supported. Please use your own QR code implementation.');
+    SecretKey.qr_code_ascii = 'https://chart.googleapis.com/chart?chs=166x166&amp;chld=L|0&amp;cht=qr&amp;chl=' + encodeURIComponent(SecretKey.ascii);
+    SecretKey.qr_code_hex = 'https://chart.googleapis.com/chart?chs=166x166&amp;chld=L|0&amp;cht=qr&amp;chl=' + encodeURIComponent(SecretKey.hex);
+    SecretKey.qr_code_base32 = 'https://chart.googleapis.com/chart?chs=166x166&amp;chld=L|0&amp;cht=qr&amp;chl=' + encodeURIComponent(SecretKey.base32);
+  }
+
+  // add in the Google Authenticator-compatible otpauth URL
+  if (otpauth_url) {
+    SecretKey.otpauth_url = exports.otpauthURL({
+      secret: SecretKey.ascii,
+      label: name
+    });
+  }
+
+  // generate a QR code for use in Google Authenticator if requested
+  if (google_auth_qr) {
+    console.warn('Speakeasy - Deprecation Notice - generateSecret() Google Auth QR code is deprecated and no longer supported. Please use your own QR code implementation.');
+    SecretKey.google_auth_qr = 'https://chart.googleapis.com/chart?chs=166x166&amp;chld=L|0&amp;cht=qr&amp;chl=' + encodeURIComponent(exports.otpauthURL({ secret: SecretKey.base32, label: name }));
+  }
+
+  return SecretKey;
+};
+
+// Backwards compatibility - generate_key is deprecated
+exports.generate_key = util.deprecate(function (options) {
+  return exports.generateSecret(options);
+}, 'Speakeasy - Deprecation Notice - `generate_key()` is depreciated, please use `generateSecret()` instead.');
+
+/**
+ * Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
+ * symbols (if requested).
+ *
+ * @param  {Integer} [length=32]  The length of the key.
+ * @param  {Boolean} [symbols=false] Whether to include symbols in the key.
+ * @return {String} The generated key.
+ */
+exports.generateSecretASCII = function generateSecretASCII (length, symbols) {
+  var bytes = crypto.randomBytes(length || 32);
+  var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+  if (symbols) {
+    set += '!@#$%^&amp;*()&lt;>?/[]{},.:;';
+  }
+
+  var output = '';
+  for (var i = 0, l = bytes.length; i &lt; l; i++) {
+    output += set[Math.floor(bytes[i] / 255.0 * (set.length - 1))];
+  }
+  return output;
+};
+
+// Backwards compatibility - generate_key_ascii is deprecated
+exports.generate_key_ascii = util.deprecate(function (length, symbols) {
+  return exports.generateSecretASCII(length, symbols);
+}, 'Speakeasy - Deprecation Notice - `generate_key_ascii()` is depreciated, please use `generateSecretASCII()` instead.');
+
+/**
+ * Generate a Google Authenticator-compatible otpauth:// URL for passing the
+ * secret to a mobile device to install the secret.
+ *
+ * Authenticator considers TOTP codes valid for 30 seconds. Additionally,
  * the app presents 6 digits codes to the user. According to the
  * documentation, the period and number of digits are currently ignored by
  * the app.
@@ -283,12 +562,12 @@ exports.totp.verify = function totpVerify (options) {
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
- * @param {Integer} options.label Used to identify the account with which
+ * @param {String} options.label Used to identify the account with which
  *   the secret key is associated, e.g. the user's email address.
- * @param {Integer} [options.type="totp"] Either "hotp" or "totp".
+ * @param {String} [options.type="totp"] Either "hotp" or "totp".
  * @param {Integer} [options.counter] The initial counter value, required
  *   for HOTP.
- * @param {Integer} [options.issuer] The provider or service with which the
+ * @param {String} [options.issuer] The provider or service with which the
  *   secret key is associated.
  * @param {String} [options.algorithm="sha1"] Hash algorithm (sha1, sha256,
  *   sha512).
@@ -300,84 +579,94 @@ exports.totp.verify = function totpVerify (options) {
  * @param {String} [options.encoding] Key encoding (ascii, hex, base32,
  *   base64). If the key is not encoded in Base-32, it will be reencoded.
  * @return {String} A URL suitable for use with the Google Authenticator.
+ * @throws Error if secret or label is missing, or if hotp is used and a
+    counter is missing, if the type is not one of `hotp` or `totp`, if the
+    number of digits is non-numeric, or an invalid period is used. Warns if
+    the number of digits is not either 6 or 8 (though 6 is the only one
+    supported by Google Authenticator), and if the hashihng algorithm is
+    not one of the supported SHA1, SHA256, or SHA512.
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
-exports.url = function (options) {
-
+exports.otpauthURL = function otpauthURL (options) {
   // unpack options
   var secret = options.secret;
   var label = options.label;
   var issuer = options.issuer;
-  var type = (options.type || "totp").toLowerCase();
+  var type = (options.type || 'totp').toLowerCase();
   var counter = options.counter;
   var algorithm = options.algorithm;
   var digits = options.digits;
   var period = options.period;
-  var encoding = options.encoding;
+  var encoding = options.encoding || 'ascii';
 
   // validate type
   switch (type) {
-    case "totp":
-    case "hotp":
+    case 'totp':
+    case 'hotp':
       break;
     default:
-      throw new Error("invalid type `" + type + "`");
+      throw new Error('Speakeasy - otpauthURL - Invalid type `' + type + '`; must be `hotp` or `totp`');
   }
 
   // validate required options
-  if (!secret) throw new Error("missing secret");
-  if (!label) throw new Error("missing label");
+  if (!secret) throw new Error('Speakeasy - otpauthURL - Missing secret');
+  if (!label) throw new Error('Speakeasy - otpauthURL - Missing label');
 
   // require counter for HOTP
-  if (type == "hotp" &amp;&amp; counter == null) {
-    throw new Error("missing counter value for HOTP");
+  if (type === 'hotp' &amp;&amp; (counter === null || typeof counter === 'undefined')) {
+    throw new Error('Speakeasy - otpauthURL - Missing counter value for HOTP');
   }
+
+  // convert secret to base32
+  if (encoding !== 'base32') secret = new Buffer(secret, encoding);
+  if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
   // build query while validating
   var query = {secret: secret};
-  if (options.issuer) query.issuer = options.issuer;
+  if (issuer) query.issuer = issuer;
 
   // validate algorithm
   if (algorithm != null) {
     switch (algorithm.toUpperCase()) {
-      case "SHA1":
-      case "SHA256":
-      case "SHA512":
+      case 'SHA1':
+      case 'SHA256':
+      case 'SHA512':
         break;
       default:
-        throw new Error("invalid algorithm `" + algorithm + "`");
+        console.warn('Speakeasy - otpauthURL - Warning - Algorithm generally should be SHA1, SHA256, or SHA512');
     }
     query.algorithm = algorithm.toUpperCase();
   }
 
   // validate digits
   if (digits != null) {
-    switch (parseInt(digits, 10)) {
-      case 6:
-      case 8:
-        break;
-      default:
-        throw new Error("invalid digits `" + digits + "`");
+    if (isNaN(digits)) {
+      throw new Error('Speakeasy - otpauthURL - Invalid digits `' + digits + '`');
+    } else {
+      switch (parseInt(digits, 10)) {
+        case 6:
+        case 8:
+          break;
+        default:
+          console.warn('Speakeasy - otpauthURL - Warning - Digits generally should be either 6 or 8');
+      }
     }
     query.digits = digits;
   }
 
   // validate period
   if (period != null) {
-    if (~~period != period) {
-      throw new Error("invalid period `" + period + "`");
+    period = parseInt(period, 10);
+    if (~~period !== period) {
+      throw new Error('Speakeasy - otpauthURL - Invalid period `' + period + '`');
     }
     query.period = period;
   }
 
-  // convert secret to base32
-  if (encoding != "base32") secret = new Buffer(secret, encoding);
-  if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
-
   // return url
   return url.format({
-    protocol: "otpauth",
+    protocol: 'otpauth',
     slashes: true,
     hostname: type,
     pathname: label,
@@ -394,13 +683,13 @@ exports.url = function (options) {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#base32">base32</a></li><li><a href="global.html#digest">digest</a></li><li><a href="global.html#hotp">hotp</a></li><li><a href="global.html#hotp%25E2%2580%25A4verify">hotp.verify</a></li><li><a href="global.html#totp">totp</a></li><li><a href="global.html#totp%25E2%2580%25A4verify">totp.verify</a></li><li><a href="global.html#url">url</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#digest">digest</a></li><li><a href="global.html#generateSecret">generateSecret</a></li><li><a href="global.html#generateSecretASCII">generateSecretASCII</a></li><li><a href="global.html#hotp">hotp</a></li><li><a href="global.html#hotp%25E2%2580%25A4verify">hotp.verify</a></li><li><a href="global.html#hotp%25E2%2580%25A4verifyDelta">hotp.verifyDelta</a></li><li><a href="global.html#otpauthURL">otpauthURL</a></li><li><a href="global.html#totp">totp</a></li><li><a href="global.html#totp%25E2%2580%25A4verify">totp.verify</a></li><li><a href="global.html#totp%25E2%2580%25A4verifyDelta">totp.verifyDelta</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Tue Dec 29 2015 14:22:32 GMT-0800 (PST)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.4.0</a> on Wed Jan 27 2016 01:23:54 GMT-0500 (EST)
 </footer>
 
 <script> prettyPrint(); </script>
