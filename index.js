@@ -143,6 +143,10 @@ exports.counter = exports.hotp;
  * @return {Object} On success, returns an object with the counter
  *   difference between the client and the server as the `delta` property (i.e.
  *   `{ delta: 0 }`).
+ * @throws Error if a given token is not a number, or if the number of digits
+ *   in a token does not match the number of digits specified (i.e. if digits
+ *   is not specified and the token is not 6 digits, or if digits is specified
+ *   and the token digits does not equal the specified digits.)
  * @method hotp․verifyDelta
  * @global
  */
@@ -161,7 +165,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // fail if token is not of correct length
   if (token.length !== digits) {
-    return;
+    throw new Error('Speakeasy - Verify - Number of digits in token does not match digits specified (default 6)');
   }
 
   // parse token to integer
@@ -169,7 +173,7 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // fail if token is NA
   if (isNaN(token)) {
-    return;
+    throw new Error('Speakeasy - Verify - Given token is not a number');
   }
 
   // loop from C to C + W inclusive
@@ -208,6 +212,10 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
  *   sha512).
  * @return {Boolean} Returns true if the token matches within the given
  *   window, false otherwise.
+ * @throws Error if a given token is not a number, or if the number of digits
+ *   in a token does not match the number of digits specified (i.e. if digits
+ *   is not specified and the token is not 6 digits, or if digits is specified
+ *   and the token digits does not equal the specified digits.)
  * @method hotp․verify
  * @global
  */
@@ -325,6 +333,10 @@ exports.time = exports.totp;
  * @return {Object} On success, returns an object with the time step
  *   difference between the client and the server as the `delta` property (e.g.
  *   `{ delta: 0 }`).
+ * @throws Error if a given token is not a number, or if the number of digits
+ *   in a token does not match the number of digits specified (i.e. if digits
+ *   is not specified and the token is not 6 digits, or if digits is specified
+ *   and the token digits does not equal the specified digits.)
  * @method totp․verifyDelta
  * @global
  */
@@ -382,6 +394,10 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
  *   sha512).
  * @return {Boolean} Returns true if the token matches within the given
  *   window, false otherwise.
+ * @throws Error if a given token is not a number, or if the number of digits
+ *   in a token does not match the number of digits specified (i.e. if digits
+ *   is not specified and the token is not 6 digits, or if digits is specified
+ *   and the token digits does not equal the specified digits.)
  * @method totp․verify
  * @global
  */
@@ -508,7 +524,8 @@ exports.generate_key_ascii = util.deprecate(function (length, symbols) {
 }, 'Speakeasy - Deprecation Notice - `generate_key_ascii()` is depreciated, please use `generateSecretASCII()` instead.');
 
 /**
- * Generate an URL for use with the Google Authenticator app.
+ * Generate a Google Authenticator-compatible otpauth:// URL for passing the
+ * secret to a mobile device to install the secret.
  *
  * Authenticator considers TOTP codes valid for 30 seconds. Additionally,
  * the app presents 6 digits codes to the user. According to the
@@ -537,6 +554,10 @@ exports.generate_key_ascii = util.deprecate(function (length, symbols) {
  * @param {String} [options.encoding] Key encoding (ascii, hex, base32,
  *   base64). If the key is not encoded in Base-32, it will be reencoded.
  * @return {String} A URL suitable for use with the Google Authenticator.
+ * @throws Error if secret or label is missing, or if hotp is used and a
+ *   counter is missing, if the type is not one of `hotp` or `totp`, if the
+ *   algorithm is not one of the supported SHA1, SHA256, or SHA512, if the
+ *   URL is called with an invalid number of digits, or an invalid period.
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
@@ -558,16 +579,16 @@ exports.otpauthURL = function otpauthURL (options) {
     case 'hotp':
       break;
     default:
-      throw new Error('invalid type `' + type + '`');
+      throw new Error('Speakeasy - otpauthURL - Invalid type `' + type + '`; must be `hotp` or `totp`');
   }
 
   // validate required options
-  if (!secret) throw new Error('missing secret');
-  if (!label) throw new Error('missing label');
+  if (!secret) throw new Error('Speakeasy - otpauthURL - Missing secret');
+  if (!label) throw new Error('Speakeasy - otpauthURL - Missing label');
 
   // require counter for HOTP
   if (type === 'hotp' && (counter === null || typeof counter === 'undefined')) {
-    throw new Error('missing counter value for HOTP');
+    throw new Error('Speakeasy - otpauthURL - Missing counter value for HOTP');
   }
 
   // convert secret to base32
@@ -586,7 +607,7 @@ exports.otpauthURL = function otpauthURL (options) {
       case 'SHA512':
         break;
       default:
-        throw new Error('invalid algorithm `' + algorithm + '`');
+        throw new Error('Speakeasy - otpauthURL - Invalid algorithm `' + algorithm + '`');
     }
     query.algorithm = algorithm.toUpperCase();
   }
@@ -598,7 +619,7 @@ exports.otpauthURL = function otpauthURL (options) {
       case 8:
         break;
       default:
-        throw new Error('invalid digits `' + digits + '`');
+        throw new Error('Speakeasy - otpauthURL - Invalid digits `' + digits + '`');
     }
     query.digits = digits;
   }
@@ -607,7 +628,7 @@ exports.otpauthURL = function otpauthURL (options) {
   if (period != null) {
     period = parseInt(period, 10);
     if (~~period !== period) {
-      throw new Error('invalid period `' + period + '`');
+      throw new Error('Speakeasy - otpauthURL - Invalid period `' + period + '`');
     }
     query.period = period;
   }
