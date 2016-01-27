@@ -643,8 +643,10 @@ generator, such as the `qr-image` module.
 
 **Throws**: Error if secret or label is missing, or if hotp is used and a
   counter is missing, if the type is not one of `hotp` or `totp`, if the
-  algorithm is not one of the supported SHA1, SHA256, or SHA512, if the
-  URL is called with an invalid number of digits, or an invalid period.
+  number of digits is non-numeric, or an invalid period is used. Warns if
+  the number of digits is not either 6 or 8 (though 6 is the only one
+  supported by Google Authenticator), and if the hashihng algorithm is
+  not one of the supported SHA1, SHA256, or SHA512.
 
 **Returns**: <code>String</code> - A URL suitable for use with the Google Authenticator.  
 

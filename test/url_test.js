@@ -63,7 +63,7 @@ describe('#url', function () {
   });
 
   it('should validate algorithm', function () {
-    assert.throws(function () {
+    assert.doesNotThrow(function () {
       speakeasy.otpauthURL({
         secret: 'hello',
         label: 'that',
@@ -95,14 +95,15 @@ describe('#url', function () {
         digits: 'hello'
       }, /invalid digits `hello`/);
     });
-    assert.throws(function () {
+    // Non-6 and non-8 digits should not throw, but should have a warn message
+    assert.doesNotThrow(function () {
       speakeasy.otpauthURL({
         secret: 'hello',
         label: 'that',
         digits: 12
       }, /invalid digits `12`/);
     });
-    assert.throws(function () {
+    assert.doesNotThrow(function () {
       speakeasy.otpauthURL({
         secret: 'hello',
         label: 'that',

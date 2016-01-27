@@ -538,6 +538,12 @@ exports.generate_key_ascii = util.deprecate(function (length, symbols) {
  * @param {String} [options.encoding] Key encoding (ascii, hex, base32,
  *   base64). If the key is not encoded in Base-32, it will be reencoded.
  * @return {String} A URL suitable for use with the Google Authenticator.
+ * @throws Error if secret or label is missing, or if hotp is used and a
+    counter is missing, if the type is not one of `hotp` or `totp`, if the
+    number of digits is non-numeric, or an invalid period is used. Warns if
+    the number of digits is not either 6 or 8 (though 6 is the only one
+    supported by Google Authenticator), and if the hashihng algorithm is
+    not one of the supported SHA1, SHA256, or SHA512.
  * @see https://github.com/google/google-authenticator/wiki/Key-Uri-Format
  */
 
@@ -587,19 +593,23 @@ exports.otpauthURL = function otpauthURL (options) {
       case 'SHA512':
         break;
       default:
-        throw new Error('Speakeasy - otpauthURL - Invalid algorithm `' + algorithm + '`');
+        console.warn('Speakeasy - otpauthURL - Warning - Algorithm generally should be SHA1, SHA256, or SHA512');
     }
     query.algorithm = algorithm.toUpperCase();
   }
 
   // validate digits
   if (digits != null) {
-    switch (parseInt(digits, 10)) {
-      case 6:
-      case 8:
-        break;
-      default:
-        throw new Error('Speakeasy - otpauthURL - Invalid digits `' + digits + '`');
+    if (isNaN(digits)) {
+      throw new Error('Speakeasy - otpauthURL - Invalid digits `' + digits + '`');
+    } else {
+      switch (parseInt(digits, 10)) {
+        case 6:
+        case 8:
+          break;
+        default:
+          console.warn('Speakeasy - otpauthURL - Warning - Digits generally should be either 6 or 8');
+      }
     }
     query.digits = digits;
   }
