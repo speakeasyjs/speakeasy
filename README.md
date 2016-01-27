@@ -110,12 +110,12 @@ var base32secret = user.two_factor_temp_secret;
 ```
 ```js
 // Use verify() to check the token against the secret
-var auth = speakeasy.totp.verify({ secret: base32secret,
-                                   encoding: 'base32',
-                                   token: userToken });
+var verified = speakeasy.totp.verify({ secret: base32secret,
+                                       encoding: 'base32',
+                                       token: userToken });
 ```
 
-`auth` will be true if the token is verified, false if not.
+`verified` will be true if the token is successfully verified, false if not.
 
 If successfully verified, you can now save the secret to the user's account and use the same process above whenever you need to use two-factor to authenticate the user, like during login.
 
@@ -239,6 +239,7 @@ var token = speakeasy.totp({
 });
 ```
 
+
 #### Using other hash algorithms
 
 The default hash algorithm is SHA1.
@@ -272,6 +273,89 @@ var url = speakeasy.otpauthURL({ secret: secret.ascii, label: 'Name of Secret', 
 // Pass URL into a QR code generator
 ```
 
+#### Specifying a window for verifying HOTP and TOTP
+
+Verify a HOTP token with counter value 42 and a window of 10. HOTP has a one-sided window, so this will check counter values from 42 to 52, inclusive, and return a `{ delta: n }` where `n` is the difference between the given counter value and the counter position at which the token was found, or `undefined` if it was not found within the window. See the <a href="#totp․verifyDelta">`hotp․verifyDelta(options)`</a> documentation for more info.
+
+```js
+var token = speakeasy.hotp.verifyDelta({
+  secret: secret.ascii,
+  counter: 42,
+  token: '123456',
+  window: 10
+});
+```
+
+How this works:
+
+```js
+// Set ASCII secret
+var secret = 'rNONHRni6BAk7y2TiKrv';
+
+// Get HOTP counter token at counter = 42 
+var counter42 = speakeasy.hotp({ secret: secret, counter: 42 });
+// => '566646'
+
+// Get HOTP counter token at counter = 45
+var counter45 = speakeasy.hotp({ secret: secret, counter: 45 });
+// => '323238'
+
+// Verify the secret at counter 42 with the actual value and a window of 10
+// This will check all counter values from 42 to 52, inclusive
+speakeasy.hotp.verifyDelta({ secret: secret, counter: 42, token: counter42, window: 10 });
+// => { delta: 0 } because the given token at counter 42 is 0 steps away from the given counter 42
+
+// Verify the secret at counter 45, but give a counter of 42 and a window of 10
+// This will check all counter values from 42 to 52, inclusive
+speakeasy.hotp.verifyDelta({ secret: secret, counter: 42, token: counter45, window: 10 });
+// => { delta: 3 } because the given token at counter 45 is 0 steps away from given counter 42
+
+// Not in window: specify a window of 1, which only tests counters 42 and 43, not 45
+speakeasy.hotp.verifyDelta({ secret: secret, counter: 42, token: counter45, window: 1 });
+// => undefined
+
+// Shortcut to use verify() to simply return whether it is verified as within the window
+speakeasy.hotp.verify({ secret: secret, counter: 42, token: counter45, window: 10 });
+// => true
+
+// Not in window: specify a window of 1, which only tests counters 42 and 43, not 45
+speakeasy.hotp.verify({ secret: secret, counter: 42, token: counter45, window: 1 });
+// => false
+```
+
+Verify a TOTP token at the current time with a window of 2. Since the default time step is 30 seconds, and TOTP has a two-sided window, this will check tokens between [current time minus two tokens before] and [current time plus two tokens after]. In other words, with a time step of 30 seconds, it will check the token at the current time, plus the tokens at the current time minus 30 seconds, minus 60 seconds, plus 30 seconds, and plus 60 seconds – basically, it will check tokens between a minute ago and a minute from now. It will return a `{ delta: n }` where `n` is the difference between the current time step and the counter position at which the token was found, or `undefined` if it was not found within the window. See the <a href="#totp․verifyDelta">`totp․verifyDelta(options)`</a> documentation for more info.
+
+```js
+var verified = speakeasy.totp.verifyDelta({
+  secret: secret.ascii,
+  token: '123456',
+  window: 2
+});
+```
+
+The mechanics of TOTP windows are the same as for HOTP, as shown above, just with two-sided windows, meaning that the `delta` value can be negative if the token is found before the given time or counter.
+
+```js
+var secret = 'rNONHRni6BAk7y2TiKrv';
+
+// By way of example, we will force TOTP to return tokens at time 1453853945 and
+// at time 1453854005 (60 seconds ahead, or 2 steps ahead)
+var token1 = speakeasy.totp({ secret: secret, counter: 1 }); // 625175
+var token3 = speakeasy.totp({ secret: secret, counter: 3 }); // 766592
+
+// We can check the time at token 3, 1453853975, with token 1, but use a window of 2
+// With a time step of 30 seconds, this will check all tokens from 60 seconds 
+// before the time, and 60 seconds after the time
+var validated = speakeasy.totp.verifyDelta({ secret: secret, token: token1, window: 2, time: 1453854005 });
+// => { delta: -2 }
+
+// This signifies that the given token, token1, is -2 steps away from the given
+// time, which means that it is the token for the value at
+// (-2 * time step) = (-2 * 30) = 60 seconds ago.
+```
+
+As shown previously, you can also change `verifyDelta()` to `verify()` to simply return a boolean if the given token is within the given window.
+
 <a name="documentation"></a>
 ## Documentation
 
@@ -296,16 +380,14 @@ Full API documentation (in JSDoc format) is available below and at http://speake
 verifies.</p>
 </dd>
 <dt><a href="#totp">totp(options)</a> ⇒ <code>String</code></dt>
-<dd><p>Generate a time-based one-time token. By default, it returns the token for
-the current time.</p>
+<dd><p>Generate a time-based one-time token.</p>
 </dd>
 <dt><a href="#totp․verifyDelta">totp․verifyDelta(options)</a> ⇒ <code>Object</code></dt>
 <dd><p>Verify a time-based one-time token against the secret and return the delta.</p>
 </dd>
 <dt><a href="#totp․verify">totp․verify(options)</a> ⇒ <code>Boolean</code></dt>
 <dd><p>Verify a time-based one-time token against the secret and return true if it
-verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object. For more on how to use a window with this, see <a href="totp.verify">totp.verify</a>.</p>
+verifies.
 </dd>
 <dt><a href="#generateSecret">generateSecret(options)</a> ⇒ <code>Object</code> | <code><a href="#GeneratedSecret">GeneratedSecret</a></code></dt>
 <dd><p>Generates a random secret with the set A-Z a-z 0-9 and symbols, of any length
@@ -331,7 +413,7 @@ symbols (if requested).</p>
 ### digest(options) ⇒ <code>Buffer</code>
 Digest the one-time passcode options.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>Buffer</code> - The one-time passcode as a buffer.  
 
 | Param | Type | Default | Description |
@@ -347,7 +429,7 @@ Digest the one-time passcode options.
 ### hotp(options) ⇒ <code>String</code>
 Generate a counter-based one-time token.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>String</code> - The one-time passcode.  
 
 | Param | Type | Default | Description |
@@ -378,7 +460,7 @@ and the given counter value. For example, if given a counter 5 and a window
 10, `verifyDelta()` will look at tokens from 5 to 15, inclusive. If it finds
 it at counter position 7, it will return `{ delta: 2 }`.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>Object</code> - On success, returns an object with the counter
   difference between the client and the server as the `delta` property (i.e.
   `{ delta: 0 }`).  
@@ -399,9 +481,9 @@ it at counter position 7, it will return `{ delta: 2 }`.
 Verify a counter-based one-time token against the secret and return true if it
 verifies. Helper function for `hotp.verifyDelta()`` that returns a boolean
 instead of an object. For more on how to use a window with this, see
-[hotp.verifyDelta](#hotp.verifyDelta).
+hotp.verifyDelta.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
   window, false otherwise.  
 
@@ -421,7 +503,7 @@ instead of an object. For more on how to use a window with this, see
 Generate a time-based one-time token. By default, it returns the token for
 the current time.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>String</code> - The one-time passcode.  
 
 | Param | Type | Default | Description |
@@ -458,7 +540,7 @@ inclusive. In other words, if the time-step is 30 seconds, it will look at
 tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
 If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>Object</code> - On success, returns an object with the time step
   difference between the client and the server as the `delta` property (e.g.
   `{ delta: 0 }`).  
@@ -481,9 +563,9 @@ If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 ### totp․verify(options) ⇒ <code>Boolean</code>
 Verify a time-based one-time token against the secret and return true if it
 verifies. Helper function for verifyDelta() that returns a boolean instead of
-an object. For more on how to use a window with this, see [totp.verifyDelta](#totp.verifyDelta).
+an object. For more on how to use a window with this, see totp.verifyDelta.
 
-**Kind**: global function  
+**Kind**: function
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
   window, false otherwise.  
 
@@ -509,7 +591,8 @@ along with the URL used for the QR code for Google Authenticator (an otpauth
 URL). Use a QR code library to generate a QR code based on the Google
 Authenticator URL to obtain a QR code you can scan into the app.
 
-**Kind**: global function  
+**Kind**: function    
+**Returns**: A [`GeneratedSecret`](#GeneratedSecret) object
 
 | Param | Type | Default | Description |
 | --- | --- | --- | --- |
@@ -526,7 +609,7 @@ Authenticator URL to obtain a QR code you can scan into the app.
 Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
 symbols (if requested).
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>String</code> - The generated key.  
 
 | Param | Type | Default | Description |
@@ -546,7 +629,7 @@ the app.
 To generate a suitable QR Code, pass the generated URL to a QR Code
 generator, such as the `qr-image` module.
 
-**Kind**: global function  
+**Kind**: function  
 **Returns**: <code>String</code> - A URL suitable for use with the Google Authenticator.  
 **See**: https://github.com/google/google-authenticator/wiki/Key-Uri-Format  
 
