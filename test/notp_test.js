@@ -63,6 +63,10 @@ it('HOTP', function () {
   options.token = 'WILL NOT PASS';
   speakeasy.hotp.verify(options);
 
+  // check for invalid token value in verifyDelta
+  options.token = 'NOPASS';
+  assert.ok(!speakeasy.hotp.verifyDelta(options), 'Should not pass');
+
   // countercheck for failure
   options.counter = 0;
   assert.ok(!speakeasy.hotp.verify(options), 'Should not pass');
