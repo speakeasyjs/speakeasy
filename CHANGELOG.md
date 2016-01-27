@@ -2,7 +2,7 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/) and the [Keep a Changelog template](https://github.com/olivierlacan/keep-a-changelog/blob/master/CHANGELOG.md).
 
-## [2.0.0] - 2016-
+## [2.0.0] - 2016-01-27
 
 Speakeasy 2.0.0 is a major update based on a Speakeasy fork, [Passcode](https://github.com/mikepb/passcode), by [Michael Phan-Ba](https://github.com/mikepb), which also incorporates code from another Node.js HOTP/TOTP module, [notp](https://github.com/guyht/notp), by [Guy Halford-Thompson](https://github.com/guyht), with additional functionality and API compatibility changes made by [Mark Bao](https://github.com/markbao). Speakeasy is now also moving to its own GitHub organization.
 
@@ -90,6 +90,7 @@ v2.0.0 does not introduce any breaking changes, but deprecates a number of funct
 
 - Initial release.
 
+[2.0.0]: https://github.com/speakeasyjs/speakeasy/compare/v1.0.5...v2.0.0
 [1.0.5]: https://github.com/speakeasyjs/speakeasy/compare/v1.0.4...v1.0.5
 [1.0.4]: https://github.com/speakeasyjs/speakeasy/compare/v1.0.3...v1.0.4
 [1.0.3]: https://github.com/speakeasyjs/speakeasy/compare/v1.0.2...v1.0.3
