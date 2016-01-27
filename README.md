@@ -428,7 +428,11 @@ Digest the one-time passcode options.
 
 <a name="hotp"></a>
 ### hotp(options) ⇒ <code>String</code>
-Generate a counter-based one-time token.
+
+Generate a counter-based one-time token. Specify the key and counter, and
+receive the one-time password for that counter position as a string. You can
+also specify a token length, as well as the encoding (ASCII, hexadecimal, or
+base32) and the hashing algorithm to use (SHA1, SHA256, SHA512).
 
 **Kind**: function  
 
@@ -504,8 +508,16 @@ hotp.verifyDelta.
 
 <a name="totp"></a>
 ### totp(options) ⇒ <code>String</code>
-Generate a time-based one-time token. By default, it returns the token for
-the current time.
+
+Generate a time-based one-time token. Specify the key, and receive the
+one-time password for that time as a string. By default, it uses the current
+time and a time step of 30 seconds, so there is a new token every 30 seconds.
+You may override the time step and epoch for custom timing. You can also
+specify a token length, as well as the encoding (ASCII, hexadecimal, or
+base32) and the hashing algorithm to use (SHA1, SHA256, SHA512).
+
+Under the hood, TOTP calculates the counter value by finding how many time
+steps have passed since the epoch, and calls HOTP with that counter value.
 
 **Kind**: function  
 

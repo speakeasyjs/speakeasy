@@ -63,7 +63,10 @@ exports.digest = function digest (options) {
 };
 
 /**
- * Generate a counter-based one-time token.
+ * Generate a counter-based one-time token. Specify the key and counter, and
+ * receive the one-time password for that counter position as a string. You can
+ * also specify a token length, as well as the encoding (ASCII, hexadecimal, or
+ * base32) and the hashing algorithm to use (SHA1, SHA256, SHA512).
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
@@ -216,7 +219,9 @@ exports.hotp.verify = function hotpVerify (options) {
 };
 
 /**
- * Calculate counter value based on given options.
+ * Calculate counter value based on given options. A counter value converts a
+ * TOTP time into a counter value by finding the number of time steps that have
+ * passed since the epoch to the current time.
  *
  * @param {Object} options
  * @param {Integer} [options.time] Time in seconds with which to calculate
@@ -243,8 +248,15 @@ exports._counter = function _counter (options) {
 };
 
 /**
- * Generate a time-based one-time token. By default, it returns the token for
- * the current time.
+ * Generate a time-based one-time token. Specify the key, and receive the
+ * one-time password for that time as a string. By default, it uses the current
+ * time and a time step of 30 seconds, so there is a new token every 30 seconds.
+ * You may override the time step and epoch for custom timing. You can also
+ * specify a token length, as well as the encoding (ASCII, hexadecimal, or
+ * base32) and the hashing algorithm to use (SHA1, SHA256, SHA512).
+ *
+ * Under the hood, TOTP calculates the counter value by finding how many time
+ * steps have passed since the epoch, and calls HOTP with that counter value.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
