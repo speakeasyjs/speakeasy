@@ -1,6 +1,6 @@
 {
   "name": "speakeasy",
-  "description": "Two-factor authentication for Node. One-time passcode generator (HOTP/TOTP) with URL generation for Google Authenticator",
+  "description": "Two-factor authentication for Node.js. One-time passcode generator (HOTP/TOTP) with support for Google Authenticator.",
   "version": "2.0.0",
   "author": {
     "name": "Mark Bao & Speakeasy Contributors",
