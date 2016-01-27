@@ -110,12 +110,18 @@ describe('TOTP Time-Based Algorithm Test', function () {
     });
   });
 
-  describe('totp.verifyDelta()', function () {
+  describe('totp.verifyDelta() window tests', function () {
     var secret = 'rNONHRni6BAk7y2TiKrv';
     it('should get current TOTP value', function () {
       this.token = speakeasy.totp({secret: secret, counter: 1});
       assert.equal(this.token, '314097');
     });
+
+    it('should get TOTP value at counter 3', function () {
+      this.token = speakeasy.totp({secret: secret, counter: 3});
+      assert.equal(this.token, '663640');
+    });
+
     it('should get delta with varying window lengths', function () {
       var delta;
 
@@ -133,6 +139,30 @@ describe('TOTP Time-Based Algorithm Test', function () {
         secret: secret, token: '314097', counter: 1, window: 3
       });
       assert.isObject(delta); assert.strictEqual(delta.delta, 0);
+    });
+
+    it('should get delta when the item is not at specified counter but within window', function () {
+      // Use token at counter 3, initial counter 1, and a window of 2
+      var delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '663640', counter: 1, window: 2
+      });
+      assert.isObject(delta); assert.strictEqual(delta.delta, 2);
+    });
+
+    it('should not get delta when the item is not at specified counter and not within window', function () {
+      // Use token at counter 3, initial counter 1, and a window of 1
+      var delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '663640', counter: 1, window: 1
+      });
+      assert.isUndefined(delta);
+    });
+
+    it('should support negative delta values when token is on the negative side of the window', function () {
+      // Use token at counter 1, initial counter 3, and a window of 2
+      var delta = speakeasy.totp.verifyDelta({
+        secret: secret, token: '314097', counter: 3, window: 2
+      });
+      assert.isObject(delta); assert.strictEqual(delta.delta, -2);
     });
   });
 });
