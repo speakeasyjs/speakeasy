@@ -167,6 +167,11 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
   // parse token to integer
   token = parseInt(token, 10);
 
+  // fail if token is NA
+  if (isNaN(token)) {
+    return;
+  }
+
   // loop from C to C + W inclusive
   for (i = counter; i <= counter + window; ++i) {
     options.counter = i;
@@ -339,7 +344,14 @@ exports.totp.verifyDelta = function totpVerifyDelta (options) {
   options.window += window;
 
   // pass to hotp.verifyDelta
-  return exports.hotp.verifyDelta(options);
+  var delta = exports.hotp.verifyDelta(options);
+
+  // adjust for two-sided window
+  if (delta) {
+    delta.delta -= window;
+  }
+
+  return delta;
 };
 
 /**
