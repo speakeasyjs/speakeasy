@@ -414,6 +414,7 @@ symbols (if requested).</p>
 Digest the one-time passcode options.
 
 **Kind**: function  
+
 **Returns**: <code>Buffer</code> - The one-time passcode as a buffer.  
 
 | Param | Type | Default | Description |
@@ -430,6 +431,7 @@ Digest the one-time passcode options.
 Generate a counter-based one-time token.
 
 **Kind**: function  
+
 **Returns**: <code>String</code> - The one-time passcode.  
 
 | Param | Type | Default | Description |
@@ -461,6 +463,12 @@ and the given counter value. For example, if given a counter 5 and a window
 it at counter position 7, it will return `{ delta: 2 }`.
 
 **Kind**: function  
+
+**Throws**: Error if a given token is not a number, or if the number of digits
+  in a token does not match the number of digits specified (i.e. if digits
+  is not specified and the token is not 6 digits, or if digits is specified
+  and the token digits does not equal the specified digits.)
+
 **Returns**: <code>Object</code> - On success, returns an object with the counter
   difference between the client and the server as the `delta` property (i.e.
   `{ delta: 0 }`).  
@@ -484,6 +492,12 @@ instead of an object. For more on how to use a window with this, see
 hotp.verifyDelta.
 
 **Kind**: function  
+
+**Throws**: Error if a given token is not a number, or if the number of digits
+  in a token does not match the number of digits specified (i.e. if digits
+  is not specified and the token is not 6 digits, or if digits is specified
+  and the token digits does not equal the specified digits.)
+
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
   window, false otherwise.  
 
@@ -504,6 +518,7 @@ Generate a time-based one-time token. By default, it returns the token for
 the current time.
 
 **Kind**: function  
+
 **Returns**: <code>String</code> - The one-time passcode.  
 
 | Param | Type | Default | Description |
@@ -541,6 +556,12 @@ tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
 If it finds it at counter position 1002, it will return `{ delta: 2 }`.
 
 **Kind**: function  
+
+**Throws**: Error if a given token is not a number, or if the number of digits
+  in a token does not match the number of digits specified (i.e. if digits
+  is not specified and the token is not 6 digits, or if digits is specified
+  and the token digits does not equal the specified digits.)
+
 **Returns**: <code>Object</code> - On success, returns an object with the time step
   difference between the client and the server as the `delta` property (e.g.
   `{ delta: 0 }`).  
@@ -566,6 +587,12 @@ verifies. Helper function for verifyDelta() that returns a boolean instead of
 an object. For more on how to use a window with this, see totp.verifyDelta.
 
 **Kind**: function
+
+**Throws**: Error if a given token is not a number, or if the number of digits
+  in a token does not match the number of digits specified (i.e. if digits
+  is not specified and the token is not 6 digits, or if digits is specified
+  and the token digits does not equal the specified digits.)
+
 **Returns**: <code>Boolean</code> - Returns true if the token matches within the given
   window, false otherwise.  
 
@@ -592,6 +619,7 @@ URL). Use a QR code library to generate a QR code based on the Google
 Authenticator URL to obtain a QR code you can scan into the app.
 
 **Kind**: function    
+
 **Returns**: A [`GeneratedSecret`](#GeneratedSecret) object
 
 | Param | Type | Default | Description |
@@ -610,6 +638,7 @@ Generates a key of a certain length (default 32) from A-Z, a-z, 0-9, and
 symbols (if requested).
 
 **Kind**: function  
+
 **Returns**: <code>String</code> - The generated key.  
 
 | Param | Type | Default | Description |
@@ -619,7 +648,8 @@ symbols (if requested).
 
 <a name="otpauthURL"></a>
 ### otpauthURL(options) ⇒ <code>String</code>
-Generate an URL for use with the Google Authenticator app.
+Generate a Google Authenticator-compatible otpauth:// URL for passing the
+secret to a mobile device to install the secret.
 
 Authenticator considers TOTP codes valid for 30 seconds. Additionally,
 the app presents 6 digits codes to the user. According to the
@@ -629,8 +659,20 @@ the app.
 To generate a suitable QR Code, pass the generated URL to a QR Code
 generator, such as the `qr-image` module.
 
+Throws an error if secret or label is missing, or if hotp is used and a
+counter is missing, if the type is not one of `hotp` or `totp`, if the
+algorithm is not one of the supported SHA1, SHA256, or SHA512, if the
+URL is called with an invalid number of digits, or an invalid period.
+
 **Kind**: function  
+
+**Throws**: Error if secret or label is missing, or if hotp is used and a
+  counter is missing, if the type is not one of `hotp` or `totp`, if the
+  algorithm is not one of the supported SHA1, SHA256, or SHA512, if the
+  URL is called with an invalid number of digits, or an invalid period.
+
 **Returns**: <code>String</code> - A URL suitable for use with the Google Authenticator.  
+
 **See**: https://github.com/google/google-authenticator/wiki/Key-Uri-Format  
 
 | Param | Type | Default | Description |
@@ -648,7 +690,9 @@ generator, such as the `qr-image` module.
 
 <a name="GeneratedSecret"></a>
 ### GeneratedSecret : <code>Object</code>
+
 **Kind**: global typedef  
+
 **Properties**
 
 | Name | Type | Description |
