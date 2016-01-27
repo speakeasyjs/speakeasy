@@ -544,6 +544,7 @@ a window of 5, `verifyDelta()` will look at tokens from 995 to 1005,
 inclusive. In other words, if the time-step is 30 seconds, it will look at
 tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
 If it finds it at counter position 1002, it will return `{ delta: 2 }`.
+If it finds it at counter position 997, it will return `{ delta: -3 }`.
 
 **Kind**: function  
 

@@ -227,7 +227,7 @@ exports.hotp.verify = function hotpVerify (options) {
  * @param {Integer} [options.initial_time=0] (DEPRECATED. Use `epoch` instead.)
  *   Initial time in seconds since the UNIX epoch from which to calculate the
  *   counter value. Defaults to 0 (no offset).
- * @return {Integer} The calculated counter value
+ * @return {Integer} The calculated counter value.
  * @private
  */
 
@@ -301,6 +301,7 @@ exports.time = exports.totp;
  * inclusive. In other words, if the time-step is 30 seconds, it will look at
  * tokens from 2.5 minutes ago to 2.5 minutes in the future, inclusive.
  * If it finds it at counter position 1002, it will return `{ delta: 2 }`.
+ * If it finds it at counter position 997, it will return `{ delta: -3 }`.
  *
  * @param {Object} options
  * @param {String} options.secret Shared secret key
