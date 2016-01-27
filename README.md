@@ -22,7 +22,9 @@ Speakeasy implements one-time passcode generators as standardized by the
 [Initiative for Open Authentication (OATH)][oath]. The HMAC-Based One-Time
 Password (HOTP) algorithm defined by [RFC 4226][rfc4226] and the Time-Based
 One-time Password (TOTP) algorithm defined in [RFC 6238][rfc6238] are
-supported.
+supported. This project incorporates code from [passcode][], originally a
+fork of Speakeasy, and [notp][].
+
 
 <a name="install"></a>
 ## Install
