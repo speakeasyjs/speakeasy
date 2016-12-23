@@ -597,6 +597,9 @@ exports.otpauthURL = function otpauthURL (options) {
   // build query while validating
   var query = {secret: secret};
   if (issuer) query.issuer = issuer;
+  if (type === 'hotp') {
+    query.counter = counter;
+  }
 
   // validate algorithm
   if (algorithm != null) {

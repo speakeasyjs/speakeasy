@@ -188,4 +188,36 @@ describe('#url', function () {
       url.parse(expect)
     );
   });
+
+  it('should generate an hotp URL compatible with the Google Authenticator app for non-zero counter', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'JBSWY3DPEHPK3PXP',
+      label: 'Example:alice@google.com',
+      issuer: 'Example',
+      encoding: 'base32',
+      type: 'hotp',
+      counter: 199
+    });
+    var expect = 'otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=199';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  });
+
+  it('should generate an hotp URL compatible with the Google Authenticator app for zero counter', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'JBSWY3DPEHPK3PXP',
+      label: 'Example:alice@google.com',
+      issuer: 'Example',
+      encoding: 'base32',
+      type: 'hotp',
+      counter: 0
+    });
+    var expect = 'otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=0';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  });
 });
