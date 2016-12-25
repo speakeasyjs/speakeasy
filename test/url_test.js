@@ -169,7 +169,7 @@ describe('#url', function () {
       issuer: 'Example',
       encoding: 'base32'
     });
-    var expect = 'otpauth://totp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example';
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
@@ -182,7 +182,7 @@ describe('#url', function () {
       label: 'Example:alice@google.com',
       issuer: 'Example'
     });
-    var expect = 'otpauth://totp/Example:alice@google.com?secret=JVFWSTSIKR3G2ZSR&issuer=Example';
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JVFWSTSIKR3G2ZSR&issuer=Example';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
@@ -198,7 +198,7 @@ describe('#url', function () {
       type: 'hotp',
       counter: 199
     });
-    var expect = 'otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=199';
+    var expect = 'otpauth://hotp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=199';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
@@ -214,7 +214,7 @@ describe('#url', function () {
       type: 'hotp',
       counter: 0
     });
-    var expect = 'otpauth://hotp/Example:alice@google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=0';
+    var expect = 'otpauth://hotp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=0';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
