@@ -443,7 +443,7 @@ exports.generateSecret = function generateSecret (options) {
   // options
   if (!options) options = {};
   var length = options.length || 32;
-  var name = encodeURIComponent(options.name || 'SecretKey');
+  var name = options.name || 'SecretKey';
   var qr_codes = options.qr_codes || false;
   var google_auth_qr = options.google_auth_qr || false;
   var otpauth_url = options.otpauth_url != null ? options.otpauth_url : true;
@@ -644,7 +644,7 @@ exports.otpauthURL = function otpauthURL (options) {
     protocol: 'otpauth',
     slashes: true,
     hostname: type,
-    pathname: label,
+    pathname: encodeURIComponent(label),
     query: query
   });
 };
