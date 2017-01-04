@@ -37,8 +37,8 @@ exports.digest = function digest (options) {
 
   // convert secret to buffer
   if (!Buffer.isBuffer(secret)) {
-    secret = encoding === 'base32' ? base32.decode(secret)
-      : new Buffer(secret, encoding);
+    if (encoding === 'base32') { secret = base32.decode(secret); }
+    secret = new Buffer(secret, encoding);
   }
 
   // create an buffer from the counter
