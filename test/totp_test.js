@@ -103,6 +103,14 @@ describe('TOTP Time-Based Algorithm Test', function () {
     });
   });
 
+  it('should throw exception if secret and key are missing in totp', function() {
+    assert.throws(function () {
+      speakeasy.totp({
+        digits: 6
+      }, /Speakeasy - totp - Missing secret/);
+    });
+  });
+
   describe("normal operation with secret = '12345678901234567890' with overridden counter 3", function () {
     it('should return correct one-time password', function () {
       var topic = speakeasy.totp({secret: '12345678901234567890', counter: 3});
@@ -172,5 +180,22 @@ describe('TOTP Time-Based Algorithm Test', function () {
       });
       assert.isObject(delta); assert.strictEqual(delta.delta, -2);
     });
+
+    it('should throw exception if secret is missing in verifyDelta', function() {
+      assert.throws(function () {
+        speakeasy.totp.verifyDelta({
+          step: 30
+        }, /Speakeasy - totp.verifyDelta - Missing secret/);
+      });
+    });
+
+    it('should throw exception if token is missing in verifyDelta', function() {
+      assert.throws(function () {
+        speakeasy.totp.verifyDelta({
+          secret: 111111
+        }, /Speakeasy - totp.verifyDelta - Missing token/);
+      });
+    });
+
   });
 });

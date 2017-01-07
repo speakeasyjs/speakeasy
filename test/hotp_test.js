@@ -73,4 +73,41 @@ describe('HOTP Counter-Based Algorithm Test', function () {
       assert.equal(topic, '90693936');
     });
   });
+
+  it('should throw exception if secret and key are missing in hotp', function() {
+    assert.throws(function () {
+      speakeasy.hotp({
+        digits: 6
+      }, /Speakeasy - hotp - Missing secret/);
+    });
+  });
+
+  it('should throw exception if counter missing in hotp', function() {
+    assert.throws(function () {
+      speakeasy.hotp({
+        secret: 11111
+      }, /Speakeasy - hotp - Missing counter/);
+    });
+  });
+
+  describe('hotp.verifyDelta() window tests', function () {
+
+    it('should throw exception if secret is missing in verifyDelta', function() {
+      assert.throws(function () {
+        speakeasy.hotp.verifyDelta({
+          step: 30
+        }, /Speakeasy - hotp.verifyDelta - Missing secret/);
+      });
+    });
+
+    it('should throw exception if token is missing in verifyDelta', function() {
+      assert.throws(function () {
+        speakeasy.hotp.verifyDelta({
+          secret: 111111
+        }, /Speakeasy - hotp.verifyDelta - Missing token/);
+      });
+    });
+
+  });
+
 });
