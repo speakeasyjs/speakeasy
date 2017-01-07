@@ -227,6 +227,7 @@ it('TOTPOutOfSync', function () {
 it('hotp_gen', function () {
   var options = {
     secret: '12345678901234567890',
+    counter: 0,
     window: 0
   };
 

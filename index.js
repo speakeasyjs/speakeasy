@@ -86,6 +86,22 @@ exports.digest = function digest (options) {
  */
 
 exports.hotp = function hotpGenerate (options) {
+
+  // verify secret and counter exists
+  var secret = options.secret;
+  var key = options.key;
+  var counter = options.counter;
+
+  if (key === null || typeof key === 'undefined') {
+    if (secret === null || typeof secret === 'undefined') {
+      throw new Error('Speakeasy - hotp - Missing secret');
+    }
+  }
+
+  if (counter === null || typeof counter === 'undefined') {
+    throw new Error('Speakeasy - hotp - Missing counter');
+  }
+
   // unpack digits
   // backward compatibility: `length` is also accepted here, but deprecated
   var digits = (options.digits != null ? options.digits : options.length) || 6;
@@ -155,6 +171,12 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
 
   // shadow options
   options = Object.create(options);
+
+  // verify secret and token exist
+  var secret = options.secret;
+  var token = options.token;
+  if (secret === null || typeof secret === 'undefined') throw new Error('Speakeasy - hotp.verifyDelta - Missing secret');
+  if (token === null || typeof token === 'undefined') throw new Error('Speakeasy - hotp.verifyDelta - Missing token');
 
   // unpack options
   var token = String(options.token);
@@ -286,6 +308,15 @@ exports.totp = function totpGenerate (options) {
   // shadow options
   options = Object.create(options);
 
+  // verify secret exists if key is not specified
+  var key = options.key;
+  var secret = options.secret;
+  if (key === null || typeof key === 'undefined') {
+    if (secret === null || typeof secret === 'undefined') {
+      throw new Error('Speakeasy - totp - Missing secret');
+    }
+  }
+
   // calculate default counter value
   if (options.counter == null) options.counter = exports._counter(options);
 
@@ -345,6 +376,11 @@ exports.time = exports.totp;
 exports.totp.verifyDelta = function totpVerifyDelta (options) {
   // shadow options
   options = Object.create(options);
+  // verify secret and token exist
+  var secret = options.secret;
+  var token = options.token;
+  if (secret === null || typeof secret === 'undefined') throw new Error('Speakeasy - totp.verifyDelta - Missing secret');
+  if (token === null || typeof token === 'undefined') throw new Error('Speakeasy - totp.verifyDelta - Missing token');
 
   // unpack options
   var window = parseInt(options.window, 10) || 0;
