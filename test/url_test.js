@@ -169,7 +169,7 @@ describe('#url', function () {
       issuer: 'Example',
       encoding: 'base32'
     });
-    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example';
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA1&digits=6&period=30';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
@@ -182,7 +182,7 @@ describe('#url', function () {
       label: 'Example:alice@google.com',
       issuer: 'Example'
     });
-    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JVFWSTSIKR3G2ZSR&issuer=Example';
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JVFWSTSIKR3G2ZSR&issuer=Example&algorithm=SHA1&digits=6&period=30';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
@@ -198,7 +198,7 @@ describe('#url', function () {
       type: 'hotp',
       counter: 199
     });
-    var expect = 'otpauth://hotp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=199';
+    var expect = 'otpauth://hotp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=199&algorithm=SHA1&digits=6&period=30';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)
@@ -214,7 +214,67 @@ describe('#url', function () {
       type: 'hotp',
       counter: 0
     });
-    var expect = 'otpauth://hotp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=0';
+    var expect = 'otpauth://hotp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&counter=0&algorithm=SHA1&digits=6&period=30';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  });
+  
+  it('should generate an totp URL compatible with the Google Authenticator app for sha512 algorithm', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'JBSWY3DPEHPK3PXP',
+      label: 'Example:alice@google.com',
+      issuer: 'Example',
+      encoding: 'base32',
+      algorithm: 'sha512'
+    });
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA512&digits=6&period=30';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  }) ;
+  
+  it('should generate an totp URL compatible with the Google Authenticator app for sha256 algorithm', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'JBSWY3DPEHPK3PXP',
+      label: 'Example:alice@google.com',
+      issuer: 'Example',
+      encoding: 'base32',
+      algorithm: 'sha256'
+    });
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA256&digits=6&period=30';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  });
+  
+  it('should generate an totp URL compatible with the Google Authenticator app for 8 digits', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'JBSWY3DPEHPK3PXP',
+      label: 'Example:alice@google.com',
+      issuer: 'Example',
+      encoding: 'base32',
+      digits: 8
+    });
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA1&digits=8&period=30';
+    assert.deepEqual(
+      url.parse(answer),
+      url.parse(expect)
+    );
+  });
+  
+  it('should generate an totp URL compatible with the Google Authenticator app for period of 60', function () {
+    var answer = speakeasy.otpauthURL({
+      secret: 'JBSWY3DPEHPK3PXP',
+      label: 'Example:alice@google.com',
+      issuer: 'Example',
+      encoding: 'base32',
+      period: '60'
+    });
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=JBSWY3DPEHPK3PXP&issuer=Example&algorithm=SHA1&digits=6&period=60';
     assert.deepEqual(
       url.parse(answer),
       url.parse(expect)

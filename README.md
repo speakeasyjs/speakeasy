@@ -626,6 +626,7 @@ Authenticator URL to obtain a QR code you can scan into the app.
 | [options.name] | <code>String</code> |  | The name to use with Google Authenticator. |
 | [options.qr_codes] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to prevent   leaking of secret to a third party. Use your own QR code implementation.)   Output QR code URLs for the token. |
 | [options.google_auth_qr] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to   prevent leaking of secret to a third party. Use your own QR code   implementation.) Output a Google Authenticator otpauth:// QR code URL. |
+| [options.issuer] | <code>String</code> |  | The provider or service with which the secret key is associated. |
 
 <a name="generateSecretASCII"></a>
 ### generateSecretASCII([length], [symbols]) ⇒ <code>String</code>
@@ -678,7 +679,7 @@ generator, such as the `qr-image` module.
 | [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
 | [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. Currently ignored by Google Authenticator. |
 | [options.period] | <code>Integer</code> | <code>30</code> | The length of time for which a TOTP   code will be valid, in seconds. Currently ignored by Google   Authenticator. |
-| [options.encoding] | <code>String</code> |  | Key encoding (ascii, hex, base32,   base64). If the key is not encoded in Base-32, it will be reencoded. |
+| [options.encoding] | <code>String</code> | <code>ascii</code> | Key encoding (ascii, hex, base32,   base64). If the key is not encoded in Base-32, it will be reencoded. |
 
 <a name="GeneratedSecret"></a>
 ### GeneratedSecret : <code>Object</code>
