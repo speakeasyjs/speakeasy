@@ -675,10 +675,10 @@ generator, such as the `qr-image` module.
 | [options.type] | <code>String</code> | <code>&quot;totp&quot;</code> | Either "hotp" or "totp". |
 | [options.counter] | <code>Integer</code> |  | The initial counter value, required   for HOTP. |
 | [options.issuer] | <code>String</code> |  | The provider or service with which the   secret key is associated. |
-| [options.algorithm] | <code>String</code> | <code>&quot;sha1&quot;</code> | Hash algorithm (sha1, sha256,   sha512). |
-| [options.digits] | <code>Integer</code> | <code>6</code> | The number of digits for the one-time   passcode. Currently ignored by Google Authenticator. |
-| [options.period] | <code>Integer</code> | <code>30</code> | The length of time for which a TOTP   code will be valid, in seconds. Currently ignored by Google   Authenticator. |
-| [options.encoding] | <code>String</code> |  | Key encoding (ascii, hex, base32,   base64). If the key is not encoded in Base-32, it will be reencoded. |
+| [options.algorithm] | <code>String</code> |  | Hash algorithm (sha1, sha256,   sha512). |
+| [options.digits] | <code>Integer</code> |  | The number of digits for the one-time   passcode. Currently ignored by Google Authenticator. |
+| [options.period] | <code>Integer</code> |  | The length of time for which a TOTP   code will be valid, in seconds. Currently ignored by Google   Authenticator. |
+| [options.encoding] | <code>String</code> | <code>ascii</code> | Key encoding (ascii, hex, base32,   base64). If the key is not encoded in Base-32, it will be reencoded. |
 
 <a name="GeneratedSecret"></a>
 ### GeneratedSecret : <code>Object</code>
