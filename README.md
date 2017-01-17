@@ -294,7 +294,7 @@ How this works:
 // Set ASCII secret
 var secret = 'rNONHRni6BAk7y2TiKrv';
 
-// Get HOTP counter token at counter = 42
+// Get HOTP counter token at counter = 42 
 var counter42 = speakeasy.hotp({ secret: secret, counter: 42 });
 // => '566646'
 
