@@ -346,7 +346,7 @@ var token1 = speakeasy.totp({ secret: secret, time: 1453853945 }); // 625175
 var token3 = speakeasy.totp({ secret: secret, time: 1453854005 }); // 222636
 
 // We can check the time at token 3, 1453853975, with token 1, but use a window of 2
-// With a time step of 30 seconds, this will check all tokens from 60 seconds
+// With a time step of 30 seconds, this will check all tokens from 60 seconds 
 // before the time to 60 seconds after the time
 speakeasy.totp.verifyDelta({ secret: secret, token: token1, window: 2, time: 1453854005 });
 // => { delta: -2 }
