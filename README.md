@@ -294,7 +294,7 @@ How this works:
 // Set ASCII secret
 var secret = 'rNONHRni6BAk7y2TiKrv';
 
-// Get HOTP counter token at counter = 42 
+// Get HOTP counter token at counter = 42
 var counter42 = speakeasy.hotp({ secret: secret, counter: 42 });
 // => '566646'
 
@@ -346,7 +346,7 @@ var token1 = speakeasy.totp({ secret: secret, time: 1453853945 }); // 625175
 var token3 = speakeasy.totp({ secret: secret, time: 1453854005 }); // 222636
 
 // We can check the time at token 3, 1453853975, with token 1, but use a window of 2
-// With a time step of 30 seconds, this will check all tokens from 60 seconds 
+// With a time step of 30 seconds, this will check all tokens from 60 seconds
 // before the time to 60 seconds after the time
 speakeasy.totp.verifyDelta({ secret: secret, token: token1, window: 2, time: 1453854005 });
 // => { delta: -2 }
@@ -626,6 +626,7 @@ Authenticator URL to obtain a QR code you can scan into the app.
 | [options.name] | <code>String</code> |  | The name to use with Google Authenticator. |
 | [options.qr_codes] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to prevent   leaking of secret to a third party. Use your own QR code implementation.)   Output QR code URLs for the token. |
 | [options.google_auth_qr] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to   prevent leaking of secret to a third party. Use your own QR code   implementation.) Output a Google Authenticator otpauth:// QR code URL. |
+| [options.issuer] | <code>String</code> |  | The provider or service with which the secret key is associated. |
 
 <a name="generateSecretASCII"></a>
 ### generateSecretASCII([length], [symbols]) ⇒ <code>String</code>
