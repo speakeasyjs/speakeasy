@@ -126,7 +126,7 @@ describe('Generator tests', function () {
     );
   });
 
-  it('Testing otp URL generated with issuer and algorithm by generateSecret', function () {
+  it('Testing otp URL generated with issuer by generateSecret', function () {
     var answer = speakeasy.generateSecret({
       name: 'Example:alice@google.com',
       issuer: 'issuer name'
