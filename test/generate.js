@@ -117,11 +117,27 @@ describe('Generator tests', function () {
     var secret = new Buffer(answer.base32, 'ascii');
     if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
-    var google_chart_url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=';    
+    var google_chart_url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=';
     var encodedOtpUrl = encodeURIComponent('otpauth://totp/Example%3Aalice%40google.com?secret=' + secret);
     var expect = google_chart_url + encodedOtpUrl;
     assert.deepEqual(
       answer.google_auth_qr,
+      expect
+    );
+  });
+
+  it('Testing otp URL generated with issuer and algorithm by generateSecret', function () {
+    var answer = speakeasy.generateSecret({
+      name: 'Example:alice@google.com',
+      issuer: 'issuer name'
+    });
+
+    var secret = new Buffer(answer.ascii, 'ascii');
+    if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
+
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=' + secret + '&issuer=issuer%20name';
+    assert.deepEqual(
+      answer.otpauth_url,
       expect
     );
   });

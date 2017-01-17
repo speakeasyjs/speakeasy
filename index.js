@@ -472,6 +472,8 @@ exports.totp.verify = function totpVerify (options) {
  * @param {Boolean} [options.google_auth_qr=false] (DEPRECATED. Do not use to
  *   prevent leaking of secret to a third party. Use your own QR code
  *   implementation.) Output a Google Authenticator otpauth:// QR code URL.
+ * @param {String} [options.issuer=''] The provider or service with which the
+ *   secret key is associated.
  * @return {Object}
  * @return {GeneratedSecret} The generated secret key.
  */
@@ -484,6 +486,7 @@ exports.generateSecret = function generateSecret (options) {
   var google_auth_qr = options.google_auth_qr || false;
   var otpauth_url = options.otpauth_url != null ? options.otpauth_url : true;
   var symbols = true;
+  var issuer = options.issuer;
 
   // turn off symbols only when explicity told to
   if (options.symbols !== undefined && options.symbols === false) {
@@ -511,7 +514,8 @@ exports.generateSecret = function generateSecret (options) {
   if (otpauth_url) {
     SecretKey.otpauth_url = exports.otpauthURL({
       secret: SecretKey.ascii,
-      label: name
+      label: name,
+      issuer: issuer
     });
   }
 
