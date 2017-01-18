@@ -603,9 +603,9 @@ exports.otpauthURL = function otpauthURL (options) {
   var issuer = options.issuer;
   var type = (options.type || 'totp').toLowerCase();
   var counter = options.counter;
-  var algorithm = options.algorithm;
-  var digits = options.digits;
-  var period = options.period;
+  var algorithm = (options.algorithm || 'sha1').toLowerCase();
+  var digits = options.digits || 6;
+  var period = options.period || 30;
   var encoding = options.encoding || 'ascii';
 
   // validate type
