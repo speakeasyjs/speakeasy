@@ -117,7 +117,7 @@ describe('Generator tests', function () {
     var secret = new Buffer(answer.base32, 'ascii');
     if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
-    var google_chart_url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=';    
+    var google_chart_url = 'https://chart.googleapis.com/chart?chs=166x166&chld=L|0&cht=qr&chl=';
     var encodedOtpUrl = encodeURIComponent('otpauth://totp/Example%3Aalice%40google.com?secret=' + secret + '&algorithm=SHA1&digits=6&period=30');
     var expect = google_chart_url + encodedOtpUrl;
     assert.deepEqual(
@@ -135,7 +135,7 @@ describe('Generator tests', function () {
     var secret = new Buffer(answer.ascii, 'ascii');
     if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
 
-    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=' + secret + '&issuer=issuer%20name';
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=' + secret + '&issuer=issuer%20name&algorithm=SHA1&digits=6&period=30';
     assert.deepEqual(
       answer.otpauth_url,
       expect
