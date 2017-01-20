@@ -125,4 +125,20 @@ describe('Generator tests', function () {
       expect
     );
   });
+
+  it('Testing otp URL generated with issuer by generateSecret', function () {
+    var answer = speakeasy.generateSecret({
+      name: 'Example:alice@google.com',
+      issuer: 'issuer name'
+    });
+
+    var secret = new Buffer(answer.ascii, 'ascii');
+    if (Buffer.isBuffer(secret)) secret = base32.encode(secret);
+
+    var expect = 'otpauth://totp/Example%3Aalice%40google.com?secret=' + secret + '&issuer=issuer%20name';
+    assert.deepEqual(
+      answer.otpauth_url,
+      expect
+    );
+  });
 });
