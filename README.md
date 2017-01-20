@@ -626,6 +626,7 @@ Authenticator URL to obtain a QR code you can scan into the app.
 | [options.name] | <code>String</code> |  | The name to use with Google Authenticator. |
 | [options.qr_codes] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to prevent   leaking of secret to a third party. Use your own QR code implementation.)   Output QR code URLs for the token. |
 | [options.google_auth_qr] | <code>Boolean</code> | <code>false</code> | (DEPRECATED. Do not use to   prevent leaking of secret to a third party. Use your own QR code   implementation.) Output a Google Authenticator otpauth:// QR code URL. |
+| [options.issuer] | <code>String</code> |  | The provider or service with which the secret key is associated. |
 
 <a name="generateSecretASCII"></a>
 ### generateSecretASCII([length], [symbols]) ⇒ <code>String</code>
