@@ -40,6 +40,16 @@ exports.digest = function digest (options) {
     if (encoding === 'base32') { secret = base32.decode(secret); }
     secret = new Buffer(secret, encoding);
   }
+  // pad the buffer to the correct size be repeating the secret
+  var secret_buffer_size;
+  if (algorithm === 'sha256') {
+    secret_buffer_size = 32; // 32 bytes
+  } else if (algorithm === 'sha512') {
+    secret_buffer_size = 64; // 64 bytes
+  } else {
+    secret_buffer_size = 20; // 20 bytes
+  }
+  secret = new Buffer(Array(secret_buffer_size).join(secret.toString('hex')).substr(0, secret_buffer_size * 2), 'hex');
 
   // create an buffer from the counter
   var buf = new Buffer(8);
