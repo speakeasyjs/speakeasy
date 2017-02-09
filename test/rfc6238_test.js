@@ -175,25 +175,6 @@ describe('RFC 6238 test vector', function () {
     var key = new Buffer('12345678901234567890');
     var nbytes, i;
 
-    // set hash size based on algorithm
-    switch (subject.algorithm) {
-      case 'SHA256': nbytes = 32;
-        break;
-      case 'SHA512': nbytes = 64;
-        break;
-      default: nbytes = 20;
-    }
-
-    // repeat the key to the minimum length
-    if (key.length > nbytes) {
-      key = key.slice(0, nbytes);
-    } else {
-      i = ~~(nbytes / key.length);
-      key = [key];
-      while (i--) key.push(key[0]);
-      key = Buffer.concat(key).slice(0, nbytes);
-    }
-
     it('should calculate counter value for time ' + subject.time, function () {
       var counter = speakeasy._counter({
         time: subject.time
