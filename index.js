@@ -40,16 +40,23 @@ exports.digest = function digest (options) {
     if (encoding === 'base32') { secret = base32.decode(secret); }
     secret = new Buffer(secret, encoding);
   }
-  // pad the buffer to the correct size be repeating the secret
+
   var secret_buffer_size;
-  if (algorithm === 'sha256') {
+  if (algorithm === 'sha1') {
+    secret_buffer_size = 20; // 20 bytes
+  } else if (algorithm === 'sha256') {
     secret_buffer_size = 32; // 32 bytes
   } else if (algorithm === 'sha512') {
     secret_buffer_size = 64; // 64 bytes
   } else {
-    secret_buffer_size = 20; // 20 bytes
+    console.warn('Speakeasy - The algorithm provided (`' + algorithm + '`) is not officially supported, results may be different than expected.');
   }
-  secret = new Buffer(Array(secret_buffer_size).join(secret.toString('hex')).substr(0, secret_buffer_size * 2), 'hex');
+
+  // The secret for sha1, sha256 and sha512 needs to be a fixed number of bytes for the one-time-password to be calculated correctly
+  // Pad the buffer to the correct size be repeating the secret to the desired length
+  if (secret_buffer_size && secret.length !== secret_buffer_size) {
+    secret = new Buffer(Array(Math.ceil(secret_buffer_size / secret.length) + 1).join(secret.toString('hex')), 'hex').slice(0, secret_buffer_size);
+  }
 
   // create an buffer from the counter
   var buf = new Buffer(8);
