@@ -110,4 +110,16 @@ describe('HOTP Counter-Based Algorithm Test', function () {
 
   });
 
+  it('should not throw exception if the algorithm is not sha1, sha256, or sha512', function() {
+    assert.doesNotThrow(function () {
+      speakeasy.hotp({
+        secret: 'GEZDGNBVGY3TQOJQ',
+        encoding: 'base32',
+        counter: 1,
+        digits: 8,
+        algorithm: 'md5'
+      }, /unofficial algorithm `md5`/);
+    });
+  });
+
 });

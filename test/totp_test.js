@@ -198,4 +198,17 @@ describe('TOTP Time-Based Algorithm Test', function () {
     });
 
   });
+
+  it('should not throw exception if the algorithm is not sha1, sha256, or sha512', function() {
+    assert.doesNotThrow(function () {
+      speakeasy.totp({
+        secret: 'GEZDGNBVGY3TQOJQ',
+        encoding: 'base32',
+        time: 1111111109,
+        digits: 8,
+        algorithm: 'md5'
+      }, /unofficial algorithm `md5`/);
+    });
+  });
+
 });
