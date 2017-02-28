@@ -82,7 +82,7 @@ Use a QR code module to generate a QR code that stores the data in `secret.otpau
 ```js
 // Use the node-qrcode package
 // npm install --save node-qrcode
-var QRCode = require('qrcode');
+var QRCode = require('node-qrcode');
 
 // Get the data URL of the authenticator URL
 QRCode.toDataURL(secret.otpauth_url, function(err, data_url) {
