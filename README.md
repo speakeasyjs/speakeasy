@@ -200,6 +200,14 @@ var token = speakeasy.totp({
   encoding: 'base32',
   time: 1453667708 // specified in seconds
 });
+
+// Verify a time-based token for a custom time
+var tokenValidates = speakeasy.totp.verify({
+  secret: secret.base32,
+  encoding: 'base32',
+  token: token,
+  time: 1453667708
+});
 ```
 
 #### Calculating a counter-based token
@@ -344,12 +352,25 @@ var secret = 'rNONHRni6BAk7y2TiKrv';
 // at time 1453854005 (60 seconds ahead, or 2 steps ahead)
 var token1 = speakeasy.totp({ secret: secret, time: 1453853945 }); // 625175
 var token3 = speakeasy.totp({ secret: secret, time: 1453854005 }); // 222636
+var token2 = speakeasy.totp({ secret: secret, time: 1453854065 }); // 013052
 
 // We can check the time at token 3, 1453853975, with token 1, but use a window of 2
 // With a time step of 30 seconds, this will check all tokens from 60 seconds 
 // before the time to 60 seconds after the time
 speakeasy.totp.verifyDelta({ secret: secret, token: token1, window: 2, time: 1453854005 });
 // => { delta: -2 }
+
+// token is valid because because token is 60 seconds before time
+speakeasy.totp.verify({ secret: secret, token: token1, window: 2, time: 1453854005 });
+// => true
+
+// token is valid because because token is 0 seconds before time
+speakeasy.totp.verify({ secret: secret, token: token3, window: 2, time: 1453854005 });
+// => true
+
+// token is valid because because token is 60 seconds after time
+speakeasy.totp.verify({ secret: secret, token: token2, window: 2, time: 1453854005 });
+// => true
 
 // This signifies that the given token, token1, is -2 steps away from
 // the given time, which means that it is the token for the value at
