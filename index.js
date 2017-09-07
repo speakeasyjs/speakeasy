@@ -511,13 +511,13 @@ exports.generateSecret = function generateSecret (options) {
   }
 
   // generate an ascii key
-  var key = this.generateSecretASCII(length, symbols);
+  var keyBytes = crypto.randomBytes(length || 32);
 
   // return a SecretKey with ascii, hex, and base32
   var SecretKey = {};
-  SecretKey.ascii = key;
-  SecretKey.hex = Buffer(key, 'ascii').toString('hex');
-  SecretKey.base32 = base32.encode(Buffer(key)).toString().replace(/=/g, '');
+  SecretKey.ascii = encodeASCII(keyBytes, symbols);
+  SecretKey.hex = keyBytes.toString('hex');
+  SecretKey.base32 = base32.encode(keyBytes).toString().replace(/=/g, '');
 
   // generate some qr codes if requested
   if (qr_codes) {
@@ -560,14 +560,18 @@ exports.generate_key = util.deprecate(function (options) {
  */
 exports.generateSecretASCII = function generateSecretASCII (length, symbols) {
   var bytes = crypto.randomBytes(length || 32);
-  var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz';
+  return encodeASCII(bytes, symbols);
+};
+
+function encodeASCII (bytes, symbols) {
+  var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghijklmnopqrstuvwxyz';
   if (symbols) {
     set += '!@#$%^&*()<>?/[]{},.:;';
   }
 
   var output = '';
   for (var i = 0, l = bytes.length; i < l; i++) {
-    output += set[Math.floor(bytes[i] / 255.0 * (set.length - 1))];
+    output += set[Math.floor(bytes[i] / 256.0 * set.length)];
   }
   return output;
 };
