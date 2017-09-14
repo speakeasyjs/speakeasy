@@ -80,8 +80,8 @@ Next, we'll want to display a QR code to the user so they can scan in the secret
 Use a QR code module to generate a QR code that stores the data in `secret.otpauth_url`, and then display the QR code to the user. This is one simple way to do it, which generates a PNG data URL which you can put into an `<img>` tag on a webpage:
 
 ```js
-// Use the node-qrcode package
-// npm install --save node-qrcode
+// Use the qrcode package
+// npm install --save qrcode
 var QRCode = require('qrcode');
 
 // Get the data URL of the authenticator URL
