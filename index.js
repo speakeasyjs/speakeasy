@@ -530,7 +530,7 @@ exports.generateSecret = function generateSecret (options) {
   // add in the Google Authenticator-compatible otpauth URL
   if (otpauth_url) {
     SecretKey.otpauth_url = exports.otpauthURL({
-      secret: SecretKey.ascii,
+      secret: SecretKey.base32,
       label: name,
       issuer: issuer
     });
