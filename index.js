@@ -564,7 +564,7 @@ exports.generateSecretASCII = function generateSecretASCII (length, symbols) {
 };
 
 function encodeASCII (bytes, symbols) {
-  var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghijklmnopqrstuvwxyz';
+  var set = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
   if (symbols) {
     set += '!@#$%^&*()<>?/[]{},.:;';
   }
