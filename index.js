@@ -103,7 +103,6 @@ exports.digest = function digest (options) {
  */
 
 exports.hotp = function hotpGenerate (options) {
-
   // verify secret and counter exists
   var secret = options.secret;
   var key = options.key;
@@ -196,10 +195,10 @@ exports.hotp.verifyDelta = function hotpVerifyDelta (options) {
   if (token === null || typeof token === 'undefined') throw new Error('Speakeasy - hotp.verifyDelta - Missing token');
 
   // unpack options
-  var token = String(options.token);
   var digits = parseInt(options.digits, 10) || 6;
   var window = parseInt(options.window, 10) || 0;
   var counter = parseInt(options.counter, 10) || 0;
+  token = String(token);
 
   // fail if token is not of correct length
   if (token.length !== digits) {

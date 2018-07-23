@@ -74,7 +74,7 @@ describe('HOTP Counter-Based Algorithm Test', function () {
     });
   });
 
-  it('should throw exception if secret and key are missing in hotp', function() {
+  it('should throw exception if secret and key are missing in hotp', function () {
     assert.throws(function () {
       speakeasy.hotp({
         digits: 6
@@ -82,7 +82,7 @@ describe('HOTP Counter-Based Algorithm Test', function () {
     });
   });
 
-  it('should throw exception if counter missing in hotp', function() {
+  it('should throw exception if counter missing in hotp', function () {
     assert.throws(function () {
       speakeasy.hotp({
         secret: 11111
@@ -91,8 +91,7 @@ describe('HOTP Counter-Based Algorithm Test', function () {
   });
 
   describe('hotp.verifyDelta() window tests', function () {
-
-    it('should throw exception if secret is missing in verifyDelta', function() {
+    it('should throw exception if secret is missing in verifyDelta', function () {
       assert.throws(function () {
         speakeasy.hotp.verifyDelta({
           step: 30
@@ -100,17 +99,16 @@ describe('HOTP Counter-Based Algorithm Test', function () {
       });
     });
 
-    it('should throw exception if token is missing in verifyDelta', function() {
+    it('should throw exception if token is missing in verifyDelta', function () {
       assert.throws(function () {
         speakeasy.hotp.verifyDelta({
           secret: 111111
         }, /Speakeasy - hotp.verifyDelta - Missing token/);
       });
     });
-
   });
 
-  it('should not throw exception if the algorithm is not sha1, sha256, or sha512', function() {
+  it('should not throw exception if the algorithm is not sha1, sha256, or sha512', function () {
     assert.doesNotThrow(function () {
       speakeasy.hotp({
         secret: 'GEZDGNBVGY3TQOJQ',
@@ -121,5 +119,4 @@ describe('HOTP Counter-Based Algorithm Test', function () {
       }, /unofficial algorithm `md5`/);
     });
   });
-
 });

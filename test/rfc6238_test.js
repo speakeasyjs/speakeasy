@@ -173,7 +173,6 @@ describe('RFC 6238 test vector', function () {
     algorithm: 'SHA512'
   }].forEach(function (subject) {
     var key = new Buffer('12345678901234567890');
-    var nbytes, i;
 
     it('should calculate counter value for time ' + subject.time, function () {
       var counter = speakeasy._counter({

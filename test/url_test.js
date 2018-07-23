@@ -220,7 +220,7 @@ describe('#url', function () {
       url.parse(expect)
     );
   });
-  
+
   it('should generate an totp URL compatible with the Google Authenticator app for sha512 algorithm', function () {
     var answer = speakeasy.otpauthURL({
       secret: 'JBSWY3DPEHPK3PXP',
@@ -234,8 +234,8 @@ describe('#url', function () {
       url.parse(answer),
       url.parse(expect)
     );
-  }) ;
-  
+  });
+
   it('should generate an totp URL compatible with the Google Authenticator app for sha256 algorithm', function () {
     var answer = speakeasy.otpauthURL({
       secret: 'JBSWY3DPEHPK3PXP',
@@ -250,7 +250,7 @@ describe('#url', function () {
       url.parse(expect)
     );
   });
-  
+
   it('should generate an totp URL compatible with the Google Authenticator app for 8 digits', function () {
     var answer = speakeasy.otpauthURL({
       secret: 'JBSWY3DPEHPK3PXP',
@@ -265,7 +265,7 @@ describe('#url', function () {
       url.parse(expect)
     );
   });
-  
+
   it('should generate an totp URL compatible with the Google Authenticator app for period of 60', function () {
     var answer = speakeasy.otpauthURL({
       secret: 'JBSWY3DPEHPK3PXP',

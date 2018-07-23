@@ -103,7 +103,7 @@ describe('TOTP Time-Based Algorithm Test', function () {
     });
   });
 
-  it('should throw exception if secret and key are missing in totp', function() {
+  it('should throw exception if secret and key are missing in totp', function () {
     assert.throws(function () {
       speakeasy.totp({
         digits: 6
@@ -181,7 +181,7 @@ describe('TOTP Time-Based Algorithm Test', function () {
       assert.isObject(delta); assert.strictEqual(delta.delta, -2);
     });
 
-    it('should throw exception if secret is missing in verifyDelta', function() {
+    it('should throw exception if secret is missing in verifyDelta', function () {
       assert.throws(function () {
         speakeasy.totp.verifyDelta({
           step: 30
@@ -189,17 +189,16 @@ describe('TOTP Time-Based Algorithm Test', function () {
       });
     });
 
-    it('should throw exception if token is missing in verifyDelta', function() {
+    it('should throw exception if token is missing in verifyDelta', function () {
       assert.throws(function () {
         speakeasy.totp.verifyDelta({
           secret: 111111
         }, /Speakeasy - totp.verifyDelta - Missing token/);
       });
     });
-
   });
 
-  it('should not throw exception if the algorithm is not sha1, sha256, or sha512', function() {
+  it('should not throw exception if the algorithm is not sha1, sha256, or sha512', function () {
     assert.doesNotThrow(function () {
       speakeasy.totp({
         secret: 'GEZDGNBVGY3TQOJQ',
@@ -210,5 +209,4 @@ describe('TOTP Time-Based Algorithm Test', function () {
       }, /unofficial algorithm `md5`/);
     });
   });
-
 });
