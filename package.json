@@ -41,11 +41,11 @@
     "base32.js": "0.0.1"
   },
   "devDependencies": {
-    "chai": "^3.4.1",
+    "chai": "^4.1.2",
     "coveralls": "^2.11.6",
     "istanbul": "^0.4.2",
     "jsdoc": "^3.3.1",
-    "mocha": "^2.2.5",
+    "mocha": "^5.2.0",
     "semistandard": "^7.0.5",
     "snazzy": "^2.0.1"
   },
