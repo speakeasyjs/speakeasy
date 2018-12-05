@@ -113,7 +113,7 @@ var base32secret = user.two_factor_temp_secret;
 ```js
 // Use verify() to check the token against the secret
 var verified = speakeasy.totp.verify({ secret: base32secret,
-                                       encoding: 'base32',
+                                       encoding: ['base32'],
                                        token: userToken });
 ```
 
@@ -152,7 +152,7 @@ var secret = speakeasy.generateSecret({length: 20});
 // `hotp` (i.e. speakeasy.hotp()) and a `counter` is given in the options.
 var token = speakeasy.totp({
   secret: secret.base32,
-  encoding: 'base32'
+  encoding: ['base32']
 });
 
 // Returns token for the secret at the current time
@@ -165,7 +165,7 @@ var token = speakeasy.totp({
 // Verify a given token
 var tokenValidates = speakeasy.totp.verify({
   secret: secret.base32,
-  encoding: 'base32',
+  encoding: ['base32'],
   token: '123456',
   window: 6
 });
@@ -183,7 +183,7 @@ in seconds.
 // time-step.
 var tokenDelta = speakeasy.totp.verifyDelta({
   secret: secret.base32,
-  encoding: 'base32',
+  encoding: ['base32'],
   token: '123456',
   window: 2,
   step: 60
@@ -197,14 +197,14 @@ var tokenDelta = speakeasy.totp.verifyDelta({
 ```js
 var token = speakeasy.totp({
   secret: secret.base32,
-  encoding: 'base32',
+  encoding: ['base32'],
   time: 1453667708 // specified in seconds
 });
 
 // Verify a time-based token for a custom time
 var tokenValidates = speakeasy.totp.verify({
   secret: secret.base32,
-  encoding: 'base32',
+  encoding: ['base32'],
   token: token,
   time: 1453667708
 });
@@ -216,14 +216,14 @@ var tokenValidates = speakeasy.totp.verify({
 // Get a counter-based token
 var token = speakeasy.hotp({
   secret: secret.base32,
-  encoding: 'base32',
+  encoding: ['base32'],
   counter: 123
 });
 
 // Verify a counter-based token
 var tokenValidates = speakeasy.hotp.verify({
   secret: secret.base32,
-  encoding: 'base32',
+  encoding: ['base32'],
   token: '123456',
   counter: 123
 });
@@ -245,7 +245,7 @@ var token = speakeasy.totp({
 // Specifying a hex token for TOTP
 var token = speakeasy.totp({
   secret: secret.hex,
-  encoding: 'hex'
+  encoding: ['hex']
 });
 ```
 
