@@ -1,3 +1,5 @@
+# NOT MAINTAINED
+
 <img src="http://i.imgur.com/qRyNMx4.png" width="550">
 
 [![Build Status](https://travis-ci.org/speakeasyjs/speakeasy.svg?branch=v2)](https://travis-ci.org/speakeasyjs/speakeasy)
