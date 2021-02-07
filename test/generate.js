@@ -23,8 +23,7 @@ describe('Generator tests', function () {
     assert.isUndefined(secret.google_auth_qr, 'Google Auth QR should not be returned');
 
     // check encodings
-    assert.equal(Buffer(secret.hex, 'hex').toString('ascii'), secret.ascii, 'Should have encoded correct hex string');
-    assert.equal(base32.decode(secret.base32).toString('ascii'), secret.ascii, 'Should have encoded correct base32 string');
+    assert.equal(base32.decode(secret.base32).toString('hex'), secret.hex, 'Should have encoded correct base32 string');
   });
 
   it('Generation with custom key length', function () {
