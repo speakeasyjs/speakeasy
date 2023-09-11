@@ -36,9 +36,9 @@ exports.digest = function digest (options) {
   }
 
   // convert secret to buffer
-  if (!Buffer.isBuffer(secret)) {
+  if (!Buffer.issecret)) {
     if (encoding === 'base32') { secret = base32.decode(secret); }
-    secret = new Buffer(secret, encoding);
+    secret = Buffer.from(secret, encoding);
   }
 
   var secret_buffer_size;
@@ -55,11 +55,11 @@ exports.digest = function digest (options) {
   // The secret for sha1, sha256 and sha512 needs to be a fixed number of bytes for the one-time-password to be calculated correctly
   // Pad the buffer to the correct size be repeating the secret to the desired length
   if (secret_buffer_size && secret.length !== secret_buffer_size) {
-    secret = new Buffer(Array(Math.ceil(secret_buffer_size / secret.length) + 1).join(secret.toString('hex')), 'hex').slice(0, secret_buffer_size);
+    secret = Buffer.from(Array(Math.ceil(secret_buffer_size / secret.length) + 1).join(secret.toString('hex')), 'hex').slice(0, secret_buffer_size);
   }
 
   // create an buffer from the counter
-  var buf = new Buffer(8);
+  var buf = Buffer.alloc(8);
   var tmp = counter;
   for (i = 0; i < 8; i++) {
     // mask 0xff over number to get last 8
@@ -516,8 +516,8 @@ exports.generateSecret = function generateSecret (options) {
   // return a SecretKey with ascii, hex, and base32
   var SecretKey = {};
   SecretKey.ascii = key;
-  SecretKey.hex = Buffer(key, 'ascii').toString('hex');
-  SecretKey.base32 = base32.encode(Buffer(key)).toString().replace(/=/g, '');
+  SecretKey.hex = Buffer.from(key, 'ascii').toString('hex');
+  SecretKey.base32 = base32.encode(Buffer.from(key)).toString().replace(/=/g, '');
 
   // generate some qr codes if requested
   if (qr_codes) {
